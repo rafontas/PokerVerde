@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Modelo.Excecoes
+namespace MesaTh.Excecoes
 {
     public class CartaInvalidaException : Exception
     {
@@ -23,5 +23,12 @@ namespace Modelo.Excecoes
         public JogadorExcpetion() : base() { }
         public JogadorExcpetion(string message) : base(message) { }
         public JogadorExcpetion(string messagem, System.Exception inner) : base(messagem, inner) { }
+    }
+
+    public class MaoExcpetion : Exception
+    {
+        public MaoExcpetion() : base() { }
+        public MaoExcpetion(string message) : base(message) { }
+        public MaoExcpetion(string messagem, System.Exception inner) : base(messagem, inner) { }
     }
 }

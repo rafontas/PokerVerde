@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Modelo.Interfaces
+namespace MesaTh.Interfaces
 {
     public interface IMesa
     {

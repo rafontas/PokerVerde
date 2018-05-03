@@ -1,9 +1,11 @@
-﻿using Modelo.Excecoes;
+﻿using Enuns;
+using MesaTh.Excecoes;
+using Modelo;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
-namespace Modelo
+namespace MesaTh
 {
     public class Deck
     {
@@ -70,7 +72,7 @@ namespace Modelo
         /// </summary>
         /// <param name="cartasDescartadas">Número de cartas que serão retornadas, caso o deck acabe retorna o máximo possível.</param>
         /// <returns></returns>
-        public IList<Carta> Pop(int cartasRetornadas = 1)
+        public IList<Carta> Pop(int cartasRetornadas)
         {
             if (cartasRetornadas < 0) throw new DeckException("Numero de cartas pedido não pode ser menor que zero.");
             IList<Carta> cartasPop = new List<Carta>();
@@ -83,5 +85,19 @@ namespace Modelo
 
             return cartasPop;
         }
+
+        /// <summary>
+        /// Remove uma de carta deck e a retorna.
+        /// </summary>
+        /// <returns>Uma carta</returns>
+        public Carta Pop()
+        {
+            if (Baralho.Count <= 0) throw new DeckException("Não há cartas a serem distribuídas.");
+
+            Carta c = Baralho.LastOrDefault();
+            Baralho.Remove(Baralho.Last());
+            return c;
+        }
+
     }
 }

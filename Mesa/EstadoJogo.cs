@@ -1,14 +1,15 @@
-﻿using Modelo.Interfaces;
+﻿using MesaTh.Interfaces;
+using Modelo;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Modelo
+namespace MesaTh
 {
     /// <summary>
     /// Contém informação sobre o jogo no geral.
     /// </summary>
-    public interface EstadoJogo<T>
+    public interface IEstadoJogo<T>
     {
         int QuantJogadores();
 
