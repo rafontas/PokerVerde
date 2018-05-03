@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mesa.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Acao.cs" />
+    <Compile Include="Carta.cs" />
+    <Compile Include="MesaTexasHoldem.cs" />
+  </ItemGroup>
+
+</Project>
