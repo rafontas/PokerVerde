@@ -14,5 +14,16 @@ namespace DealerTH
         public IList<Carta> Kickers() => _Straight.OrderByDescending(c => c.Numero).ToList();
 
         public uint Valor() => (uint) Jogo.StraightFlush;
+
+        public static IList<Carta> EncontraStraightFlush(Carta [] Cartas)
+        {
+            IList<Carta> sflush = Straight.Encontra(Cartas);
+
+            if (sflush == null) return null;
+
+
+
+            return null;   
+        }
     }
 }

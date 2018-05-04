@@ -23,7 +23,7 @@ namespace MesaTh
         private void CreateDeck()
         {
             Baralho = new List<Carta>();
-            for (uint i = 1; i <= 13; i++)
+            for (uint i = 2; i <= 14; i++)
             {
                 Baralho.Add(new Carta(i, Naipe.Copas));
                 Baralho.Add(new Carta(i, Naipe.Ouros));

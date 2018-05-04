@@ -7,13 +7,13 @@ namespace Enuns
 {
     public enum Naipe {
         [Display(Name = "C")]
-        Copas,
+        Copas = 1,
         [Display(Name = "O")]
-        Ouros,
+        Ouros = 2,
         [Display(Name = "P")]
-        Paus,
+        Paus = 3,
         [Display(Name = "E")]
-        Espadas
+        Espadas = 4
     }
 
     public enum Jogo

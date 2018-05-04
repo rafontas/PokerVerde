@@ -7,7 +7,6 @@ namespace Modelo
     public class MaoTexasHoldem
     {
         public int IdMeuJogador { get; set; }
-
     
         IList<Carta> Cartas { get; set; }
 
