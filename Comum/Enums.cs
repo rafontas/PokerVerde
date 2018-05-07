@@ -10,14 +10,15 @@ namespace Enuns
         Copas = 1,
         [Display(Name = "O")]
         Ouros = 2,
-        [Display(Name = "P")]
-        Paus = 3,
         [Display(Name = "E")]
-        Espadas = 4
+        Espadas = 3,
+        [Display(Name = "P")]
+        Paus = 4,
     }
 
     public enum Jogo
     {
+        Nada = 0,
         CartaAlta = 1,
         Dupla = 2,
         DuasDuplas = 3,

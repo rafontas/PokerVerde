@@ -157,8 +157,6 @@ namespace Mesa
             {
                 if (Momento.MomentoAtual == MomentoJogo.PosRiver)
                 {
-                    return;
-
                     if (Dealer.JogadorGanhouTHB(GetMesa(), Jogador.GetCartas, CartasBanca))
                     {
                         Jogador.RecebeValor(infoMesa.GetPote());

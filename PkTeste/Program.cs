@@ -4,6 +4,7 @@ using Modelo;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using DealerTH;
 
 namespace PkTeste
 {
@@ -35,11 +36,30 @@ namespace PkTeste
                 River = 5,
             }, 
                 new Jogador(),
-                null,
+                new Dealer(),
                 10
             );
 
-            ExecutaPoker(mesa, 5);
+            Dealer d = new Dealer();
+            List<Carta> cartasMesa = new List<Carta>() {
+                new Carta(2, Enuns.Naipe.Copas),
+                new Carta(3, Enuns.Naipe.Copas),
+                new Carta(4, Enuns.Naipe.Copas),
+                new Carta(14, Enuns.Naipe.Ouros),
+                new Carta(14, Enuns.Naipe.Copas),
+            };
+            List<Carta> cartasBanca = new List<Carta>() {
+                new Carta(6, Enuns.Naipe.Paus),
+                new Carta(6, Enuns.Naipe.Espadas),
+            };
+            List<Carta> cartasJogador = new List<Carta>() {
+                new Carta(7, Enuns.Naipe.Paus),
+                new Carta(5, Enuns.Naipe.Copas),
+            };
+
+            d.JogadorGanhouTHB(cartasMesa, cartasJogador.ToArray(), cartasBanca.ToArray());
+
+            //ExecutaPoker(mesa, 5);
             return;
 
             while (true)

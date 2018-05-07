@@ -7,7 +7,11 @@ namespace Modelo
     public class MaoTexasHoldem
     {
         public int IdMeuJogador { get; set; }
-    
+
+        public Jogo MeuJogo { get; set; } = Jogo.Nada;
+
+        public Carta [] MelhorJogo { get; set; }
+
         IList<Carta> Cartas { get; set; }
 
         public MaoTexasHoldem(Carta cartaUm, Carta cartaDois)
@@ -18,6 +22,8 @@ namespace Modelo
                 cartaDois
             };
         }
+
+        public MaoTexasHoldem() {}
 
         /// <summary>
         /// Recebe as cartas da mão.
