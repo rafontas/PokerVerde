@@ -10,9 +10,9 @@ namespace Modelo
 
         public Jogo MeuJogo { get; set; } = Jogo.Nada;
 
-        public Carta [] MelhorJogo { get; set; }
+        public IList<Carta> MelhorJogo { get; set; }
 
-        IList<Carta> Cartas { get; set; }
+        public IList<Carta> Cartas { get; set; }
 
         public MaoTexasHoldem(Carta cartaUm, Carta cartaDois)
         {
@@ -39,6 +39,17 @@ namespace Modelo
                 cartaUm,
                 cartaDois
             };
+        }
+
+        public override bool Equals(object other)
+        {
+            var OutraMao = other as MaoTexasHoldem;
+            if (MeuJogo != OutraMao.MeuJogo) return false;
+
+            foreach(Carta c in OutraMao.MelhorJogo)
+                if (!MelhorJogo.Contains(c)) return false;
+
+            return true;
         }
     }
 }

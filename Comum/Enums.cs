@@ -26,7 +26,8 @@ namespace Enuns
         Straight = 5,
         Flush = 6,
         FullHand = 7,
-        StraightFlush = 8
+        Four = 8,
+        StraightFlush = 9
     }
 
     public enum TipoAcao

@@ -9,279 +9,533 @@ namespace Testes
     public class TestaMaoChecagem
     {
         [TestMethod]
-        public void StraightFlush()
+        public void StraightFlush_1()
         {
-            Carta [] mesaJogador = new Carta[] {
-                new Carta(2, Enuns.Naipe.Copas),
-                new Carta(3, Enuns.Naipe.Copas),
-                new Carta(4, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Ouros),
-
-                new Carta(7, Enuns.Naipe.Paus),
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
                 new Carta(5, Enuns.Naipe.Copas),
-            };
-            Carta[] mesaBanca = new Carta[] {
                 new Carta(2, Enuns.Naipe.Copas),
-                new Carta(3, Enuns.Naipe.Copas),
-                new Carta(4, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Copas),
                 new Carta(14, Enuns.Naipe.Ouros),
-
-                new Carta(6, Enuns.Naipe.Paus),
-                new Carta(6, Enuns.Naipe.Espadas),
-            };
-
-            Carta[] cartasMesa  = new Carta[] {
-                new Carta(2, Enuns.Naipe.Copas),
-                new Carta(3, Enuns.Naipe.Copas),
-                new Carta(4, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Ouros),
-                new Carta(14, Enuns.Naipe.Copas),
-            };
-            Carta [] cartasBanca = new Carta[] {
-                new Carta(6, Enuns.Naipe.Paus),
-                new Carta(6, Enuns.Naipe.Espadas),
-            };
-            Carta [] cartasJogador = new Carta[] {
                 new Carta(7, Enuns.Naipe.Paus),
-                new Carta(5, Enuns.Naipe.Copas),
+                new Carta(14, Enuns.Naipe.Copas),
+                new Carta(3, Enuns.Naipe.Copas),
+                new Carta(4, Enuns.Naipe.Copas),
             };
 
-            Dealer d = new Dealer();
-            d.JogadorGanhouTHB(cartasMesa, cartasJogador, cartasBanca);
-            MaoChecagem m = DadosTeste.IniciaMaoChecagem(1, mesaJogador);
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.StraightFlush,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(5, Enuns.Naipe.Copas),
+                            new Carta(4, Enuns.Naipe.Copas),
+                            new Carta(3, Enuns.Naipe.Copas),
+                            new Carta(2, Enuns.Naipe.Copas),
+                            new Carta(1, Enuns.Naipe.Copas),
+                        }
+            };
 
-            // NUMEROS
-            for (int i = 0; i < d.MaoChecagemJogador.Numeros.Length; i++)
-                CollectionAssert.AreEquivalent(m.Numeros[i], d.MaoChecagemJogador.Numeros[i]);
-            CollectionAssert.AreEquivalent(m.indiceNaipes, d.MaoChecagemJogador.indiceNaipes);
-
-            // NAIPES
-            for (int i = 0; i < d.MaoChecagemJogador.Naipes.Length; i++)
-                CollectionAssert.AreEquivalent(m.Naipes[i], d.MaoChecagemJogador.Naipes[i]);
-            CollectionAssert.AreEquivalent(m.indiceNumeros, d.MaoChecagemJogador.indiceNumeros);
-
-            // Assert do que tem na mão foi encontrado
-            Assert.IsTrue(d.MaoChecagemJogador.Dupla);
-            Assert.IsFalse(d.MaoChecagemJogador.DuasDuplas);
-            Assert.IsFalse(d.MaoChecagemJogador.Trinca);
-            Assert.IsTrue(d.MaoChecagemJogador.Straight);
-            Assert.IsTrue(d.MaoChecagemJogador.Flush);
-            Assert.IsFalse(d.MaoChecagemJogador.Four);
-            Assert.IsTrue(d.MaoChecagemJogador.StraightFlush);
+            Assert.AreEqual(esperado, atual);
         }
 
         [TestMethod]
-        public void DuasDuplas()
+        public void StraightFlush_2()
         {
-            Carta[] mesaBanca = new Carta[] {
-                new Carta(2, Enuns.Naipe.Copas),
-                new Carta(3, Enuns.Naipe.Copas),
-                new Carta(4, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Copas),
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(13, Enuns.Naipe.Copas),
+                new Carta(12, Enuns.Naipe.Copas),
                 new Carta(14, Enuns.Naipe.Ouros),
-
-                new Carta(6, Enuns.Naipe.Paus),
-                new Carta(6, Enuns.Naipe.Espadas),
-            };
-
-            Carta[] cartasJogador = new Carta[] {
                 new Carta(7, Enuns.Naipe.Paus),
-                new Carta(5, Enuns.Naipe.Copas),
-            };
-            Carta[] cartasMesa = new Carta[] {
-                new Carta(2, Enuns.Naipe.Copas),
-                new Carta(3, Enuns.Naipe.Copas),
-                new Carta(4, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Ouros),
                 new Carta(14, Enuns.Naipe.Copas),
-            };
-            Carta[] cartasBanca = new Carta[] {
-                new Carta(6, Enuns.Naipe.Paus),
-                new Carta(6, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Copas),
             };
 
-            Dealer d = new Dealer();
-            d.JogadorGanhouTHB(cartasMesa, cartasJogador, cartasBanca);
-            MaoChecagem m = DadosTeste.IniciaMaoChecagem(2, mesaBanca);
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.StraightFlush,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(14, Enuns.Naipe.Copas),
+                            new Carta(13, Enuns.Naipe.Copas),
+                            new Carta(12, Enuns.Naipe.Copas),
+                            new Carta(11, Enuns.Naipe.Copas),
+                            new Carta(10, Enuns.Naipe.Copas),
+                        }
+            };
 
-            // NUMEROS
-            for (int i = 0; i < d.MaoChecagemMesa.Numeros.Length; i++)
-                CollectionAssert.AreEquivalent(m.Numeros[i], d.MaoChecagemMesa.Numeros[i]);
-            CollectionAssert.AreEquivalent(m.indiceNaipes, d.MaoChecagemMesa.indiceNaipes);
-
-            // NAIPES
-            for (int i = 0; i < d.MaoChecagemMesa.Naipes.Length; i++)
-                CollectionAssert.AreEquivalent(m.Naipes[i], d.MaoChecagemMesa.Naipes[i]);
-            CollectionAssert.AreEquivalent(m.indiceNumeros, d.MaoChecagemMesa.indiceNumeros);
-
-            // Assert do que tem na mão foi encontrado
-            Assert.IsTrue(d.MaoChecagemMesa.Dupla);
-            Assert.IsTrue(d.MaoChecagemMesa.DuasDuplas);
-            Assert.IsFalse(d.MaoChecagemMesa.Trinca);
-            Assert.IsFalse(d.MaoChecagemMesa.Straight);
-            Assert.IsFalse(d.MaoChecagemMesa.Flush);
-            Assert.IsFalse(d.MaoChecagemMesa.Four);
-            Assert.IsFalse(d.MaoChecagemMesa.StraightFlush);
+            Assert.AreEqual(esperado, atual);
         }
 
         [TestMethod]
-        public void Trinca()
+        public void DuasDuplas_1()
         {
-            Carta[] mesaBanca = new Carta[] {
-                new Carta(5, Enuns.Naipe.Copas),
-                new Carta(7, Enuns.Naipe.Copas),
-                new Carta(10, Enuns.Naipe.Ouros),
-                new Carta(9, Enuns.Naipe.Paus),
-                new Carta(3, Enuns.Naipe.Espadas),
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(14, Enuns.Naipe.Ouros),
+                new Carta(2, Enuns.Naipe.Copas),
+                new Carta(6, Enuns.Naipe.Espadas),
+                new Carta(4, Enuns.Naipe.Copas),
+                new Carta(6, Enuns.Naipe.Paus),
+                new Carta(14, Enuns.Naipe.Copas),
+                new Carta(3, Enuns.Naipe.Copas),
             };
 
-            Carta[] cartasJogador = new Carta[] {
-                new Carta(12, Enuns.Naipe.Paus),
-                new Carta(8, Enuns.Naipe.Copas),
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.DuasDuplas,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(14, Enuns.Naipe.Ouros),
+                            new Carta(14, Enuns.Naipe.Copas),
+                            new Carta(6, Enuns.Naipe.Espadas),
+                            new Carta(6, Enuns.Naipe.Paus),
+                            new Carta(4, Enuns.Naipe.Copas),
+                        }
             };
-            Carta[] cartasMesa = new Carta[] {
-                new Carta(5, Enuns.Naipe.Copas),
-                new Carta(7, Enuns.Naipe.Copas),
-                new Carta(10, Enuns.Naipe.Ouros),
-                new Carta(9, Enuns.Naipe.Paus),
-                new Carta(3, Enuns.Naipe.Espadas),
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void DuasDuplas_2()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(5, Enuns.Naipe.Ouros),
+                new Carta(5, Enuns.Naipe.Paus),
+                new Carta(14, Enuns.Naipe.Espadas),
+                new Carta(4, Enuns.Naipe.Copas),
+                new Carta(6, Enuns.Naipe.Paus),
+                new Carta(13, Enuns.Naipe.Copas),
+                new Carta(14, Enuns.Naipe.Copas),
             };
-            Carta[] cartasBanca = new Carta[] {
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.DuasDuplas,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(14, Enuns.Naipe.Espadas),
+                            new Carta(14, Enuns.Naipe.Copas),
+                            new Carta(5, Enuns.Naipe.Ouros),
+                            new Carta(5, Enuns.Naipe.Paus),
+                            new Carta(13, Enuns.Naipe.Copas),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Trinca_1()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
                 new Carta(10, Enuns.Naipe.Paus),
+                new Carta(5, Enuns.Naipe.Copas),
+                new Carta(10, Enuns.Naipe.Ouros),
+                new Carta(3, Enuns.Naipe.Espadas),
+                new Carta(9, Enuns.Naipe.Paus),
+                new Carta(7, Enuns.Naipe.Copas),
                 new Carta(10, Enuns.Naipe.Espadas),
             };
 
-            Dealer d = new Dealer();
-            d.JogadorGanhouTHB(cartasMesa, cartasJogador, cartasBanca);
-            MaoChecagem m = DadosTeste.IniciaMaoChecagem(3, mesaBanca);
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Trinca,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(10, Enuns.Naipe.Paus),
+                            new Carta(10, Enuns.Naipe.Espadas),
+                            new Carta(10, Enuns.Naipe.Ouros),
+                            new Carta(9, Enuns.Naipe.Paus),
+                            new Carta(7, Enuns.Naipe.Copas),
+                        }
+            };
 
-            // NUMEROS
-            for (int i = 0; i < d.MaoChecagemMesa.Numeros.Length; i++)
-                CollectionAssert.AreEquivalent(m.Numeros[i], d.MaoChecagemMesa.Numeros[i]);
-            CollectionAssert.AreEquivalent(m.indiceNaipes, d.MaoChecagemMesa.indiceNaipes);
-
-            // NAIPES
-            for (int i = 0; i < d.MaoChecagemMesa.Naipes.Length; i++)
-                CollectionAssert.AreEquivalent(m.Naipes[i], d.MaoChecagemMesa.Naipes[i]);
-            CollectionAssert.AreEquivalent(m.indiceNumeros, d.MaoChecagemMesa.indiceNumeros);
-
-            // Assert do que tem na mão foi encontrado
-            Assert.IsTrue(d.MaoChecagemMesa.Dupla);
-            Assert.IsFalse(d.MaoChecagemMesa.DuasDuplas);
-            Assert.IsTrue(d.MaoChecagemMesa.Trinca);
-            Assert.IsFalse(d.MaoChecagemMesa.Straight);
-            Assert.IsFalse(d.MaoChecagemMesa.Flush);
-            Assert.IsFalse(d.MaoChecagemMesa.Four);
-            Assert.IsFalse(d.MaoChecagemMesa.StraightFlush);
+            Assert.AreEqual(esperado, atual);
         }
 
         [TestMethod]
-        public void Nada()
+        public void Trinca_2()
         {
-            Carta[] mesaJogador = new Carta[] {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(13, Enuns.Naipe.Paus),
                 new Carta(5, Enuns.Naipe.Copas),
-                new Carta(7, Enuns.Naipe.Copas),
-                new Carta(10, Enuns.Naipe.Ouros),
-                new Carta(9, Enuns.Naipe.Paus),
+                new Carta(13, Enuns.Naipe.Ouros),
                 new Carta(3, Enuns.Naipe.Espadas),
-                new Carta(12, Enuns.Naipe.Paus),
-                new Carta(8, Enuns.Naipe.Copas),
+                new Carta(13, Enuns.Naipe.Copas),
+                new Carta(7, Enuns.Naipe.Copas),
+                new Carta(14, Enuns.Naipe.Espadas),
             };
 
-            Carta[] cartasJogador = new Carta[] {
-                new Carta(12, Enuns.Naipe.Paus),
-                new Carta(8, Enuns.Naipe.Copas),
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Trinca,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(13, Enuns.Naipe.Paus),
+                            new Carta(13, Enuns.Naipe.Copas),
+                            new Carta(13, Enuns.Naipe.Ouros),
+                            new Carta(14, Enuns.Naipe.Espadas),
+                            new Carta(7, Enuns.Naipe.Copas),
+                        }
             };
-            Carta[] cartasMesa = new Carta[] {
-                new Carta(5, Enuns.Naipe.Copas),
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Nada_1()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(12, Enuns.Naipe.Paus),
                 new Carta(7, Enuns.Naipe.Copas),
-                new Carta(10, Enuns.Naipe.Ouros),
                 new Carta(9, Enuns.Naipe.Paus),
                 new Carta(3, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Ouros),
+                new Carta(8, Enuns.Naipe.Copas),
+                new Carta(5, Enuns.Naipe.Copas),
             };
-            Carta[] cartasBanca = new Carta[] {
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.CartaAlta,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(12, Enuns.Naipe.Paus),
+                            new Carta(10, Enuns.Naipe.Ouros),
+                            new Carta(9, Enuns.Naipe.Paus),
+                            new Carta(8, Enuns.Naipe.Copas),
+                            new Carta(7, Enuns.Naipe.Copas),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Nada_2()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(11, Enuns.Naipe.Espadas),
+                new Carta(2, Enuns.Naipe.Copas),
+                new Carta(9, Enuns.Naipe.Paus),
+                new Carta(14, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Ouros),
+                new Carta(3, Enuns.Naipe.Copas),
+                new Carta(4, Enuns.Naipe.Copas),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.CartaAlta,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(14, Enuns.Naipe.Espadas),
+                            new Carta(11, Enuns.Naipe.Espadas),
+                            new Carta(10, Enuns.Naipe.Ouros),
+                            new Carta(9, Enuns.Naipe.Paus),
+                            new Carta(4, Enuns.Naipe.Copas),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Duplas_1()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(11, Enuns.Naipe.Espadas),
+                new Carta(2, Enuns.Naipe.Copas),
+                new Carta(3, Enuns.Naipe.Copas),
+                new Carta(9, Enuns.Naipe.Paus),
+                new Carta(14, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Ouros),
+                new Carta(3, Enuns.Naipe.Ouros),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Dupla,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(3, Enuns.Naipe.Ouros),
+                            new Carta(3, Enuns.Naipe.Copas),
+                            new Carta(14, Enuns.Naipe.Espadas),
+                            new Carta(11, Enuns.Naipe.Espadas),
+                            new Carta(10, Enuns.Naipe.Ouros),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Duplas_2()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(11, Enuns.Naipe.Espadas),
+                new Carta(14, Enuns.Naipe.Copas),
+                new Carta(13, Enuns.Naipe.Copas),
+                new Carta(9, Enuns.Naipe.Paus),
+                new Carta(14, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Ouros),
+                new Carta(3, Enuns.Naipe.Ouros),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Dupla,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(14, Enuns.Naipe.Copas),
+                            new Carta(14, Enuns.Naipe.Espadas),
+                            new Carta(13, Enuns.Naipe.Copas),
+                            new Carta(11, Enuns.Naipe.Espadas),
+                            new Carta(10, Enuns.Naipe.Ouros),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void FullHand_1()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(11, Enuns.Naipe.Paus),
                 new Carta(10, Enuns.Naipe.Paus),
-                new Carta(10, Enuns.Naipe.Espadas),
-            };
-
-            Dealer d = new Dealer();
-            d.JogadorGanhouTHB(cartasMesa, cartasJogador, cartasBanca);
-            MaoChecagem m = DadosTeste.IniciaMaoChecagem(4, mesaJogador);
-
-            // NUMEROS
-            for (int i = 0; i < d.MaoChecagemJogador.Numeros.Length; i++)
-                CollectionAssert.AreEquivalent(m.Numeros[i], d.MaoChecagemJogador.Numeros[i]);
-            CollectionAssert.AreEquivalent(m.indiceNaipes, d.MaoChecagemJogador.indiceNaipes);
-
-            // NAIPES
-            for (int i = 0; i < d.MaoChecagemJogador.Naipes.Length; i++)
-                CollectionAssert.AreEquivalent(m.Naipes[i], d.MaoChecagemJogador.Naipes[i]);
-            CollectionAssert.AreEquivalent(m.indiceNumeros, d.MaoChecagemJogador.indiceNumeros);
-
-            // Assert do que tem na mão foi encontrado
-            Assert.IsFalse(d.MaoChecagemJogador.Dupla);
-            Assert.IsFalse(d.MaoChecagemJogador.DuasDuplas);
-            Assert.IsFalse(d.MaoChecagemJogador.Trinca);
-            Assert.IsFalse(d.MaoChecagemJogador.Straight);
-            Assert.IsFalse(d.MaoChecagemJogador.Flush);
-            Assert.IsFalse(d.MaoChecagemJogador.Four);
-            Assert.IsFalse(d.MaoChecagemJogador.StraightFlush);
-        }
-
-        [TestMethod]
-        public void FullHand()
-        {
-            Carta[] mesaBanca = new Carta[] {
-                new Carta(5, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Espadas),
                 new Carta(7, Enuns.Naipe.Copas),
                 new Carta(10, Enuns.Naipe.Copas),
-                new Carta(10, Enuns.Naipe.Paus),
+                new Carta(5, Enuns.Naipe.Copas),
                 new Carta(10, Enuns.Naipe.Espadas),
-                new Carta(11, Enuns.Naipe.Paus),
-                new Carta(11, Enuns.Naipe.Espadas),
             };
 
-            Carta[] cartasJogador = new Carta[] {
-                new Carta(11, Enuns.Naipe.Ouros),
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.FullHand,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(10, Enuns.Naipe.Copas),
+                            new Carta(10, Enuns.Naipe.Paus),
+                            new Carta(10, Enuns.Naipe.Espadas),
+                            new Carta(11, Enuns.Naipe.Espadas),
+                            new Carta(11, Enuns.Naipe.Paus),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void FullHand_2()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(11, Enuns.Naipe.Paus),
+                new Carta(10, Enuns.Naipe.Paus),
+                new Carta(11, Enuns.Naipe.Espadas),
+                new Carta(14, Enuns.Naipe.Copas),
+                new Carta(10, Enuns.Naipe.Copas),
+                new Carta(14, Enuns.Naipe.Ouros),
+                new Carta(10, Enuns.Naipe.Espadas),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.FullHand,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(10, Enuns.Naipe.Copas),
+                            new Carta(10, Enuns.Naipe.Paus),
+                            new Carta(10, Enuns.Naipe.Espadas),
+                            new Carta(14, Enuns.Naipe.Copas),
+                            new Carta(14, Enuns.Naipe.Ouros),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Four_1()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(10, Enuns.Naipe.Copas),
+                new Carta(7, Enuns.Naipe.Copas),
+                new Carta(10, Enuns.Naipe.Paus),
+                new Carta(5, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Ouros),
+                new Carta(10, Enuns.Naipe.Espadas),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Four,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(10, Enuns.Naipe.Copas),
+                            new Carta(10, Enuns.Naipe.Paus),
+                            new Carta(10, Enuns.Naipe.Espadas),
+                            new Carta(10, Enuns.Naipe.Ouros),
+                            new Carta(11, Enuns.Naipe.Espadas),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Four_2()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(2, Enuns.Naipe.Copas),
+                new Carta(10, Enuns.Naipe.Copas),
+                new Carta(7, Enuns.Naipe.Copas),
+                new Carta(2, Enuns.Naipe.Paus),
+                new Carta(2, Enuns.Naipe.Espadas),
+                new Carta(2, Enuns.Naipe.Ouros),
+                new Carta(13, Enuns.Naipe.Espadas),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Four,
+                MelhorJogo = new List<Carta>() {
+                            new Carta(2, Enuns.Naipe.Copas),
+                            new Carta(2, Enuns.Naipe.Paus),
+                            new Carta(2, Enuns.Naipe.Espadas),
+                            new Carta(2, Enuns.Naipe.Ouros),
+                            new Carta(13, Enuns.Naipe.Espadas),
+                        }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Straight_1()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(12, Enuns.Naipe.Espadas),
+                new Carta(2, Enuns.Naipe.Espadas),
+                new Carta(8, Enuns.Naipe.Espadas),
                 new Carta(5, Enuns.Naipe.Espadas),
-            };
-            Carta[] cartasBanca = new Carta[] {
                 new Carta(10, Enuns.Naipe.Paus),
-                new Carta(10, Enuns.Naipe.Espadas),
-            };
-            Carta[] cartasMesa = new Carta[] {
-                new Carta(5, Enuns.Naipe.Copas),
-                new Carta(7, Enuns.Naipe.Copas),
-                new Carta(10, Enuns.Naipe.Copas),
+                new Carta(9, Enuns.Naipe.Copas),
                 new Carta(11, Enuns.Naipe.Paus),
-                new Carta(11, Enuns.Naipe.Espadas),
             };
-        
-            Dealer d = new Dealer();
-            d.JogadorGanhouTHB(cartasMesa, cartasJogador, cartasBanca);
-            MaoChecagem m = DadosTeste.IniciaMaoChecagem(5, mesaBanca);
 
-            // NUMEROS
-            for (int i = 0; i < d.MaoChecagemJogador.Numeros.Length; i++)
-                CollectionAssert.AreEquivalent(m.Numeros[i], d.MaoChecagemMesa.Numeros[i]);
-            CollectionAssert.AreEquivalent(m.indiceNaipes, d.MaoChecagemMesa.indiceNaipes);
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Straight,
+                MelhorJogo = new List<Carta>()
+                {
+                    new Carta(12, Enuns.Naipe.Espadas),
+                    new Carta(11, Enuns.Naipe.Paus),
+                    new Carta(10, Enuns.Naipe.Paus),
+                    new Carta(9, Enuns.Naipe.Copas),
+                    new Carta(8, Enuns.Naipe.Espadas),
+                }
+            };
 
-            // NAIPES
-            for (int i = 0; i < d.MaoChecagemMesa.Naipes.Length; i++)
-                CollectionAssert.AreEquivalent(m.Naipes[i], d.MaoChecagemMesa.Naipes[i]);
-            CollectionAssert.AreEquivalent(m.indiceNumeros, d.MaoChecagemMesa.indiceNumeros);
-
-            // Assert do que tem na mão foi encontrado
-            Assert.IsTrue(d.MaoChecagemMesa.Dupla);
-            Assert.IsTrue(d.MaoChecagemMesa.DuasDuplas);
-            Assert.IsTrue(d.MaoChecagemMesa.Trinca);
-            Assert.IsFalse(d.MaoChecagemMesa.Straight);
-            Assert.IsFalse(d.MaoChecagemMesa.Flush);
-            Assert.IsFalse(d.MaoChecagemMesa.Four);
-            Assert.IsFalse(d.MaoChecagemMesa.StraightFlush);
+            Assert.AreEqual(esperado, atual);
         }
 
+        [TestMethod]
+        public void Straight_2()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(12, Enuns.Naipe.Espadas),
+                new Carta(2, Enuns.Naipe.Espadas),
+                new Carta(8, Enuns.Naipe.Espadas),
+                new Carta(13, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Paus),
+                new Carta(9, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Paus),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Straight,
+                MelhorJogo = new List<Carta>()
+                {
+                    new Carta(13, Enuns.Naipe.Espadas),
+                    new Carta(12, Enuns.Naipe.Espadas),
+                    new Carta(11, Enuns.Naipe.Paus),
+                    new Carta(10, Enuns.Naipe.Paus),
+                    new Carta(9, Enuns.Naipe.Copas),
+                }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
+
+        [TestMethod]
+        public void Straight_3()
+        {
+            MelhorMao m = new MelhorMao();
+            IList<Carta> entrada = new List<Carta>()
+            {
+                new Carta(12, Enuns.Naipe.Espadas),
+                new Carta(2, Enuns.Naipe.Espadas),
+                new Carta(14, Enuns.Naipe.Espadas),
+                new Carta(13, Enuns.Naipe.Espadas),
+                new Carta(10, Enuns.Naipe.Paus),
+                new Carta(9, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Paus),
+            };
+
+            MaoTexasHoldem atual = m.AvaliaMao(entrada);
+            MaoTexasHoldem esperado = new MaoTexasHoldem()
+            {
+                MeuJogo = Enuns.Jogo.Straight,
+                MelhorJogo = new List<Carta>()
+                {
+                    new Carta(14, Enuns.Naipe.Espadas),
+                    new Carta(13, Enuns.Naipe.Espadas),
+                    new Carta(12, Enuns.Naipe.Espadas),
+                    new Carta(11, Enuns.Naipe.Paus),
+                    new Carta(10, Enuns.Naipe.Paus),
+                }
+            };
+
+            Assert.AreEqual(esperado, atual);
+        }
     }
 }
