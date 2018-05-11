@@ -38,8 +38,8 @@ namespace DealerTH
 
             // Monta a estrutura de Naipe
             MontaNaipes(Cartas);
-            
-            if(GetStraigthFlush(Cartas, out IList<Carta> Mao))
+
+            if (GetStraigthFlush(Cartas, out IList<Carta> Mao))
             {
                 return new MaoTexasHoldem()
                 {
@@ -111,7 +111,7 @@ namespace DealerTH
             }
             else if (TemTrinca)
             {
-                IList<Carta> Kickers = GetListaKicker(Cartas, Four, 2);
+                IList<Carta> Kickers = GetListaKicker(Cartas, Trincas[0], 2);
 
                 return new MaoTexasHoldem()
                 {
@@ -128,7 +128,14 @@ namespace DealerTH
             }
             else if (TemDuasDuplas)
             {
-                IList<Carta> Kickers = GetListaKicker(Cartas, Four, 1);
+                IList<Carta> Kickers = GetListaKicker(Cartas, 
+                    new List<Carta>() {
+                        Duplas[0][0],
+                        Duplas[0][1],
+                        Duplas[1][0],
+                        Duplas[1][1]
+                    }, 
+                    1);
 
                 return new MaoTexasHoldem()
                 {
@@ -145,7 +152,7 @@ namespace DealerTH
             }
             else if (TemDupla)
             {
-                IList<Carta> Kickers = GetListaKicker(Cartas, Four, 3);
+                IList<Carta> Kickers = GetListaKicker(Cartas, Duplas[0], 3);
 
                 return new MaoTexasHoldem()
                 {
@@ -162,7 +169,7 @@ namespace DealerTH
             }
             else
             {
-                IList<Carta> Kickers = GetListaKicker(Cartas, Four, 5);
+                IList<Carta> Kickers = GetListaKicker(Cartas, null, 5);
 
                 return new MaoTexasHoldem()
                 {
@@ -179,9 +186,64 @@ namespace DealerTH
             }
         }
 
+        private void MontaNaipes(IList<Carta> CartasAvaliarOrdenada)
+        {
+            int DuplaControle = 0;
+
+            for (int i = CartasAvaliarOrdenada.Count - 1; i > -1; i--)
+            {
+                // Avalia Four
+                if ((i - 3) >= 0)
+                {
+                    // Verifica Four
+                    if (CartasAvaliarOrdenada[i].Numero == CartasAvaliarOrdenada[i - 1].Numero
+                        && CartasAvaliarOrdenada[i - 1].Numero == CartasAvaliarOrdenada[i - 2].Numero
+                        && CartasAvaliarOrdenada[i - 2].Numero == CartasAvaliarOrdenada[i - 3].Numero)
+                    {
+                        Four.Add(CartasAvaliarOrdenada[i]);
+                        Four.Add(CartasAvaliarOrdenada[i - 1]);
+                        Four.Add(CartasAvaliarOrdenada[i - 2]);
+                        Four.Add(CartasAvaliarOrdenada[i - 3]);
+                        return;
+                    }
+                }
+
+                // Avalia Trinca
+                if ((i - 2) >= 0)
+                {
+                    if (CartasAvaliarOrdenada[i].Numero == CartasAvaliarOrdenada[i - 1].Numero &&
+                       CartasAvaliarOrdenada[i - 1].Numero == CartasAvaliarOrdenada[i - 2].Numero)
+                    {
+                        Trincas.Add(new Carta[] {
+                            CartasAvaliarOrdenada[i],
+                            CartasAvaliarOrdenada[i-1],
+                            CartasAvaliarOrdenada[i-2],
+                        });
+                        DuplaControle = 2;
+                    }
+                }
+
+                // Avalia Dupla
+                if ((i - 1) >= 0
+                    && DuplaControle <= 0
+                    && CartasAvaliarOrdenada[i].Numero == CartasAvaliarOrdenada[i - 1].Numero)
+                {
+                    Duplas.Add(new Carta[] {
+                            CartasAvaliarOrdenada[i],
+                            CartasAvaliarOrdenada[i-1],
+                    });
+                }
+                else
+                    DuplaControle--;
+
+                int NaipeMomento = (int)CartasAvaliarOrdenada[i].Naipe - 1;
+                Naipes[NaipeMomento].Add(CartasAvaliarOrdenada[i]);
+            }
+        }
+
         internal bool GetStraigthFlush(IList<Carta> CartasAvaliar, out IList<Carta> StraightFlush)
         {
-            if(Naipes[0].Count >= 5)
+            if (Naipes[0].Count >= 5)
             {
                 if (GetStraigthInverso(Naipes[0], out StraightFlush)) return true;
             }
@@ -202,76 +264,21 @@ namespace DealerTH
             return false;
         }
 
-        private void MontaNaipes(IList<Carta> CartasAvaliarOrdenada)
-        {
-            int DuplaControle = 0;
-
-            for (int i = CartasAvaliarOrdenada.Count-1; i > -1; i--)
-            {
-                // Avalia Four
-                if ((i - 3) >= 0)
-                {
-                    // Verifica Four
-                    if (CartasAvaliarOrdenada[i].Numero == CartasAvaliarOrdenada[i - 1].Numero 
-                        && CartasAvaliarOrdenada[i - 1].Numero == CartasAvaliarOrdenada[i - 2].Numero
-                        && CartasAvaliarOrdenada[i - 2].Numero == CartasAvaliarOrdenada[i - 3].Numero)
-                    {
-                        Four.Add(CartasAvaliarOrdenada[i]);
-                        Four.Add(CartasAvaliarOrdenada[i-1]);
-                        Four.Add(CartasAvaliarOrdenada[i-2]);
-                        Four.Add(CartasAvaliarOrdenada[i-3]);
-                        return;
-                    }
-                }
-
-                // Avalia Trinca
-                if ((i-2) >= 0)
-                {
-                    if(CartasAvaliarOrdenada[i].Numero == CartasAvaliarOrdenada[i-1].Numero &&
-                       CartasAvaliarOrdenada[i-1].Numero == CartasAvaliarOrdenada[i - 2].Numero)
-                    {
-                        Trincas.Add(new Carta[] {
-                            CartasAvaliarOrdenada[i],
-                            CartasAvaliarOrdenada[i-1],
-                            CartasAvaliarOrdenada[i-2],
-                        });
-                        DuplaControle = 2;
-                    }
-                }
-
-                // Avalia Dupla
-                if ((i - 1) >= 0 
-                    && DuplaControle <= 0 
-                    && CartasAvaliarOrdenada[i].Numero == CartasAvaliarOrdenada[i - 1].Numero)
-                {
-                    Duplas.Add(new Carta[] {
-                            CartasAvaliarOrdenada[i],
-                            CartasAvaliarOrdenada[i-1],
-                    });
-                }
-                else
-                    DuplaControle--;
-
-                int NaipeMomento = (int) CartasAvaliarOrdenada[i].Naipe-1;
-                Naipes[NaipeMomento].Add(CartasAvaliarOrdenada[i]);
-            }
-        }
-
         internal bool GetStraigth(IList<Carta> CartasAvaliar, out IList<Carta> Straight)
         {
-            Straight  = new List<Carta>();
-            int NumAs = CartasAvaliar.Count-1;
+            Straight = new List<Carta>();
+            int NumAs = CartasAvaliar.Count - 1;
 
             // Corrige o Problema do As
             IList<Carta> CartasAvaliarAuxiliar = new List<Carta>();
-            while(CartasAvaliar[NumAs].Numero == 14)
+            while (CartasAvaliar[NumAs].Numero == 14)
             {
                 CartasAvaliarAuxiliar.Add(
                     new Carta(1, CartasAvaliar[NumAs].Naipe)
                 );
                 NumAs--;
             }
-            if(NumAs != CartasAvaliar.Count - 1)
+            if (NumAs != CartasAvaliar.Count - 1)
             {
                 CartasAvaliarAuxiliar = CartasAvaliarAuxiliar.Concat(CartasAvaliar).ToList();
             }
@@ -282,7 +289,7 @@ namespace DealerTH
 
             Straight.Add(CartasAvaliarAuxiliar[CartasAvaliarAuxiliar.Count - 1]);
 
-            for (int i = CartasAvaliarAuxiliar.Count -1; i > -1; i--)
+            for (int i = CartasAvaliarAuxiliar.Count - 1; i > -1; i--)
             {
                 if (i == 0)
                 {
@@ -291,18 +298,18 @@ namespace DealerTH
                 }
 
                 // Ignora cartas iguais
-                if (CartasAvaliarAuxiliar[i].Numero == CartasAvaliarAuxiliar[i-1].Numero)
+                if (CartasAvaliarAuxiliar[i].Numero == CartasAvaliarAuxiliar[i - 1].Numero)
                     continue;
 
-                if (CartasAvaliarAuxiliar[i].Numero == CartasAvaliarAuxiliar[i-1].Numero+1)
+                if (CartasAvaliarAuxiliar[i].Numero == CartasAvaliarAuxiliar[i - 1].Numero + 1)
                 {
-                    Straight.Add(CartasAvaliarAuxiliar[i-1]);
+                    Straight.Add(CartasAvaliarAuxiliar[i - 1]);
                     if (Straight.Count == 5) return true;
                 }
                 else
                 {
                     if (i < 4) return false;
-                    Straight = new List<Carta>() { CartasAvaliarAuxiliar[i-1] };
+                    Straight = new List<Carta>() { CartasAvaliarAuxiliar[i - 1] };
                 }
             }
 
@@ -331,7 +338,7 @@ namespace DealerTH
 
             for (int i = CartasAvaliarAuxiliar.Count - 1; i > -1; i--)
             {
-                if(i == 0)
+                if (i == 0)
                 {
                     CartasAvaliarAuxiliar = new List<Carta>();
                     return false;
@@ -342,13 +349,13 @@ namespace DealerTH
 
                 if (CartasAvaliarAuxiliar[i].Numero == CartasAvaliarAuxiliar[i - 1].Numero + 1)
                 {
-                    Straight.Add(CartasAvaliarAuxiliar[i-1]);
+                    Straight.Add(CartasAvaliarAuxiliar[i - 1]);
                     if (Straight.Count == 5) return true;
                 }
                 else
                 {
                     if (i < 4) return false;
-                    Straight = new List<Carta>() { CartasAvaliarAuxiliar[i-1] };
+                    Straight = new List<Carta>() { CartasAvaliarAuxiliar[i - 1] };
                 }
             }
 
@@ -366,7 +373,7 @@ namespace DealerTH
 
             if (naipeFlush != -1)
             {
-                 Flush = new List<Carta>() {
+                Flush = new List<Carta>() {
                         Naipes[naipeFlush][0],
                         Naipes[naipeFlush][1],
                         Naipes[naipeFlush][2],
@@ -386,7 +393,9 @@ namespace DealerTH
         private IList<Carta> GetListaKicker(IList<Carta> CartasOrdenadasCrescente, IList<Carta> Excecoes = null, int quantidade = -1)
         {
             IList<Carta> Kickers = new List<Carta>();
-            for (int i = CartasOrdenadasCrescente.Count-1; i > -1; i--)
+            Excecoes = Excecoes ?? new List<Carta>();
+
+            for (int i = CartasOrdenadasCrescente.Count - 1; i > -1; i--)
             {
                 if (Excecoes.Contains(CartasOrdenadasCrescente[i])) continue;
                 Kickers.Add(CartasOrdenadasCrescente[i]);

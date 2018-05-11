@@ -19,7 +19,7 @@ namespace Mesa
         public IJogador Jogador { get; set; }
         public IDealer Dealer { get; set; }
 
-        public Deck Deck { get; set; }
+        public Deck<Carta> Deck { get; set; }
 
         public IList<Carta> Flop { get; set; } = null;
         public Carta Turn { get; set; } = null;
@@ -67,7 +67,10 @@ namespace Mesa
         {
             Momento = new MomentoJogoControle();
             Jogador.ResetaMao();
-            Deck = new Deck();
+
+            Deck = new Deck<Carta>();
+            Deck.CriaDeckPadrao();
+
             infoMesa = new InfoMesa()
             {
                 NumRodada = numRodada++,

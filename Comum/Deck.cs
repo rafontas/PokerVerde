@@ -1,34 +1,30 @@
 ﻿using Enuns;
-using MesaTh.Excecoes;
-using Modelo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MesaTh
+namespace Modelo
 {
-    public class Deck
+    public class Deck<T> where T : Carta, new()
     {
-        private const int MAXIMO_CARTAS = 52;
-        private IList<Carta> Baralho { get; set; }
+        protected const int MAXIMO_CARTAS = 52;
+        protected IList<T> Baralho { get; set; }
+        protected Random rand = new Random();
 
-        public Deck()
-        {
-            CreateDeck();
-        }
+        public Deck() { }
 
         /// <summary>
         /// Cria um deck já embaralhado.s
         /// </summary>
-        private void CreateDeck()
+        public void CriaDeckPadrao()
         {
-            Baralho = new List<Carta>();
+            Baralho = new List<T>();
             for (uint i = 2; i <= 14; i++)
             {
-                Baralho.Add(new Carta(i, Naipe.Copas));
-                Baralho.Add(new Carta(i, Naipe.Ouros));
-                Baralho.Add(new Carta(i, Naipe.Paus));
-                Baralho.Add(new Carta(i, Naipe.Espadas));
+                Baralho.Add((T)new Carta(i, Naipe.Copas));
+                Baralho.Add((T)new Carta(i, Naipe.Ouros));
+                Baralho.Add((T)new Carta(i, Naipe.Paus));
+                Baralho.Add((T)new Carta(i, Naipe.Espadas));
             }
 
             Shuffle();
@@ -39,7 +35,7 @@ namespace MesaTh
         /// </summary>
         public void Restart()
         {
-            CreateDeck();
+            CriaDeckPadrao();
         }
 
         /// <summary>
@@ -47,8 +43,7 @@ namespace MesaTh
         /// </summary>
         public void Shuffle()
         {
-            Random rand = new Random();
-            Carta aux;
+            T aux;
 
             for (int i = 0; i < Baralho.Count; i++)
             {
@@ -66,6 +61,8 @@ namespace MesaTh
         {
             return Baralho.Count == MAXIMO_CARTAS;
         }
+
+        public void Remove(T carta) => this.Baralho.Remove(carta);
 
         /// <summary>
         /// Remove o número de cartas desejadas do deck;
@@ -97,6 +94,16 @@ namespace MesaTh
             Carta c = Baralho.LastOrDefault();
             Baralho.Remove(Baralho.Last());
             return c;
+        }
+
+        /// <summary>
+        /// Retorna uma carta randomica
+        /// </summary>
+        public T CartaRandom {
+            get {
+                int indice = rand.Next(Baralho.Count);
+                return Baralho[indice];
+            }
         }
 
     }

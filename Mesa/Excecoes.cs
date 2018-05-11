@@ -11,13 +11,6 @@ namespace MesaTh.Excecoes
         public CartaInvalidaException(string messagem, System.Exception inner) : base(messagem, inner) { }
     }
 
-    public class DeckException : Exception
-    {
-        public DeckException() : base() { }
-        public DeckException(string message) : base(message) { }
-        public DeckException(string messagem, System.Exception inner) : base(messagem, inner) { }
-    }
-
     public class JogadorExcpetion : Exception
     {
         public JogadorExcpetion() : base() { }

@@ -5,10 +5,12 @@ using System.Collections.Generic;
 
 namespace Modelo
 {
-    public sealed class Carta : IEqualityComparer<Carta>
+    public class Carta : IEqualityComparer<Carta>
     {
         public uint Numero { get; set; }
         public Naipe Naipe { get; set; }
+
+        public Carta() { }
 
         public Carta(uint numero, Naipe naipe)
         {
