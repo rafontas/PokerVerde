@@ -21,12 +21,14 @@ namespace Mesa
 
         public Deck<Carta> Deck { get; set; }
 
+        private TipoJogadorTHB UltimoJogadorVencedor { get; set; }
+
         public IList<Carta> Flop { get; set; } = null;
         public Carta Turn { get; set; } = null;
         public Carta River { get; set; } = null;
         public Carta [] CartasBanca  = new Carta [] { null, null };
         private bool PrecisaAvancarMomento { get; set; } = true;
-
+        
         /// <summary>
         /// Retorna o estado atual da mesa.
         /// </summary>
@@ -140,56 +142,74 @@ namespace Mesa
         }
 
         /// <summary>
+        /// Contabiliza quem venceu o jogo
+        /// </summary>
+        private void FinalizaJogoContablizaVencedor() 
+        {
+            switch (Dealer.JogadorGanhouTHB(GetMesa(), Jogador.GetCartas, CartasBanca))
+            {
+                // Empate
+                case 0:
+                    infoMesa.GanhosMesa += infoMesa.ValorAnt;
+                    UltimoJogadorVencedor = TipoJogadorTHB.SemJogador;
+                    break;
+
+                // Vitoria
+                case 1:
+                    Jogador.RecebeValor(infoMesa.GetPote());
+                    UltimoJogadorVencedor = TipoJogadorTHB.Jogador;
+                    break;
+
+                // Derrota
+                case -1:
+                    infoMesa.GanhosMesa += infoMesa.GetPote();
+                    UltimoJogadorVencedor = TipoJogadorTHB.Mesa;
+                    break;
+            }
+
+            infoMesa.JogadorGanhador = UltimoJogadorVencedor;
+        }
+
+        /// <summary>
         /// Manipula a Ação de um jogador.
         /// </summary>
         /// <param name="acao">A ação tomada pelo jogador.</param>
         /// <returns>O momento data a ação do jogador.</returns>
         private void ManipulaAcaoJogador(AcaoJogador acao)
         {
-            ValidaAcaoMomentoJogo(acao);
+            this.ValidaAcaoMomentoJogo(acao);
 
-            // Identifica o fim de jogo
-            if (acao.Acao == TipoAcao.Fold)
+            switch (acao.Acao) 
             {
-                Momento.TerminaJogo();
-                infoMesa.Momento = Momento.MomentoAtual;
-                infoMesa.GanhosMesa += infoMesa.GetPote();
-                infoMesa.ReiniciaInfoMesa(TipoJogadorTHB.Mesa);
-            }
-            else if (acao.Acao == TipoAcao.Check)
-            {
-                if (Momento.MomentoAtual == MomentoJogo.PosRiver)
-                {
-                    if (Dealer.JogadorGanhouTHB(GetMesa(), Jogador.GetCartas, CartasBanca))
-                    {
-                        Jogador.RecebeValor(infoMesa.GetPote());
-                        infoMesa.ReiniciaInfoMesa(TipoJogadorTHB.Jogador);
-                    }
-                    else
-                    {
-                        infoMesa.GanhosMesa += infoMesa.GetPote();
-                        infoMesa.ReiniciaInfoMesa(TipoJogadorTHB.Mesa);
-                    }
-
+                case TipoAcao.Fold :
                     Momento.TerminaJogo();
                     infoMesa.Momento = Momento.MomentoAtual;
-                }
-            }
-            else if (acao.Acao == TipoAcao.Call)
-            {
-                RequisitaPagamentoJogador(acao);
-            }
-            else if (acao.Acao == TipoAcao.Raise)
-            {
-                RequisitaPagamentoJogador(acao);
-            }
-            else if (acao.Acao == TipoAcao.Play)
-            {
-                RequisitaPagamentoJogador(acao);
-            }
-            else if (acao.Acao == TipoAcao.Stop)
-            {
-                Momento.TerminaJogo();
+                    infoMesa.GanhosMesa += infoMesa.GetPote();
+                    infoMesa.ReiniciaInfoMesa(TipoJogadorTHB.Mesa);
+                    break;
+
+                case TipoAcao.Check:
+                    if (MomentoJogo.PosRiver == this.Momento.MomentoAtual) this.FinalizaJogoContablizaVencedor();
+                    break;
+
+                case TipoAcao.Call: 
+                    this.RequisitaPagamentoJogador(acao); 
+                    break;
+                
+                case TipoAcao.Raise: 
+                    this.RequisitaPagamentoJogador(acao); 
+                    break;
+
+                case TipoAcao.Play: 
+                    this.RequisitaPagamentoJogador(acao); 
+                    break;
+
+                case TipoAcao.Stop:
+                    this.Momento.TerminaJogo(); 
+                    break;
+
+                default:
+                    throw new MesaException("Erro ao manipular ação do jogador. Tipo de ação não encontrado.");
             }
         }
 
@@ -278,13 +298,17 @@ namespace Mesa
         /// <returns></returns>
         public string ExecutaJogada()
         {
-            if (Jogador.Momento != Momento.MomentoAtual)
+            if (Jogador.Momento != Momento.MomentoAtual ||
+                Momento.MomentoAtual == MomentoJogo.FimDeJogo)
                 throw new Exception("Não é possível passar para o próximo momento de jogo, mesa e jogador diferem.");
 
+            // Executa os passos
             ProximoPasso();
 
+            // Salva as informações da rodada
             string SituacaoAtual = GetInfo();
 
+            // Avança o momento
             AvancaMomento();
 
             return SituacaoAtual;
@@ -299,9 +323,7 @@ namespace Mesa
             this.IniciaRodada();
 
             while(Momento.MomentoAtual != MomentoJogo.FimDeJogo)
-            {
                 rodada = ExecutaJogada();
-            }
 
             Console.WriteLine(rodada);
             Console.ReadKey();
@@ -322,6 +344,8 @@ namespace Mesa
         /// </summary>
         private void PreJogo()
         {
+            infoMesa.ReiniciaInfoMesa(UltimoJogadorVencedor);
+            IniciaRodada();
         }
 
         /// <summary>

@@ -5,108 +5,106 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using DealerTH;
+using PkTeste.Interfaces;
 
 namespace PkTeste
 {
     public class Program
     {
-        static string help = @"Bem vindo ao Poker Verde. As opções são:
-                -e : para sair do programa;
-                -i : iniciar o jogo texas hold'em bônus;
-                -t : iniciar o jogo teste, pausadamente;
-                -cls : limpa o console;
-                -s : para mostrar o status do jogo no momento;";
-
-        static string pokerPausado = @"
-                -cls : limpa o console;
-                -e : cancelar e sair do programa;
-                -p : próximo passo;
-                -r : repetir a rodada anterior;
-                -m [Número rodada]: repete uma rodada específica";
+        static ConfiguracaoTHBonus configPadrao
+        {
+            get
+            {
+                return new ConfiguracaoTHBonus()
+                {
+                    Ant = 5,
+                    Flop = 10,
+                    Turn = 5,
+                    River = 5,
+                };
+            }
+        }
 
         static void Main(string[] args)
         {
-            Console.WriteLine(Program.help);
             MesaTexasHoldem mesa = new MesaTexasHoldem(
-                new ConfiguracaoTHBonus()
-            {
-                Ant = 5,
-                Flop = 10,
-                Turn = 5,
-                River = 5,
-            }, 
+                Program.configPadrao, 
                 new Jogador(),
                 new Dealer(),
                 10
             );
 
-            Dealer d = new Dealer();
-            List<Carta> cartasMesa = new List<Carta>() {
-                new Carta(2, Enuns.Naipe.Copas),
-                new Carta(3, Enuns.Naipe.Copas),
-                new Carta(4, Enuns.Naipe.Copas),
-                new Carta(14, Enuns.Naipe.Ouros),
-                new Carta(14, Enuns.Naipe.Copas),
-            };
-            List<Carta> cartasBanca = new List<Carta>() {
-                new Carta(6, Enuns.Naipe.Paus),
-                new Carta(6, Enuns.Naipe.Espadas),
-            };
-            List<Carta> cartasJogador = new List<Carta>() {
-                new Carta(7, Enuns.Naipe.Paus),
-                new Carta(5, Enuns.Naipe.Copas),
-            };
 
-            d.JogadorGanhouTHB(cartasMesa, cartasJogador.ToArray(), cartasBanca.ToArray());
+            IPokerComandos cmBasicos = new ComandosBasicos();
+            Console.WriteLine(cmBasicos.getHelp());
+            
+            bool saiPrograma = false;
 
-            //ExecutaPoker(mesa, 5);
-            return;
-
-            while (true)
+            while (!saiPrograma)
             {
-                string input = Console.ReadLine();
-                bool saiPrograma = false;
+                string entradas = Console.ReadLine(), input = "";
+                string [] inputCompleta = entradas.Split(" ");
+                int numRodadas = 1;
+
+                if (input.Count() > 2)
+                {
+                    Console.WriteLine("Número de argumentos inválidos");
+                    continue;
+                }
+                else if (inputCompleta.Count() > 1)
+                {
+                    input = inputCompleta[0];
+                    numRodadas = int.Parse(inputCompleta[1]);
+                }
+                else
+                {
+                    input = inputCompleta[0];
+                }
 
                 switch (input)
                 {
-                    case "-e": saiPrograma = true; break;
-                    //case "-p":
-                    //    Program.ExecutaPokerPausado(mesa);
-                    //    break;
+                    case "-e": 
+                        saiPrograma = true; break;
+                    case "-tr":
+                        input = Console.ReadLine();
+                        ExecutaPoker(mesa, numRodadas);
+                        break;
                     case "-t":
                         Console.WriteLine("Modo teste, aperte -p para ir para próximo passo.");
-                        Program.ExecutaPokerPausado(mesa);
+                        ExecutaPokerPausado(mesa);
                         break;
-                    case "-cls": Console.Clear(); Console.WriteLine("Esperando comando..."); break;
+                    case "-cls": 
+                        Console.Clear(); 
+                        Console.WriteLine("Esperando comando..."); break;
                     case "s": break;
                     case "-i":
                         ExecutaPoker(mesa, 1);
                         break;
                     default:
                         Console.WriteLine("Não entendi.");
-                        Console.WriteLine(help);
+                        Console.WriteLine(cmBasicos.getHelp());
                         break;
                 }
-
-                if (saiPrograma) break;
             }
         }
 
         public static void ExecutaPokerPausado(MesaTexasHoldem mesa)
         {
             IList<string> ultimaJogada = new List<string>();
-            Console.Clear();
-            Console.WriteLine("Bem vindo ao poker pausado, as opções são:" + pokerPausado);
+            IPokerComandos comandosAnalise = new ComandosNaAnalise();
 
-            while (true)
+            Console.Clear();
+            Console.WriteLine("Bem vindo ao poker pausado, as opções são:" + comandosAnalise.getHelp());
+            
+            bool saiPrograma = false;
+
+            while (!saiPrograma)
             {
-                bool saiPrograma = false;
-                //string input = Console.Read().ToString();
                 string input = "";
                 switch (input)
                 {
                     case "i":
-                        Console.WriteLine(pokerPausado);
+                        Console.WriteLine(comandosAnalise.getHelp());
                         break;
                     case "e":
                         saiPrograma = true;
@@ -114,11 +112,15 @@ namespace PkTeste
                     case "r":
                         Console.WriteLine(ultimaJogada.Last());
                         break;
-                    case "c": Console.Clear(); Console.WriteLine("Esperando comando..."); break;
+                    case "c": 
+                        Console.Clear(); 
+                        Console.WriteLine("Esperando comando..."); 
+                        break;
                     case "m":
                         Console.WriteLine("Digite o número da rodada: 1 - " + ultimaJogada.Count + 1);
                         input = Console.ReadLine();
                         int numeroRodada = 0;
+
                         if (int.TryParse(input, out numeroRodada))
                         {
                             Console.WriteLine(ultimaJogada[numeroRodada]);
@@ -126,23 +128,21 @@ namespace PkTeste
                         else
                         {
                             Console.WriteLine("Não entendi. As opções são:");
-                            Console.WriteLine(pokerPausado);
+                            Console.WriteLine(comandosAnalise.getHelp());
                         }
                         break;
                     default:
-                        string saida = mesa.ExecutaJogada().ToString();
-                        Console.WriteLine(Environment.NewLine + saida);
-                        ultimaJogada.Add(saida);
+                        ultimaJogada.Add(mesa.ExecutaJogada().ToString());
+                        Console.WriteLine(Environment.NewLine + ultimaJogada.Last());
+                        saiPrograma = (mesa.Momento.MomentoAtual == Enuns.MomentoJogo.FimDeJogo);
                         break;
                 }
-
-                if (saiPrograma) break;
             }
         }
 
         public static void ExecutaPoker(MesaTexasHoldem mesa, int numeroRodadas)
         {
-            for (int i = 0; i < numeroRodadas; i++)
+            for (int i = 0; i < numeroRodadas; i++) 
                 mesa.ExecutaRodada();
         }
     }

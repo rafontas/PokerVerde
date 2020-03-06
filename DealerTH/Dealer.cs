@@ -8,32 +8,19 @@ namespace DealerTH
 {
     public class Dealer : IDealer
     {
-        public bool JogadorGanhouTHB(IList<Carta> Mesa, Carta[] CartaJogador, Carta[] CartaBanca)
+        public int JogadorGanhouTHB(IList<Carta> Mesa, Carta[] CartaJogador, Carta[] CartaBanca)
         {
-            //IList<Carta> cartasJogador = new List<Carta>();
-            //cartasJogador = cartasJogador.Concat(CartaJogador.ToList()).ToList();
-            //cartasJogador = cartasJogador.Concat(Mesa).ToList();
-            //MaoChecagemJogador = new MaoChecagem(cartasJogador);
+            // Monta a melhor mão do jogador
+            MelhorMao jogador = new MelhorMao();
+            MaoTexasHoldem MaoJogador = jogador.AvaliaMao(new List<Carta>() { CartaJogador[0], CartaJogador[1],
+                Mesa[0], Mesa[1], Mesa[2], Mesa[3], Mesa[4] });
 
-            //IList<Carta> cartasBanca = new List<Carta>();
-            //cartasBanca = cartasBanca.Concat(CartaBanca.ToList()).ToList();
-            //cartasBanca = cartasBanca.Concat(Mesa).ToList();
-            //MaoChecagemMesa = new MaoChecagem(cartasBanca);
+            // Monta a melhor mão da banca
+            MelhorMao mesa = new MelhorMao();
+            MaoTexasHoldem MaoMesa = mesa.AvaliaMao(new List<Carta>() { CartaBanca[0], CartaBanca[1],
+                Mesa[0], Mesa[1], Mesa[2], Mesa[3], Mesa[4] });
 
-            return true;
-        }
-
-        public IList<IJogador> VerificaGanhadores(IList<Carta> Mesa, IList<MaoTexasHoldem> Maos)
-        {
-            throw new NotImplementedException();
-        }
-
-        private IList<IJogo> EncontraMelhorJogo(MaoTexasHoldem mao, IList<Carta> Mesa)
-        {
-            IList<Carta> CartaOrdenada = Mesa.OrderByDescending(c => c.Numero).ToList();
-
-
-            return null;
+            return MaoJogador.Compara(MaoMesa);
         }
     }
 }

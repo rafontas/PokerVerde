@@ -21,8 +21,10 @@ namespace MesaTH
         public Carta[] CartasJogador = new Carta[] { null, null };
         public Carta[] CartasBanca = new Carta[] { null, null };
 
-        public uint GanhosMesa { get; set; } = 0;
+        public string ultimaJogada { get; private set; }
 
+        public uint GanhosMesa { get; set; } = 0;
+        
         public uint ValorAnt { get; set; }
         public uint ValorFlop { get; set; }
         public uint ValorTurn { get; set; }
@@ -46,9 +48,11 @@ namespace MesaTH
         /// </summary>
         public void ReiniciaInfoMesa(TipoJogadorTHB jogadorGanhador)
         {
-            JogadorGanhador = jogadorGanhador;
-            InfoRodadas.Add(CloneMesa());
+            ultimaJogada = ToString();
 
+            JogadorGanhador = jogadorGanhador;
+            if(InfoRodadas.Count >= 1) InfoRodadas.Add(CloneMesa());
+            
             Flop = new Carta[] { null, null, null };
             Turn = null;
             River = null;
@@ -86,6 +90,9 @@ namespace MesaTH
             conteudo += "Cartas Banca: " + PrintCartasBanca() + Environment.NewLine;
             conteudo += "Jogador (" + Jogador.GetStack() + ") " + PrintCartasJogador() + Environment.NewLine;
             conteudo += "Valores investidos: " + "[" + ValorInvestidoAnt + " " + ValorInvestidoFlop + " " + ValorInvestidoTurn + " " + ValorInvestidoRiver + "]" + Environment.NewLine;
+
+            if(Momento == MomentoJogo.PosRiver)
+                conteudo += "O JOGADOR " + JogadorGanhador + " VENCEU!!!";
 
             return conteudo;
         }
