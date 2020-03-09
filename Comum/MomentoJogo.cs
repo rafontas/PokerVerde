@@ -4,16 +4,16 @@ namespace Modelo
 {
     public class MomentoJogoControle
     {
-        public MomentoJogo MomentoAtual { get; private set; } = MomentoJogo.PreJogo;
+        public TipoRodada MomentoAtual { get; private set; } = TipoRodada.PreJogo;
 
         /// <summary>
         /// Avança para o próximo momento do jogo.
         /// </summary>
-        public MomentoJogo Proximo() => ++MomentoAtual;
+        public TipoRodada Proximo() => ++MomentoAtual;
 
         /// <summary>
         /// Termina o jogo se o Jogador foldar.
         /// </summary>
-        public void TerminaJogo() => MomentoAtual = MomentoJogo.FimDeJogo;
+        public void TerminaJogo() => MomentoAtual = TipoRodada.FimDeJogo;
     }
 }

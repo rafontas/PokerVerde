@@ -92,37 +92,37 @@ namespace Mesa
         {
             AcaoJogador acao;
 
-            if (Momento.MomentoAtual == MomentoJogo.PreJogo)
+            if (Momento.MomentoAtual == TipoRodada.PreJogo)
             {
                 PreJogo();
                 acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.Ant);
             }
-            else if (Momento.MomentoAtual == MomentoJogo.PreFlop)
+            else if (Momento.MomentoAtual == TipoRodada.PreFlop)
             {
                 PreFlop();
                 acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.Flop);
             }
-            else if (Momento.MomentoAtual == MomentoJogo.Flop)
+            else if (Momento.MomentoAtual == TipoRodada.Flop)
             {
                 DistribuiFlop();
                 acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.Turn);
             }
-            else if (Momento.MomentoAtual == MomentoJogo.Turn)
+            else if (Momento.MomentoAtual == TipoRodada.Turn)
             {
                 DistribuiTurn();
                 acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.River);
             }
-            else if (Momento.MomentoAtual == MomentoJogo.River)
+            else if (Momento.MomentoAtual == TipoRodada.River)
             {
                 DistribuiRiver();
                 acao = Jogador.ExecutaAcao(Momento.MomentoAtual, 0);
                 DistribuiCartasMesa();
             }
-            else if (Momento.MomentoAtual == MomentoJogo.PosRiver)
+            else if (Momento.MomentoAtual == TipoRodada.PosRiver)
             {
                 acao = Jogador.ExecutaAcao(Momento.MomentoAtual, 0);
             }
-            else if (Momento.MomentoAtual == MomentoJogo.FimDeJogo)
+            else if (Momento.MomentoAtual == TipoRodada.FimDeJogo)
                 return;
             else
                 throw new Exception("O tipo de jogo requisitado não existe.");
@@ -134,7 +134,7 @@ namespace Mesa
         /// Avança o momento de jogo da mesa quanto do jogador
         /// </summary>
         /// <returns></returns>
-        public MomentoJogo AvancaMomento()
+        public TipoRodada AvancaMomento()
         {
             infoMesa.Momento = Momento.Proximo();
             Jogador.AvancaMomento();
@@ -146,7 +146,7 @@ namespace Mesa
         /// </summary>
         private void FinalizaJogoContablizaVencedor() 
         {
-            switch (Dealer.JogadorGanhouTHB(GetMesa(), Jogador.GetCartas, CartasBanca))
+            switch (Dealer.JogadorGanhouTHB(GetMesa(), Jogador.Cartas, CartasBanca))
             {
                 // Empate
                 case 0:
@@ -189,7 +189,7 @@ namespace Mesa
                     break;
 
                 case TipoAcao.Check:
-                    if (MomentoJogo.PosRiver == this.Momento.MomentoAtual) this.FinalizaJogoContablizaVencedor();
+                    if (TipoRodada.PosRiver == this.Momento.MomentoAtual) this.FinalizaJogoContablizaVencedor();
                     break;
 
                 case TipoAcao.Call: 
@@ -219,22 +219,22 @@ namespace Mesa
         /// <param name="acao">A ação do jogador</param>
         public void RequisitaPagamentoJogador(AcaoJogador acao)
         {
-            if (Momento.MomentoAtual == MomentoJogo.PreJogo)
+            if (Momento.MomentoAtual == TipoRodada.PreJogo)
             {
                 Jogador.PagaValor(ConfigMesa.Ant);
                 infoMesa.ValorInvestidoAnt = ConfigMesa.Ant;
             }
-            else if (Momento.MomentoAtual == MomentoJogo.PreFlop)
+            else if (Momento.MomentoAtual == TipoRodada.PreFlop)
             {
                 Jogador.PagaValor(ConfigMesa.Flop);
                 infoMesa.ValorInvestidoFlop = ConfigMesa.Flop;
             }
-            else if (Momento.MomentoAtual == MomentoJogo.Flop)
+            else if (Momento.MomentoAtual == TipoRodada.Flop)
             {
                 Jogador.PagaValor(ConfigMesa.Turn);
                 infoMesa.ValorInvestidoTurn = ConfigMesa.Turn;
             }
-            else if (Momento.MomentoAtual == MomentoJogo.Turn)
+            else if (Momento.MomentoAtual == TipoRodada.Turn)
             {
                 Jogador.PagaValor(ConfigMesa.River);
                 infoMesa.ValorInvestidoRiver = ConfigMesa.River;
@@ -251,37 +251,37 @@ namespace Mesa
         /// <param name="acao"></param>
         private void ValidaAcaoMomentoJogo(AcaoJogador acao)
         {
-            if(Momento.MomentoAtual == MomentoJogo.PreJogo)
+            if(Momento.MomentoAtual == TipoRodada.PreJogo)
             {
                 if(acao.Acao != TipoAcao.Play)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if(Momento.MomentoAtual == MomentoJogo.PreFlop)
+            else if(Momento.MomentoAtual == TipoRodada.PreFlop)
             {
                 if (acao.Acao != TipoAcao.Call)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if(Momento.MomentoAtual == MomentoJogo.Flop)
+            else if(Momento.MomentoAtual == TipoRodada.Flop)
             {
                 if (acao.Acao != TipoAcao.Check && acao.Acao != TipoAcao.Call && acao.Acao != TipoAcao.Raise)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if(Momento.MomentoAtual == MomentoJogo.Turn)
+            else if(Momento.MomentoAtual == TipoRodada.Turn)
             {
                 if (acao.Acao != TipoAcao.Check && acao.Acao != TipoAcao.Raise)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if(Momento.MomentoAtual == MomentoJogo.River)
+            else if(Momento.MomentoAtual == TipoRodada.River)
             {
                 if (acao.Acao != TipoAcao.Check)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if (Momento.MomentoAtual == MomentoJogo.PosRiver)
+            else if (Momento.MomentoAtual == TipoRodada.PosRiver)
             {
                 if (acao.Acao != TipoAcao.Check)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if(Momento.MomentoAtual == MomentoJogo.FimDeJogo)
+            else if(Momento.MomentoAtual == TipoRodada.FimDeJogo)
             {
                 if (acao.Acao != TipoAcao.SemAcao)
                     throw new Exception("Ação ilegal para momento de jogo.");
@@ -299,7 +299,7 @@ namespace Mesa
         public string ExecutaJogada()
         {
             if (Jogador.Momento != Momento.MomentoAtual ||
-                Momento.MomentoAtual == MomentoJogo.FimDeJogo)
+                Momento.MomentoAtual == TipoRodada.FimDeJogo)
                 throw new Exception("Não é possível passar para o próximo momento de jogo, mesa e jogador diferem.");
 
             // Executa os passos
@@ -322,7 +322,7 @@ namespace Mesa
             string rodada = "";
             this.IniciaRodada();
 
-            while(Momento.MomentoAtual != MomentoJogo.FimDeJogo)
+            while(Momento.MomentoAtual != TipoRodada.FimDeJogo)
                 rodada = ExecutaJogada();
 
             Console.WriteLine(rodada);
@@ -336,7 +336,7 @@ namespace Mesa
         public void DistribuiCartas()
         {
             Jogador.RecebeCarta(Deck.Pop(), Deck.Pop());
-            infoMesa.CartasJogador = Jogador.GetCartas;
+            infoMesa.CartasJogador = Jogador.Cartas;
         }
 
         /// <summary>

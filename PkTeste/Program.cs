@@ -29,7 +29,7 @@ namespace PkTeste
         {
             MesaTexasHoldem mesa = new MesaTexasHoldem(
                 Program.configPadrao, 
-                new Jogador(),
+                new JogadorBase(),
                 new Dealer(),
                 10
             );
@@ -134,7 +134,7 @@ namespace PkTeste
                     default:
                         ultimaJogada.Add(mesa.ExecutaJogada().ToString());
                         Console.WriteLine(Environment.NewLine + ultimaJogada.Last());
-                        saiPrograma = (mesa.Momento.MomentoAtual == Enuns.MomentoJogo.FimDeJogo);
+                        saiPrograma = (mesa.Momento.MomentoAtual == Enuns.TipoRodada.FimDeJogo);
                         break;
                 }
             }

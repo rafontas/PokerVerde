@@ -10,7 +10,7 @@ namespace MesaTH
     {
         public static List<InfoMesa> InfoRodadas { get; set; } = new List<InfoMesa>();
 
-        public MomentoJogo Momento { get; set; } = MomentoJogo.PreJogo;
+        public TipoRodada Momento { get; set; } = TipoRodada.PreJogo;
         public TipoJogadorTHB JogadorGanhador { get; set; } = TipoJogadorTHB.SemJogador;
         public IJogador Jogador { get; set; }
 
@@ -63,7 +63,7 @@ namespace MesaTH
             ValorInvestidoTurn = 0;
             ValorInvestidoRiver = 0;
             NumRodada++;
-            Momento = MomentoJogo.PreFlop;
+            Momento = TipoRodada.PreFlop;
             JogadorGanhador = TipoJogadorTHB.SemJogador;
         }
 
@@ -88,10 +88,10 @@ namespace MesaTH
             conteudo += "Turn: " + PrintTurn() + Environment.NewLine;
             conteudo += "River: " + PrintRiver() + Environment.NewLine;
             conteudo += "Cartas Banca: " + PrintCartasBanca() + Environment.NewLine;
-            conteudo += "Jogador (" + Jogador.GetStack() + ") " + PrintCartasJogador() + Environment.NewLine;
+            conteudo += "Jogador (" + Jogador.Stack() + ") " + PrintCartasJogador() + Environment.NewLine;
             conteudo += "Valores investidos: " + "[" + ValorInvestidoAnt + " " + ValorInvestidoFlop + " " + ValorInvestidoTurn + " " + ValorInvestidoRiver + "]" + Environment.NewLine;
 
-            if(Momento == MomentoJogo.PosRiver)
+            if(Momento == TipoRodada.PosRiver)
                 conteudo += "O JOGADOR " + JogadorGanhador + " VENCEU!!!";
 
             return conteudo;
@@ -126,7 +126,7 @@ namespace MesaTH
         private string PrintRiver() => River == null ? "" : River.ToString();
         private string PrintCartasJogador()
         {
-            if (CartasJogador == null || Momento == MomentoJogo.PreJogo) return "";
+            if (CartasJogador == null || Momento == TipoRodada.PreJogo) return "";
             return (CartasJogador[0]?.ToString()??" ") + " " + (CartasJogador[1]?.ToString()??" ");
         }
         private string PrintCartasBanca()

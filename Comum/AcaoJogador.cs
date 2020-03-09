@@ -6,9 +6,9 @@ namespace Modelo
     {
         public TipoAcao Acao { get; set; }
         public uint Valor { get; set; } = 0;
-        public MomentoJogo Momento { get; set; }
-
-        public AcaoJogador(TipoAcao acao, uint valor, MomentoJogo momento)
+        public TipoRodada Momento { get; set; }
+        public uint Sequencial { get; set; }
+        public AcaoJogador(TipoAcao acao, uint valor, TipoRodada momento)
         {
             Acao = acao;
             Valor = valor;

@@ -32,16 +32,15 @@ namespace Enuns
 
     public enum TipoAcao
     {
-        SemAcao,
-        Check,
-        Call,
-        Raise,
-        Play,
-        Fold,
-        Stop
+        Play = 1,
+        Stop = 2,
+        Fold = 3,
+        Check = 4,
+        Call = 5,
+        Raise = 6,
     }
 
-    public enum MomentoJogo
+    public enum TipoRodada
     {
         [Display(Name = "Pré Jogo")]
         PreJogo = 1,
