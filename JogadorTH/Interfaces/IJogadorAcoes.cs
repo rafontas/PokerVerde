@@ -6,13 +6,15 @@ using System.Text;
 
 namespace JogadorTH
 {
-    public interface IJogadorAcoes
+    public interface IJogadorAcoesTHBonus
     {
-        AcaoJogador PreJogo(Carta[] minhasCartas, Carta[] cartasMesas, TipoRodada momento);
-        AcaoJogador PreFlop(Carta[] minhasCartas, Carta[] cartasMesas, TipoRodada momento);
-        AcaoJogador Flop(Carta[] minhasCartas, Carta[] cartasMesas, TipoRodada momento);
-        AcaoJogador Turn(Carta[] minhasCartas, Carta[] cartasMesas, TipoRodada momento);
-        AcaoJogador River(Carta[] minhasCartas, Carta[] cartasMesas, TipoRodada momento);
-        AcaoJogador PosRiver(Carta[] minhasCartas, Carta[] cartasMesas, TipoRodada momento);
+        ConfiguracaoTHBonus config { set; get; }
+        bool TenhoStackParaJogar();
+        AcaoJogador PreJogo();
+        AcaoJogador PreFlop();
+        AcaoJogador Flop(Carta[] cartasMesas);
+        AcaoJogador Turn(Carta[] cartasMesas);
+        AcaoJogador River(Carta[] cartasMesas);
+        AcaoJogador PosRiver(Carta[] cartasMesas);
     }
 }

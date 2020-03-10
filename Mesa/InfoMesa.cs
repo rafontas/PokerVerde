@@ -88,7 +88,7 @@ namespace MesaTH
             conteudo += "Turn: " + PrintTurn() + Environment.NewLine;
             conteudo += "River: " + PrintRiver() + Environment.NewLine;
             conteudo += "Cartas Banca: " + PrintCartasBanca() + Environment.NewLine;
-            conteudo += "Jogador (" + Jogador.Stack() + ") " + PrintCartasJogador() + Environment.NewLine;
+            conteudo += "Jogador (" + Jogador.Stack + ") " + PrintCartasJogador() + Environment.NewLine;
             conteudo += "Valores investidos: " + "[" + ValorInvestidoAnt + " " + ValorInvestidoFlop + " " + ValorInvestidoTurn + " " + ValorInvestidoRiver + "]" + Environment.NewLine;
 
             if(Momento == TipoRodada.PosRiver)

@@ -6,7 +6,7 @@ namespace JogadorTH.Interfaces
 {
     class JogadorEstatisticas : IJogadorEstatisticas
     {
-        public uint getGanho()
+        public uint getJosGanho()
         {
             throw new NotImplementedException();
         }
@@ -32,6 +32,11 @@ namespace JogadorTH.Interfaces
         }
 
         public uint getStackInicial()
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint getGanho()
         {
             throw new NotImplementedException();
         }

@@ -4,14 +4,14 @@ using System;
 
 namespace JogadorTH
 {
-    public abstract class JogadorBase : IJogador
+    public abstract class JogadorBase : IJogador, IJogadorAcoesTHBonus
     {
         public abstract TipoJogador getTipoJogador();
         public uint id { get; set; }
 
         public uint Id { get => this.id;  }
 
-        private uint stack { get; set; }
+        protected uint stack { get; set; }
 
         public uint Stack { get => this.stack; }
 
@@ -21,7 +21,7 @@ namespace JogadorTH
         public Carta[] Cartas { get => this.cartas; } 
 
         public TipoRodada Momento { get; private set; } = TipoRodada.PreJogo;
-
+        public ConfiguracaoTHBonus config { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void RecebeCarta(Carta c1, Carta c2)
         {
@@ -37,8 +37,9 @@ namespace JogadorTH
             Momento = TipoRodada.PreJogo;
         }
 
-        public JogadorBase(uint valorStackInicial = 200)
+        public JogadorBase(ConfiguracaoTHBonus Config, uint valorStackInicial = 200)
         {
+            this.config = Config;
             this.stack = valorStackInicial;
         }
 
@@ -70,17 +71,19 @@ namespace JogadorTH
             if(Momento != TipoRodada.FimDeJogo) Momento++;
         }
 
-        public abstract AcaoJogador PreJogo(uint valor);
+        public abstract AcaoJogador PreJogo();
 
-        public abstract AcaoJogador PreFlop(uint valor);
+        public abstract AcaoJogador PreFlop();
 
-        public abstract AcaoJogador Flop(uint valor);
+        public abstract AcaoJogador Flop(Carta[] cartasMesas);
 
-        public abstract AcaoJogador Turn(uint valor);
+        public abstract AcaoJogador Turn(Carta[] cartasMesas);
 
-        public abstract AcaoJogador River(uint valor);
+        public abstract AcaoJogador River(Carta[] cartasMesas);
 
-        public abstract AcaoJogador PosRiver(uint valor);
+        public abstract AcaoJogador PosRiver(Carta[] cartasMesas);
 
+        public bool TenhoStackParaJogar() =>
+            this.Stack >= (this.config.Ant + this.config.Flop);
     }
 }
