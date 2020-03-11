@@ -18,9 +18,11 @@ namespace JogadorTH
         public uint PagaValor(uint Valor) => (this.stack -= Valor);
 
         public Carta[] cartas { get; set; } = new Carta[] { null, null };
+        
         public Carta[] Cartas { get => this.cartas; } 
 
         public TipoRodada Momento { get; private set; } = TipoRodada.PreJogo;
+
         public ConfiguracaoTHBonus config { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void RecebeCarta(Carta c1, Carta c2)
@@ -56,34 +58,33 @@ namespace JogadorTH
             {
                 case TipoRodada.PreJogo: acao = PreJogo(valoPagar); break;
                 case TipoRodada.PreFlop: acao = PreFlop(valoPagar); break;
-                case TipoRodada.Flop: acao = Flop(valoPagar); break;
-                case TipoRodada.Turn: acao = Turn(valoPagar); break;
-                case TipoRodada.River: acao = River(valoPagar); break;
-                case TipoRodada.PosRiver: acao = PosRiver(valoPagar); break;
+                case TipoRodada.Flop: acao = Flop(mesa, valoPagar); break;
+                case TipoRodada.Turn: acao = Turn(mesa, valoPagar); break;
+                case TipoRodada.River: acao = River(mesa); break;
                 case TipoRodada.FimDeJogo: break;
                 default: throw new Exception("Momento de jogo não especificado.");
             }
 
             return acao;
         }
+        
+        public bool TenhoStackParaJogar() => this.Stack >= (this.config.Ant + this.config.Flop);
+
         public void AvancaMomento()
         {
             if(Momento != TipoRodada.FimDeJogo) Momento++;
         }
 
-        public abstract AcaoJogador PreJogo();
+        public abstract AcaoJogador PreJogo(uint valor);
 
-        public abstract AcaoJogador PreFlop();
+        public abstract AcaoJogador PreFlop(uint valor);
 
-        public abstract AcaoJogador Flop(Carta[] cartasMesas);
+        public abstract AcaoJogador Flop(Carta[] cartasMesas, uint valor);
 
-        public abstract AcaoJogador Turn(Carta[] cartasMesas);
+        public abstract AcaoJogador Turn(Carta[] cartasMesas, uint valor);
 
         public abstract AcaoJogador River(Carta[] cartasMesas);
 
-        public abstract AcaoJogador PosRiver(Carta[] cartasMesas);
-
-        public bool TenhoStackParaJogar() =>
-            this.Stack >= (this.config.Ant + this.config.Flop);
+        public abstract AcaoJogador FimDeJogo();
     }
 }

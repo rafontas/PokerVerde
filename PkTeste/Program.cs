@@ -29,7 +29,7 @@ namespace PkTeste
         {
             MesaTexasHoldem mesa = new MesaTexasHoldem(
                 Program.configPadrao, 
-                new JogadorBase(),
+                new DummyJogadorTHB(Program.configPadrao),
                 new Dealer(),
                 10
             );

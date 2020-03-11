@@ -11,18 +11,13 @@ namespace Mesa
     public class MesaTexasHoldem
     {
         public ConfiguracaoTHBonus ConfigMesa { get; set; }
-
         private InfoMesa infoMesa { get; set; } = new InfoMesa();
         public MomentoJogoControle Momento { get; set; }
         private int numRodada { get; set; } = 1;
-
         public IJogador Jogador { get; set; }
         public IDealer Dealer { get; set; }
-
         public Deck<Carta> Deck { get; set; }
-
         private TipoJogadorTHB UltimoJogadorVencedor { get; set; }
-
         public IList<Carta> Flop { get; set; } = null;
         public Carta Turn { get; set; } = null;
         public Carta River { get; set; } = null;
@@ -95,32 +90,32 @@ namespace Mesa
             if (Momento.MomentoAtual == TipoRodada.PreJogo)
             {
                 PreJogo();
-                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.Ant);
+                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca);
             }
             else if (Momento.MomentoAtual == TipoRodada.PreFlop)
             {
                 PreFlop();
-                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.Flop);
+                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca);
             }
             else if (Momento.MomentoAtual == TipoRodada.Flop)
             {
                 DistribuiFlop();
-                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.Turn);
+                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca);
             }
             else if (Momento.MomentoAtual == TipoRodada.Turn)
             {
                 DistribuiTurn();
-                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, ConfigMesa.River);
+                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca);
             }
             else if (Momento.MomentoAtual == TipoRodada.River)
             {
                 DistribuiRiver();
-                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, 0);
+                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca);
                 DistribuiCartasMesa();
             }
             else if (Momento.MomentoAtual == TipoRodada.PosRiver)
             {
-                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, 0);
+                acao = Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca);
             }
             else if (Momento.MomentoAtual == TipoRodada.FimDeJogo)
                 return;
@@ -129,6 +124,12 @@ namespace Mesa
 
             ManipulaAcaoJogador(acao);
         }
+
+        /// <summary>
+        /// Executa a jogada no modo pausado, sob demanda.
+        /// </summary>
+        private void ProximoPassoNovo() =>
+            ManipulaAcaoJogador(Jogador.ExecutaAcao(Momento.MomentoAtual, this.ConfigMesa.ValorMomento(this.Momento.MomentoAtual), this.CartasBanca));
 
         /// <summary>
         /// Avança o momento de jogo da mesa quanto do jogador
@@ -281,10 +282,10 @@ namespace Mesa
                 if (acao.Acao != TipoAcao.Check)
                     throw new Exception("Ação ilegal para momento de jogo.");
             }
-            else if(Momento.MomentoAtual == TipoRodada.FimDeJogo)
+            else if(Momento.MomentoAtual == TipoRodada.FimDeJogo &&
+                    acao.Acao != TipoAcao.Check)
             {
-                if (acao.Acao != TipoAcao.SemAcao)
-                    throw new Exception("Ação ilegal para momento de jogo.");
+                 throw new Exception("Ação ilegal para momento de jogo.");
             }
             else
             {

@@ -10,11 +10,12 @@ namespace JogadorTH
     {
         ConfiguracaoTHBonus config { set; get; }
         bool TenhoStackParaJogar();
-        AcaoJogador PreJogo();
-        AcaoJogador PreFlop();
-        AcaoJogador Flop(Carta[] cartasMesas);
-        AcaoJogador Turn(Carta[] cartasMesas);
-        AcaoJogador River(Carta[] cartasMesas);
-        AcaoJogador PosRiver(Carta[] cartasMesas);
+        AcaoJogador PreJogo(uint valor);
+        AcaoJogador PreFlop(uint valor);
+        AcaoJogador Flop(Carta[] cartasMesa, uint valor);
+        AcaoJogador Turn(Carta[] cartasMesa, uint valor);
+        AcaoJogador River(Carta[] cartasMesa);
+        AcaoJogador FimDeJogo();
+        AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa);
     }
 }
