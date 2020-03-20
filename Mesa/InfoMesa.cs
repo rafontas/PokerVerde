@@ -11,7 +11,7 @@ namespace MesaTH
         public static List<InfoMesa> InfoRodadas { get; set; } = new List<InfoMesa>();
 
         public TipoRodada Momento { get; set; } = TipoRodada.PreJogo;
-        public TipoJogadorTHB JogadorGanhador { get; set; } = TipoJogadorTHB.SemJogador;
+        public TipoJogadorTHB JogadorGanhador { get; set; }
         public IJogador Jogador { get; set; }
 
         public Carta[] Flop { get; set; } = new Carta[] { null, null, null };
@@ -64,7 +64,7 @@ namespace MesaTH
             ValorInvestidoRiver = 0;
             NumRodada++;
             Momento = TipoRodada.PreFlop;
-            JogadorGanhador = TipoJogadorTHB.SemJogador;
+            //JogadorGanhador = TipoJogadorTHB.SemJogador;
         }
 
         /// <summary>

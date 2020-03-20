@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Testes
 {
     [TestClass]
-    public class TestaMaoChecagem
+    public class MontaMaoTest
     {
         [TestMethod]
         public void StraightFlush_1()

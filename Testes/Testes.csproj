@@ -13,7 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Comum\Comum.csproj" />
     <ProjectReference Include="..\DealerTH\DealerTH.csproj" />
+    <ProjectReference Include="..\JogadorTH\JogadorTH.csproj" />
+    <ProjectReference Include="..\Mesa\MesaTH.csproj" />
   </ItemGroup>
 
 </Project>

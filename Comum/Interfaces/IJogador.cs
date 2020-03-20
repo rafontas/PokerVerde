@@ -1,39 +1,24 @@
 ﻿
+using Comum.Interfaces;
 using Enuns;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Modelo
 {
-    public interface IJogador
+    public interface IJogador : IAcoesBasicasJogador, IEqualityComparer<IJogador>
     {
-        uint Id { get; }
-
-        uint Stack { get; }
-
-        Carta [] Cartas { get; }
-
-        void RecebeCarta(Carta c1, Carta c2);
-
-        void ResetaMao();
-
-        uint RecebeValor(uint Valor);
-
-        uint PagaValor(uint Valor);
-
-        void AvancaMomento();
-
-        /// <summary>
-        /// Indica o momento que o jogador está. A ultima ação que foi realizada.
-        /// </summary>
-        TipoRodada Momento { get; }
-
+        IList<IAcoesDecisao> Mente { get; }
         AcaoJogador ExecutaAcao(TipoRodada momento, uint valorPagar, Carta[] mesa);
-    }
+        void AddPartidaHistorico(IPartida p);
+        ICorrida Corrida { get; set; }
+        uint SeqProximaPartida { get; }
 
-    /// <summary>
-    /// Representa o tipo do jogador.
-    /// </summary>
-    public enum TipoJogador { 
-        bancaTHBonus = 1,
-        Dummy = 2,
+        AcaoJogador PreJogo(uint valor);
+        AcaoJogador PreFlop(uint valor);
+        AcaoJogador Flop(Carta[] cartasMesa, uint valor);
+        AcaoJogador Turn(Carta[] cartasMesa, uint valor);
+        AcaoJogador River(Carta[] cartasMesa);
+        AcaoJogador FimDeJogo();
     }
 }

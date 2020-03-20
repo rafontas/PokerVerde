@@ -1,18 +1,19 @@
-﻿using Enuns;
+﻿using Comum.Interfaces;
+using Enuns;
 
 namespace Modelo
 {
-    public class AcaoJogador
+    public class AcaoJogador : IAcaoTomada
     {
-        public TipoAcao Acao { get; set; }
-        public uint Valor { get; set; } = 0;
-        public TipoRodada Momento { get; set; }
-        public uint Sequencial { get; set; }
-        public AcaoJogador(TipoAcao acao, uint valor, TipoRodada momento)
+        public uint Sequencial { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public IAcoesDecisao AcaoDecisao { get; set; }
+        public uint ValorAcaoTomada { get; private set; }
+        public AcoesDecisaoJogador Acao { get; set; }
+        public AcaoJogador(AcoesDecisaoJogador acao, uint valor, IAcoesDecisao quemTomouAcao)
         {
-            Acao = acao;
-            Valor = valor;
-            Momento = momento + 1;
+            this.Acao = acao;
+            this.ValorAcaoTomada = valor;
+            this.AcaoDecisao = quemTomouAcao;
         }
     }
 }

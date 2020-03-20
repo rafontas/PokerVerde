@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace JogadorTH
+namespace Comum.Interfaces
 {
-    public interface IJogadorAcoesTHBonus
+    public interface IAcoesDecisao
     {
-        ConfiguracaoTHBonus config { set; get; }
-        bool TenhoStackParaJogar();
+        string idMente { get; }
+        int versaoIdMente { get; }
+        ConfiguracaoTHBonus config { get; }
         AcaoJogador PreJogo(uint valor);
         AcaoJogador PreFlop(uint valor);
         AcaoJogador Flop(Carta[] cartasMesa, uint valor);

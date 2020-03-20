@@ -27,13 +27,16 @@ namespace PkTeste
 
         static void Main(string[] args)
         {
+
             MesaTexasHoldem mesa = new MesaTexasHoldem(
-                Program.configPadrao, 
-                new DummyJogadorTHB(Program.configPadrao),
-                new Dealer(),
-                10
+                //Program.configPadrao, 
+                //new DummyJogadorTHB(Program.configPadrao),
+                //new Dealer(),
+                //10
             );
 
+            Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
+            //IJogador j = new Jo();
 
             IPokerComandos cmBasicos = new ComandosBasicos();
             Console.WriteLine(cmBasicos.getHelp());
@@ -132,9 +135,9 @@ namespace PkTeste
                         }
                         break;
                     default:
-                        ultimaJogada.Add(mesa.ExecutaJogada().ToString());
-                        Console.WriteLine(Environment.NewLine + ultimaJogada.Last());
-                        saiPrograma = (mesa.Momento.MomentoAtual == Enuns.TipoRodada.FimDeJogo);
+                        //ultimaJogada.Add(mesa.ExecutaJogada().ToString());
+                        //Console.WriteLine(Environment.NewLine + ultimaJogada.Last());
+                        //saiPrograma = (mesa.Momento.MomentoAtual == Enuns.TipoRodada.FimDeJogo);
                         break;
                 }
             }
@@ -142,8 +145,7 @@ namespace PkTeste
 
         public static void ExecutaPoker(MesaTexasHoldem mesa, int numeroRodadas)
         {
-            for (int i = 0; i < numeroRodadas; i++) 
-                mesa.ExecutaRodada();
+            //for (int i = 0; i < numeroRodadas; i++)  mesa.ExecutaRodada();
         }
     }
 }
