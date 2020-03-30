@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using DealerTH;
 using PkTeste.Interfaces;
+using Comum.Classes;
 
 namespace PkTeste
 {
@@ -36,7 +37,10 @@ namespace PkTeste
             );
 
             Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
-            //IJogador j = new Jo();
+            IDealerMesa d = new DealerMesa(m);
+
+            IJogador j = new DummyJogadorTHB(Program.configPadrao);
+            m.AddParticipante(j);
 
             IPokerComandos cmBasicos = new ComandosBasicos();
             Console.WriteLine(cmBasicos.getHelp());

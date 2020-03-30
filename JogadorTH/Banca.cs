@@ -13,7 +13,5 @@ namespace JogadorTH
             this.Mente.Add(new AcaoDecisoriaBanca());
         }
 
-        public uint seq { get; set; } = 0;
-        public override uint SeqProximaPartida { get => seq; }
     }
 }

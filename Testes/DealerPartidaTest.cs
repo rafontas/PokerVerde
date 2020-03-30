@@ -32,7 +32,7 @@ namespace Testes
         {
             IJogador j = new DummyJogadorTHB(DealerPartidaTest.configPadrao);
             Comum.Mesa m = new Comum.Mesa(DealerPartidaTest.configPadrao);
-            IDealerPartida d = new DealerPartida(m);
+            IDealerPartida d = new Comum.Classes.DealerPartida(m);
 
             Assert.AreNotEqual(d.Mesa.Participantes.Count, 1);
 

@@ -21,7 +21,7 @@ namespace Testes
                 Turn = 5,
                 River = 5,
             };
-            IPartida p = new Partida(c);
+            IPartida p = new MesaTH.Comum.Partida(c);
         }
         
     }

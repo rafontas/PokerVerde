@@ -26,9 +26,7 @@ namespace JogadorTH
 
         protected ConfiguracaoTHBonus config { get; set; }
 
-        private IList<IAcoesDecisao> _mente { get; set; } = new List<IAcoesDecisao>();
-        
-        public IList<IAcoesDecisao> Mente { get => this.Mente; }
+        public IList<IAcoesDecisao> Mente { get; set; } = new List<IAcoesDecisao>();
 
         public void RecebeCarta(Carta c1, Carta c2)
         {
@@ -44,11 +42,12 @@ namespace JogadorTH
 
         public IList<IPartida> historico { get; private set; } = new List<IPartida>();
 
-        public abstract uint SeqProximaPartida { get; }
+        public uint SeqProximaPartida { get => SeqProximaPartida; set => value++; }
 
         public void AddPartidaHistorico(IPartida p) 
-        { 
+        {
             this.historico.Add(p); 
+            SeqProximaPartida++;
         }
 
         public JogadorBase(ConfiguracaoTHBonus Config, uint valorStackInicial = 200)

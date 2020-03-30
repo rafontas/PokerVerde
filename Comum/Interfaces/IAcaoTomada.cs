@@ -8,7 +8,7 @@ namespace Comum.Interfaces
 {
     public interface IAcaoTomada
     {
-        uint Sequencial { get; }
+        uint Sequencial { get; set; }
         IAcoesDecisao AcaoDecisao { get; }
         uint ValorAcaoTomada { get; }
         AcoesDecisaoJogador Acao { get; }

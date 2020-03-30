@@ -94,5 +94,35 @@ namespace DealerTH
         {
             throw new NotImplementedException();
         }
+
+        public bool HaParticipantesParaJogar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void IniciarNovaPartida()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecutarProximaRodadaPartidaAtual()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TerminarPartidaAtual()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecutarNovaPartidaCompleta()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecutaCorrida()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -19,6 +19,5 @@ namespace Comum.Interfaces
 
         IPartida Clone();
         VencedorPartida JogadorGanhador { get; set; }
-        void RetirarJogadorMesa(IJogador j);
     }
 }
