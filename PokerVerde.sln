@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comum", "Comum\Comum.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JogadorTH", "JogadorTH\JogadorTH.csproj", "{7FBB056E-BD6F-4CB2-8B8A-FBD445A70113}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testes", "Testes\Testes.csproj", "{5C8185B3-5DBF-42A8-8D9D-23AE172E20E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestesUnitarios", "Testes\TestesUnitarios.csproj", "{5C8185B3-5DBF-42A8-8D9D-23AE172E20E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PkUnitTestes", "PkUnitTestes\PkUnitTestes.csproj", "{E9845652-81AC-4751-B979-3706899C66A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUnitTestes", "PkUnitTestes\PkUnitTestes.csproj", "{E9845652-81AC-4751-B979-3706899C66A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -15,6 +15,7 @@ namespace Testes
     {
         ConfiguracaoTHBonus configPadrao { get => Configuracao.configPadrao; }
 
+        // Testes Básicos
         [TestMethod]
         public void PreJogo()
         {
@@ -160,5 +161,12 @@ namespace Testes
             Assert.IsTrue(j.Stack == valorStackPago);
             Assert.AreEqual(verRiver.Acao, Enuns.AcoesDecisaoJogador.Check);
         }
+
+        [TestMethod]
+        public void PreJogoSemStackParaAnt() { }
+        public void PreJogoSemStackParaFlop() { }
+        public void VerFlopSemStack() { }
+        public void VerTurnSemStackParaRaise() { }
+        public void VerRiverSemStackParaRaise() { }
     }
 }

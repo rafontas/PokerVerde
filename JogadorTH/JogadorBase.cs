@@ -1,4 +1,5 @@
-﻿using Comum.Interfaces;
+﻿using Comum.Excecoes;
+using Comum.Interfaces;
 using Enuns;
 using JogadorTH.Interfaces;
 using Modelo;
@@ -18,7 +19,11 @@ namespace JogadorTH
 
         public uint Stack { get => this.stack; }
 
-        public uint PagaValor(uint Valor) => (this.stack -= Valor);
+        public uint PagaValor(uint Valor) {
+            if (this.stack < Valor) throw new JogadorException("Não há stack para pagar o valor passado.");
+                
+            return (this.stack -= Valor);
+        }
 
         public Carta[] cartas { get; set; } = new Carta[] { null, null };
         
@@ -34,13 +39,17 @@ namespace JogadorTH
             this.cartas[1] = c2;
         }
 
-        public uint RecebeValor(uint Valor) => this.stack += Valor;
+        public uint RecebeValor(uint Valor) => (this.stack += Valor);
 
         public void ResetaMao() => this.cartas = new Carta[] { null, null };
 
         public ICorrida Corrida { get; set; } = new Corrida();
 
-        public IList<IPartida> historico { get; private set; } = new List<IPartida>();
+        private IList<IPartida> historico { get; set; } = new List<IPartida>();
+
+        public IList<IPartida> Historico {
+            get => new List<IPartida>(this.historico);
+        }
 
         public uint SeqProximaPartida { get => SeqProximaPartida; set => value++; }
 

@@ -11,7 +11,7 @@ namespace Testes
         [TestMethod]
         public void StraightFlush_1()
         {
-            MelhorMao m = new MelhorMao();
+            MelhorMao m = new DealerTH.MelhorMao();
             IList<Carta> entrada = new List<Carta>()
             {
                 new Carta(5, Enuns.Naipe.Copas),

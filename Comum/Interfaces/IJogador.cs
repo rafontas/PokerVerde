@@ -13,6 +13,7 @@ namespace Modelo
         void AddPartidaHistorico(IPartida p);
         ICorrida Corrida { get; set; }
         uint SeqProximaPartida { get; }
+        IList<IPartida> Historico { get; }
 
         AcaoJogador PreJogo(uint valor);
         AcaoJogador PreFlop(uint valor);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Testes")]
+[assembly: InternalsVisibleTo("TestesUnitarios")]
 namespace DealerTH
 {
     internal class MelhorMao

@@ -6,7 +6,7 @@ using Modelo;
 
 namespace Comum.Interfaces
 {
-    public interface IPartida
+    public interface IPartida : IClone<IPartida>
     {
         uint SequencialPartida { get; }
         Carta[] CartasMesa { get; set; }
@@ -17,7 +17,6 @@ namespace Comum.Interfaces
         IJogador Banca { get; }
         IJogador Jogador { get; }
 
-        IPartida Clone();
         VencedorPartida JogadorGanhador { get; set; }
     }
 }
