@@ -11,15 +11,11 @@ namespace Comum.AbstractClasses
     {
         public uint SequencialPartida { get; protected set; }
 
-        public Carta[] CartasMesa { get; set; }
+        public abstract Carta[] CartasMesa { get; }
 
         public uint PoteAgora { get; protected set; }
 
         public IList<IRodada> Rodadas { get; protected set; } = new List<IRodada>();
-
-        //public IList<IJogador> Participantes { get; set; }
-
-        //public IList<IJogador> Vencedores { get; set; }
 
         public IJogador Banca { get; set; }
 
@@ -32,5 +28,13 @@ namespace Comum.AbstractClasses
         public void AddToPote(uint valor) => this.PoteAgora += valor;
 
         public abstract IPartida Clone();
+
+        public abstract Carta PopDeck();
+
+        public abstract void RevelarFlop();
+
+        public abstract void RevelarRiver();
+
+        public abstract void RevelarTurn();
     }
 }

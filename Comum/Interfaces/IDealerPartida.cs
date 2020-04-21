@@ -14,7 +14,9 @@ namespace Comum.Interfaces
         void PrepararNovaPartida();
         void PergutarQuemIraJogar();
 
-        void DistribuirCartasJogadores();
+        void CobrarAnt(IJogador j);
+        void DistribuirCartasJogadores(IPartida p);
+        void ExecutarPreFlop();
         void PerguntarPagarFlop();
         void RevelarFlop();
         void PerguntarAumentarPreTurn();
@@ -22,9 +24,10 @@ namespace Comum.Interfaces
         void PerguntarAumentarPreRiver();
         void RevelarRiver();
         void EncerrarPartidas();
-        void CobrarAnt();
 
         void EncerrarPartidaJogador(IJogador j);
         void VerificarGanhadorPartida(IPartida p);
+
+        IJogador GetBancaPadrao();
     }
 }

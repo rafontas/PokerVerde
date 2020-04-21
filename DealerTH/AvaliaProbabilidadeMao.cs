@@ -55,7 +55,11 @@ namespace DealerTH.Probabilidade
                 array[indice++] = new CartaA() { Numero = c.Numero, Naipe = c.Naipe, RodadaNum = 0 };
         }
 
-        public AvaliaProbabilidadeMao(IList<Carta> mao, IList<Carta> maoSecundaria, IList<Carta> mesa, uint numeroRodadas = 100000)
+        public AvaliaProbabilidadeMao(
+            IList<Carta> mao, 
+            IList<Carta> maoSecundaria, 
+            IList<Carta> mesa, 
+            uint numeroRodadas = 100000)
         {
             Deck = new DeckA();
             Deck.CriaDeckAvaliacao();
@@ -89,6 +93,7 @@ namespace DealerTH.Probabilidade
             // Monta o limite de cartas que tem que ser preenchidas
             int limite = (LIMITE_MESA - NumCartasMesa) > (LIMITE_MAO_P - NumCartasMao) ? 
                          (LIMITE_MESA - NumCartasMesa) : (LIMITE_MAO_P - NumCartasMao);
+
             limite = limite > (LIMITE_MAO_S - NumCartasMaoSec) ? limite : (LIMITE_MAO_S - NumCartasMaoSec);
 
             for (uint i = 1; i <= NumeroRodadas; i++)

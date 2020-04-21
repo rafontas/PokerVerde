@@ -18,13 +18,15 @@ namespace Testes
         [TestMethod]
         public void HaJogadoresParaJogar_1()
         {
-            IJogador j = new DummyJogadorTHB(MesaTest.configPadrao);
+            IJogador jogador = new DummyJogadorTHB(MesaTest.configPadrao);
+            IJogador banca = new Banca(MesaTest.configPadrao);
+
             Comum.Mesa m = new Comum.Mesa(MesaTest.configPadrao);
-            IDealerPartida d = new Comum.Classes.DealerPartida(m);
+            IDealerPartida d = new Comum.Classes.DealerPartida(m, banca);
 
             Assert.AreNotEqual(d.Mesa.Participantes.Count, 1);
 
-            d.Mesa.AddParticipante(j);
+            d.Mesa.AddParticipante(jogador);
 
             Assert.AreEqual(d.Mesa.Participantes.Count, 1);
 

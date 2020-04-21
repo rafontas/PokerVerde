@@ -5,9 +5,10 @@ namespace Modelo
 {
     public class AcaoJogador : IAcaoTomada
     {
+        private static uint _seq = 0;
         private static uint seq { 
-            get { return AcaoJogador.seq++; } 
-            set { AcaoJogador.seq = value; } 
+            get { return AcaoJogador._seq++; } 
+            set { AcaoJogador._seq = value; } 
         } 
         public uint Sequencial { get; set; }
         public IAcoesDecisao AcaoDecisao { get; set; }

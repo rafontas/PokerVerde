@@ -51,7 +51,8 @@ namespace JogadorTH
             get => new List<IPartida>(this.historico);
         }
 
-        public uint SeqProximaPartida { get => SeqProximaPartida; set => value++; }
+        private uint seqProximaPartida { get; set; } = 0;
+        public uint SeqProximaPartida { get => this.seqProximaPartida; set => this.seqProximaPartida++; }
 
         public void AddPartidaHistorico(IPartida p) 
         {
@@ -88,9 +89,21 @@ namespace JogadorTH
 
         public bool Equals(IJogador x, IJogador y) => x.Id == y.Id;
 
-        public AcaoJogador PreJogo(uint valor) => this.Mente.First().PreJogo(valor);
+        public AcaoJogador PreJogo(uint valor) 
+        {
+            if (!this.TenhoStackParaJogar()) 
+                return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
 
-        public AcaoJogador PreFlop(uint valor) => this.Mente.First().PreFlop(valor);
+            return this.Mente.First().PreJogo(valor);
+        }
+
+        public AcaoJogador PreFlop(uint valor)
+        {
+            if (!this.TenhoStackParaJogar()) 
+                return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
+            
+            return this.Mente.First().PreFlop(valor); 
+        }
 
         public AcaoJogador Flop(Carta[] cartasMesa, uint valor) => this.Mente.First().Flop(cartasMesa, valor);
 

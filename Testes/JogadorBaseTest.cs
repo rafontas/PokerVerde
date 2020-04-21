@@ -77,15 +77,13 @@ namespace Testes
         }
 
         [TestMethod]
-        public void AddHistoricoTest() {
-
-            throw NotImplementedException();
-
+        public void AddHistoricoTest() 
+        {
             IJogador j = new DummyJogadorTHB(this.configPadrao, 100);
             
             Assert.IsTrue(j.Historico.Count == 0);
 
-            j.AddPartidaHistorico(new Partida(1));
+            j.AddPartidaHistorico(new Partida(1, j, null));
 
             Assert.IsTrue(j.Historico.Count == 1);
 

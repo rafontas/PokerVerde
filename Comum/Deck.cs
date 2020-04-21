@@ -11,7 +11,7 @@ namespace Modelo
         protected IList<T> Baralho { get; set; }
         protected Random rand = new Random();
 
-        public Deck() { }
+        public Deck() { this.CriaDeckPadrao(); }
 
         /// <summary>
         /// Cria um deck já embaralhado.s

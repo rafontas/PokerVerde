@@ -1,14 +1,12 @@
 ﻿using Modelo;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("TestesUnitarios")]
-namespace DealerTH
+namespace Comum.Classes
 {
-    public class MelhorMao
+    public class ConstrutorMelhorMao
     {
         IList<Carta> Cartas;
         IList<IList<Carta>> Naipes = new List<IList<Carta>>()
@@ -32,7 +30,7 @@ namespace DealerTH
         internal bool TemFour { get { return Four.Count == 4; } }
         internal bool TemStraightFlush { get; set; }
 
-        internal MaoTexasHoldem AvaliaMao(IList<Carta> CartasAvaliar)
+        internal MaoTexasHoldem GetMelhorMao(IList<Carta> CartasAvaliar)
         {
             Cartas = CartasAvaliar.OrderBy(c => c.Numero).ToList();
 
@@ -128,13 +126,13 @@ namespace DealerTH
             }
             else if (TemDuasDuplas)
             {
-                IList<Carta> Kickers = GetListaKicker(Cartas, 
+                IList<Carta> Kickers = GetListaKicker(Cartas,
                     new List<Carta>() {
                         Duplas[0][0],
                         Duplas[0][1],
                         Duplas[1][0],
                         Duplas[1][1]
-                    }, 
+                    },
                     1);
 
                 return new MaoTexasHoldem()

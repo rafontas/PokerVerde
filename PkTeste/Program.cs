@@ -29,70 +29,66 @@ namespace PkTeste
         static void Main(string[] args)
         {
 
-            MesaTexasHoldem mesa = new MesaTexasHoldem(
-                //Program.configPadrao, 
-                //new DummyJogadorTHB(Program.configPadrao),
-                //new Dealer(),
-                //10
-            );
-
-            Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
-            IDealerMesa d = new DealerMesa(m);
-
-            IJogador j = new DummyJogadorTHB(Program.configPadrao);
-            m.AddParticipante(j);
-
             IPokerComandos cmBasicos = new ComandosBasicos();
             Console.WriteLine(cmBasicos.getHelp());
             
             bool saiPrograma = false;
 
-            while (!saiPrograma)
-            {
-                string entradas = Console.ReadLine(), input = "";
-                string [] inputCompleta = entradas.Split(" ");
-                int numRodadas = 1;
+            Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
+            IDealerMesa dealer = new DealerMesa(m, new Banca(Program.configPadrao));
+            
+            IJogador jogador = new DummyJogadorTHB(Program.configPadrao);
 
-                if (input.Count() > 2)
-                {
-                    Console.WriteLine("Número de argumentos inválidos");
-                    continue;
-                }
-                else if (inputCompleta.Count() > 1)
-                {
-                    input = inputCompleta[0];
-                    numRodadas = int.Parse(inputCompleta[1]);
-                }
-                else
-                {
-                    input = inputCompleta[0];
-                }
+            m.AddParticipante(jogador);
 
-                switch (input)
-                {
-                    case "-e": 
-                        saiPrograma = true; break;
-                    case "-tr":
-                        input = Console.ReadLine();
-                        ExecutaPoker(mesa, numRodadas);
-                        break;
-                    case "-t":
-                        Console.WriteLine("Modo teste, aperte -p para ir para próximo passo.");
-                        ExecutaPokerPausado(mesa);
-                        break;
-                    case "-cls": 
-                        Console.Clear(); 
-                        Console.WriteLine("Esperando comando..."); break;
-                    case "s": break;
-                    case "-i":
-                        ExecutaPoker(mesa, 1);
-                        break;
-                    default:
-                        Console.WriteLine("Não entendi.");
-                        Console.WriteLine(cmBasicos.getHelp());
-                        break;
-                }
-            }
+            dealer.ExecutarNovaPartidaCompleta();
+
+            //while (!saiPrograma)
+            //{
+            //    string entradas = Console.ReadLine(), input = "";
+            //    string [] inputCompleta = entradas.Split(" ");
+            //    int numRodadas = 1;
+
+            //    if (input.Count() > 2)
+            //    {
+            //        Console.WriteLine("Número de argumentos inválidos");
+            //        continue;
+            //    }
+            //    else if (inputCompleta.Count() > 1)
+            //    {
+            //        input = inputCompleta[0];
+            //        numRodadas = int.Parse(inputCompleta[1]);
+            //    }
+            //    else
+            //    {
+            //        input = inputCompleta[0];
+            //    }
+
+            //    switch (input)
+            //    {
+            //        case "-e": 
+            //            saiPrograma = true; break;
+            //        case "-tr":
+            //            input = Console.ReadLine();
+            //            //ExecutaPoker(mesa, numRodadas);
+            //            break;
+            //        case "-t":
+            //            Console.WriteLine("Modo teste, aperte -p para ir para próximo passo.");
+            //            //ExecutaPokerPausado(mesa);
+            //            break;
+            //        case "-cls": 
+            //            Console.Clear(); 
+            //            Console.WriteLine("Esperando comando..."); break;
+            //        case "s": break;
+            //        case "-i":
+            //            //ExecutaPoker(mesa, 1);
+            //            break;
+            //        default:
+            //            Console.WriteLine("Não entendi.");
+            //            Console.WriteLine(cmBasicos.getHelp());
+            //            break;
+            //    }
+            //}
         }
 
         public static void ExecutaPokerPausado(MesaTexasHoldem mesa)

@@ -31,8 +31,9 @@ namespace Testes
         public void HaJogadoresParaJogar_1()
         {
             IJogador j = new DummyJogadorTHB(DealerPartidaTest.configPadrao);
+            IJogador banca = new Banca(DealerPartidaTest.configPadrao);
             Comum.Mesa m = new Comum.Mesa(DealerPartidaTest.configPadrao);
-            IDealerPartida d = new Comum.Classes.DealerPartida(m);
+            IDealerPartida d = new DealerPartida(m, banca);
 
             Assert.AreNotEqual(d.Mesa.Participantes.Count, 1);
 
@@ -41,5 +42,7 @@ namespace Testes
             Assert.AreEqual(d.Mesa.Participantes.Count, 1);
 
         }
+
+
     }
 }

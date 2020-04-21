@@ -23,9 +23,11 @@ namespace Testes
             IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
 
             AcaoJogador a = j.PreJogo(this.configPadrao.Ant);
+
             Assert.AreEqual(j.Stack, valorStackInicial);
             Assert.IsInstanceOfType(a, typeof(AcaoJogador));
-            Assert.AreEqual(a.Acao, Enuns.AcoesDecisaoJogador.Pay);
+
+            Assert.AreEqual(Enuns.AcoesDecisaoJogador.Play, a.Acao);
         }
 
         [TestMethod]
@@ -47,7 +49,7 @@ namespace Testes
             valorStackPago -= this.configPadrao.Flop;
 
             Assert.IsTrue(j.Stack == valorStackPago);
-            Assert.AreEqual(preFlop.Acao, Enuns.AcoesDecisaoJogador.Check);
+            Assert.AreEqual(preFlop.Acao, Enuns.AcoesDecisaoJogador.PayFlop);
         }
 
         [TestMethod]
@@ -163,9 +165,47 @@ namespace Testes
         }
 
         [TestMethod]
-        public void PreJogoSemStackParaAnt() { }
-        public void PreJogoSemStackParaFlop() { }
-        public void VerFlopSemStack() { }
+        public void PreJogoSemStackParaAnt() 
+        {
+            uint valorStackInicial = 3;
+
+            IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
+
+            // Pre Jogo
+            AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
+
+            // Testa
+            Assert.AreEqual(Enuns.AcoesDecisaoJogador.Stop, preJogo.Acao);
+
+        }
+
+        public void PreJogoSemStackParaFlop() 
+        {
+            uint valorStackInicial = 7;
+
+            IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
+
+            // Pre Jogo
+            AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
+            AcaoJogador preFlop = j.PreFlop(this.configPadrao.Flop);
+
+            // Testa
+            Assert.AreEqual(Enuns.AcoesDecisaoJogador.Stop, preFlop.Acao);
+        }
+
+        public void VerFlopSemStack() 
+        {
+            uint valorStackInicial = 7;
+
+            IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
+
+            // Pre Jogo
+            AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
+            AcaoJogador preFlop = j.PreFlop(this.configPadrao.Flop);
+
+            // Testa
+            Assert.AreEqual(Enuns.AcoesDecisaoJogador.Stop, preFlop.Acao);
+        }
         public void VerTurnSemStackParaRaise() { }
         public void VerRiverSemStackParaRaise() { }
     }

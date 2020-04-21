@@ -1,4 +1,5 @@
-﻿using Comum.Interfaces;
+﻿using Comum.Excecoes;
+using Comum.Interfaces;
 using Enuns;
 using Modelo;
 using System;
@@ -12,10 +13,10 @@ namespace Comum.Classes
     {
         public Mesa Mesa { get; }
 
-        public DealerMesa(Mesa mesa)
+        public DealerMesa(Mesa mesa, IJogador banca)
         {
             this.Mesa = mesa;
-            this.dealerPartida = new DealerPartida(this.Mesa);
+            this.dealerPartida = new DealerPartida(this.Mesa, banca);
         }
 
         private TipoRodada UltimaRodada { get => this.Mesa.PartidasAtuais.First().Value.Rodadas.Last().TipoRodada; }
@@ -48,6 +49,7 @@ namespace Comum.Classes
         }
 
         public void TerminarPartidaAtual(IJogador j)
+
         {
             throw new NotImplementedException();
         }
@@ -65,9 +67,8 @@ namespace Comum.Classes
 
             switch (this.UltimaRodada)
             {
-                case TipoRodada.PreJogo: 
-                    this.dealerPartida.CobrarAnt(); 
-                    this.dealerPartida.DistribuirCartasJogadores(); 
+                case TipoRodada.PreJogo:
+                    this.dealerPartida.ExecutarPreFlop();
                     break;
 
                 case TipoRodada.PreFlop: 
@@ -88,6 +89,8 @@ namespace Comum.Classes
                     this.dealerPartida.RevelarRiver(); 
                     this.dealerPartida.EncerrarPartidas(); 
                     break;
+
+                default: throw new DealerException("Ultima rodada não encontrada.");
             }
         }
 

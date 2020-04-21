@@ -39,11 +39,11 @@ namespace JogadorTH.Acoes
                 default: throw new Exception("Tipo de rodada não encontrada.");
             }
         }
-        public AcaoJogador PreJogo(uint valor) 
-            => new AcaoJogador(AcoesDecisaoJogador.Play, valor, this, this.sequencialAcao);
+        public AcaoJogador PreJogo(uint valor)
+                => new AcaoJogador(AcoesDecisaoJogador.Play, valor, this, this.sequencialAcao);
 
         public AcaoJogador PreFlop(uint valor) 
-            => new AcaoJogador(AcoesDecisaoJogador.Check, valor, this, this.sequencialAcao);
+            => new AcaoJogador(AcoesDecisaoJogador.PayFlop, valor, this, this.sequencialAcao);
 
 
         public AcaoJogador Flop(Carta[] cartasMesa, uint valor)
