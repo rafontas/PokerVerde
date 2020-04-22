@@ -15,7 +15,10 @@ namespace DealerTH.Probabilidade
 
         }
 
-        internal class DeckA : Deck<CartaA> { 
+        internal class DeckA : Deck<CartaA> {
+
+            internal DeckA() => this.CriaDeckAvaliacao();
+
             internal void CriaDeckAvaliacao(){
                 Baralho = new List<CartaA>();
                 for (uint i = 2; i <= 14; i++)

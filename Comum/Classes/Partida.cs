@@ -63,6 +63,7 @@ namespace Comum.Classes
             this.Jogador = jogador;
             this.Banca = banca;
             this.PoteAgora = 0;
+            this.Deck.CriaDeckPadrao();
         }
 
         public override IPartida Clone()
