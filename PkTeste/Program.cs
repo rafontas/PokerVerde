@@ -42,6 +42,10 @@ namespace PkTeste
             m.AddParticipante(jogador);
 
             dealer.ExecutarNovaPartidaCompleta();
+            dealer.ExecutarNovaPartidaCompleta();
+            dealer.ExecutarNovaPartidaCompleta();
+
+            saiPrograma = true;
 
             //while (!saiPrograma)
             //{

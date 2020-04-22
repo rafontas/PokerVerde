@@ -21,8 +21,8 @@ namespace JogadorTH
 
         public uint PagaValor(uint Valor) {
             if (this.stack < Valor) throw new JogadorException("Não há stack para pagar o valor passado.");
-                
-            return (this.stack -= Valor);
+            this.stack -= Valor;
+            return Valor;
         }
 
         public Carta[] cartas { get; set; } = new Carta[] { null, null };
@@ -39,7 +39,10 @@ namespace JogadorTH
             this.cartas[1] = c2;
         }
 
-        public uint RecebeValor(uint Valor) => (this.stack += Valor);
+        public uint RecebeValor(uint Valor) {
+            this.stack += Valor;
+            return Valor;
+        } 
 
         public void ResetaMao() => this.cartas = new Carta[] { null, null };
 
@@ -52,6 +55,7 @@ namespace JogadorTH
         }
 
         private uint seqProximaPartida { get; set; } = 0;
+
         public uint SeqProximaPartida { get => this.seqProximaPartida; set => this.seqProximaPartida++; }
 
         public void AddPartidaHistorico(IPartida p) 

@@ -13,6 +13,21 @@ namespace Comum.Classes
     {
         public Mesa Mesa { get; }
 
+        public DealerMesa(Mesa mesa, IJogador banca, IJogador jogador)
+        {
+            this.Mesa = mesa;
+            this.dealerPartida = new DealerPartida(this.Mesa, banca);
+            this.Mesa.AddParticipante(jogador);
+        }
+
+        public DealerMesa(Mesa mesa, IJogador banca, IList<IJogador> jogador)
+        {
+            this.Mesa = mesa;
+            this.dealerPartida = new DealerPartida(this.Mesa, banca);
+
+            foreach(var j in jogador) this.Mesa.AddParticipante(j);
+        }
+
         public DealerMesa(Mesa mesa, IJogador banca)
         {
             this.Mesa = mesa;

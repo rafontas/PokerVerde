@@ -19,28 +19,31 @@ namespace Testes
         [TestMethod]
         public void PagarReceberValorTest() { 
 
-            uint valorStackInicial = 100;
+            uint valorStackInicial = 150;
             uint valorPago;
             uint valorRecebido;
             IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
 
             // Pagamento Normal
             valorPago = 50;
-            Assert.IsTrue(j.PagaValor(valorPago) == j.Stack);
+            j.PagaValor(valorPago);
+            Assert.IsTrue(j.Stack == 100);
 
             // Pagamento maior do que o que tem
-            // Stack jogador = 50
-            valorPago = 100;
+            // Stack jogador = 100
+            valorPago = 150;
             Assert.ThrowsException<JogadorException>(() => j.PagaValor(valorPago));
 
             // Pagamento para zero
-            // Stack = 50
-            valorPago = 50;
-            Assert.IsTrue(j.PagaValor(valorPago) == j.Stack && j.Stack == 0);
+            // Stack = 100
+            valorPago = 100;
+            j.PagaValor(valorPago);
+            Assert.IsTrue(j.Stack == 0);
 
             // Stack = 0
             valorRecebido = 75;
-            Assert.IsTrue(j.RecebeValor(valorRecebido) == j.Stack);
+            j.RecebeValor(valorRecebido);
+            Assert.IsTrue(75 == j.Stack);
         }
 
         [TestMethod]
@@ -90,6 +93,7 @@ namespace Testes
         }
 
         public void ExecutaAcaoTest() { }
+
         public void SequencialProximaPartidaTest() { }
     }
 }

@@ -113,12 +113,14 @@ namespace Comum.Classes
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
+                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
+                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
                         jog.Value.AddRodada(new RodadaTHB(TipoRodada.Turn, jog.Value.PoteAgora, jog.Value.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
+                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
+                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
                         jog.Value.AddRodada(new RodadaTHB(TipoRodada.Turn, jog.Value.PoteAgora, jog.Value.CartasMesa));
                         break;
 
@@ -177,12 +179,14 @@ namespace Comum.Classes
             switch(melhorMaoJogador.Compara(melhorMaoBanca))
             {
                 case -1: 
-                    p.JogadorGanhador = VencedorPartida.Banca; 
-
+                    p.JogadorGanhador = VencedorPartida.Banca;
+                    p.Banca.RecebeValor(p.PoteAgora);
                     break;
 
                 case 0: 
-                    p.JogadorGanhador = VencedorPartida.Empate; 
+                    p.JogadorGanhador = VencedorPartida.Empate;
+                    p.Banca.RecebeValor(p.PoteAgora / 2);
+                    p.Jogador.RecebeValor(p.PoteAgora / 2);
                     break;
 
                 case 1: 
@@ -192,22 +196,27 @@ namespace Comum.Classes
             }
         }
 
-        public bool ExistePartidaEmAndamento() => this.Mesa.PartidasAtuais.Count > 0;
+        public bool ExistePartidaEmAndamento() 
+            => this.Mesa.PartidasAtuais.Count > 0;
 
         public void EncerrarPartidas()
         {
-            foreach (var jog in this.Mesa.PartidasAtuais)
+            IList<IJogador> jogadores = this.Mesa.Participantes;
+
+            foreach (IJogador jog in jogadores)
             {
-                this.DistribuirCartasBanca(jog.Value);
-                this.VerificarGanhadorPartida(jog.Value);
-                this.EncerrarPartidaJogador(jog.Key);
+                IPartida p = this.Mesa.PartidasAtuais[jog];
+
+                this.DistribuirCartasBanca(p);
+                this.VerificarGanhadorPartida(p);
+                this.EncerrarPartidaJogador(jog);
             }
         }
 
         public void EncerrarPartidaJogador(IJogador j)
         {
             j.AddPartidaHistorico(this.Mesa.PartidasAtuais[j]);
-            this.Mesa.Participantes.Remove(j);
+            this.Mesa.PartidasAtuais.Remove(j);
         }
 
         public IJogador GetBancaPadrao() => this.banca;

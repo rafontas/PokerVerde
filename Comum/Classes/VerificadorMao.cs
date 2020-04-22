@@ -30,7 +30,7 @@ namespace Comum.Classes
         internal bool TemFour { get { return Four.Count == 4; } }
         internal bool TemStraightFlush { get; set; }
 
-        internal MaoTexasHoldem GetMelhorMao(IList<Carta> CartasAvaliar)
+        public MaoTexasHoldem GetMelhorMao(IList<Carta> CartasAvaliar)
         {
             Cartas = CartasAvaliar.OrderBy(c => c.Numero).ToList();
 
