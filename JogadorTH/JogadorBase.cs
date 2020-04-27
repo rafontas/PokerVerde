@@ -1,4 +1,5 @@
-﻿using Comum.Excecoes;
+﻿using Comum.Classes;
+using Comum.Excecoes;
 using Comum.Interfaces;
 using Enuns;
 using JogadorTH.Interfaces;
@@ -60,7 +61,8 @@ namespace JogadorTH
 
         public void AddPartidaHistorico(IPartida p) 
         {
-            this.historico.Add(p); 
+            this.historico.Add(p);
+            this?.Corrida.ListaPartidas.Add(p);
             SeqProximaPartida++;
         }
 
@@ -88,6 +90,17 @@ namespace JogadorTH
         }
         
         public bool TenhoStackParaJogar() => this.Stack >= (this.config.Ant + this.config.Flop);
+        
+        public bool VouJogarMaisUmaPartida()
+        {
+            if (!this.TenhoStackParaJogar()) 
+                return false;
+
+            if (!(this.Corrida is null) && !this.Corrida.HaPartidaParaJogar())
+                return false;
+
+            return true;
+        }
 
         public int GetHashCode(IJogador obj) => obj.GetHashCode();
 

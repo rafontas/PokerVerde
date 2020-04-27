@@ -13,14 +13,14 @@ namespace Modelo
         
         void ExecutarNovaPartidaCompleta(IJogador j);
 
-        void ExecutaCorrida(IJogador jogador);
+        void ExecutarCorrida(IJogador jogador);
         
         void IniciarNovaPartida();
         void ExecutarProximaRodadaPartidaAtual();
         void TerminarPartidaAtual();
         void ExecutarNovaPartidaCompleta();
 
-        void ExecutaCorrida();
+        void ExecutarCorrida();
         void ExecutaTodasCorridas();
     }
 }

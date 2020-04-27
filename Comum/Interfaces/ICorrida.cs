@@ -8,9 +8,17 @@ namespace Comum.Interfaces
     {
         uint QtdPartidasJogadas { get; }
         uint ValorInicial { get; }
-        uint ValorkAtual { get; }
+        uint ValorAtual { get; }
+
         uint ValorGanho { get; }
         uint ValorPerdido { get; }
-        uint ValorDeParada { get; }
+
+        uint QtdVitoriasJogador { get; }
+        uint QtdEmpates { get; }
+        uint QtdDerrotasJogador { get; }
+
+        bool HaPartidaParaJogar();
+
+        IList<IPartida> ListaPartidas { get; set; }
     }
 }

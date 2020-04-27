@@ -38,7 +38,7 @@ namespace Comum.Classes
 
         private IDealerPartida dealerPartida { get; set; } 
 
-        public void ExecutaCorrida(IJogador jogador)
+        public void ExecutarCorrida(IJogador jogador)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace Comum.Classes
 
         public void ExecutaTodasCorridas()
         {
-            throw new NotImplementedException();
+
         }
 
         public void IniciarNovaPartida(IJogador j)
@@ -121,9 +121,10 @@ namespace Comum.Classes
             this.TerminarPartidaAtual();
         }
 
-        public void ExecutaCorrida()
+        public void ExecutarCorrida()
         {
-            throw new NotImplementedException();
+            while (this.Mesa.ParticipantesJogando.First().VouJogarMaisUmaPartida())
+                this.ExecutarNovaPartidaCompleta();
         }
 
         public bool HaParticipantesParaJogar() => this.dealerPartida.HaJogadoresParaJogar();

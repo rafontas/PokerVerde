@@ -85,7 +85,7 @@ namespace DealerTH
             throw new NotImplementedException();
         }
 
-        public void ExecutaCorrida(IJogador jogador)
+        public void ExecutarCorrida(IJogador jogador)
         {
             throw new NotImplementedException();
         }
@@ -120,7 +120,7 @@ namespace DealerTH
             throw new NotImplementedException();
         }
 
-        public void ExecutaCorrida()
+        public void ExecutarCorrida()
         {
             throw new NotImplementedException();
         }

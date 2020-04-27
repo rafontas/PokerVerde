@@ -14,6 +14,7 @@ namespace Modelo
         ICorrida Corrida { get; set; }
         uint SeqProximaPartida { get; }
         IList<IPartida> Historico { get; }
+        bool VouJogarMaisUmaPartida();
 
         AcaoJogador PreJogo(uint valor);
         AcaoJogador PreFlop(uint valor);
