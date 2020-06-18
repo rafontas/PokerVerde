@@ -33,13 +33,11 @@ namespace PkTeste
             Console.WriteLine(cmBasicos.getHelp());
             
             bool saiPrograma = false;
-
+            
             Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
             IDealerMesa dealer = new DealerMesa(m, new Banca(Program.configPadrao));
-            
-            IJogador jogador = new DummyJogadorTHB(Program.configPadrao);
 
-            m.AddParticipante(jogador);
+            m.AddParticipante(new DummyJogadorTHB(Program.configPadrao));
 
             dealer.ExecutarNovaPartidaCompleta();
             dealer.ExecutarNovaPartidaCompleta();

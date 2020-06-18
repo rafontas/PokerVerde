@@ -13,7 +13,7 @@ namespace MesaTH.Comum
 
         public Carta[] CartasMesa { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Carta[] CartasJogador { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public uint ValorPoteAteAgora { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public uint ValorPotePreRodada { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IAcaoTomada AcaoTomada { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

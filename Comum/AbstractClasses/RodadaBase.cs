@@ -9,18 +9,15 @@ namespace Comum.AbstractClasses
 {
     public abstract class RodadaBase : IRodada
     {
-        
         public Carta[] CartasMesa { get; set; }
-        public Carta[] CartasJogador { get; set; }
-        public uint ValorPoteAteAgora { get; set; }
-        public IAcaoTomada AcaoTomada { get; set; }
+        public uint ValorPotePreRodada { get; set; }
         public TipoRodada TipoRodada { get; protected set; }
 
-        public RodadaBase(Carta [] cartaMesa, uint valorPote, TipoRodada tipo)
+        public RodadaBase(Carta [] cartaMesa, uint valorPotePreRodada, TipoRodada tipo)
         {
             this.TipoRodada = tipo;
             this.CartasMesa = cartaMesa;
-            this.ValorPoteAteAgora = valorPote;
+            this.ValorPotePreRodada = valorPotePreRodada;
         }
     }
 }

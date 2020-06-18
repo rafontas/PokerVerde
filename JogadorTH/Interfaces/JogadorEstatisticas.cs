@@ -1,44 +1,38 @@
-﻿using System;
+﻿using Comum.Interfaces;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace JogadorTH.Interfaces
 {
-    class JogadorEstatisticas : IJogadorEstatisticas
+    public class JogadorEstatisticas : IJogadorEstatisticas
     {
-        public uint getJosGanho()
+        public JogadorEstatisticas(IList<IPartida> historico)
         {
-            throw new NotImplementedException();
+            this.Historico = historico;
         }
 
-        public uint getGanhoPorJogo()
+        private IList<IPartida> Historico { get; set; }
+
+        public int getQuantidadeJogosGanhos() 
+            => this.Historico.Where(p => p.JogadorGanhador == Enuns.VencedorPartida.Jogador).Count();
+
+        public int getQuantidadeJogosPerdidos()
+            => this.Historico.Where(p => p.JogadorGanhador == Enuns.VencedorPartida.Banca).Count();
+
+        public float getValorGanhoPorJogo()
         {
-            throw new NotImplementedException();
+            int saldoStackFinal = (int) (this.Historico.Last().Jogador.Stack - this.Historico.First().Jogador.StackInicial);
+            int qtdJogos = this.Historico.Count;
+
+            return saldoStackFinal / qtdJogos;
         }
 
-        public uint getPerdas()
-        {
-            throw new NotImplementedException();
-        }
+        public int getQuantidadeJogosJogados() => (int)this.Historico.Count;
 
-        public uint getQuantJogosJogados()
-        {
-            throw new NotImplementedException();
-        }
+        public int getStackInicial() => (int) this.Historico.First().Jogador.StackInicial;
+        public int getStackFinal() => (int) this.Historico.First().Jogador.Stack;
 
-        public uint getStackAgora()
-        {
-            throw new NotImplementedException();
-        }
+        public int getStackSaldoFinal() => (this.getStackFinal() - this.getStackInicial());
 
-        public uint getStackInicial()
-        {
-            throw new NotImplementedException();
-        }
-
-        public uint getGanho()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -12,11 +12,15 @@ namespace JogadorTH
 {
     public abstract class JogadorBase : IJogador
     {
-        public uint id { get; set; }
+        private static uint _idCount = 0;
+        private static uint getNovoId { get => JogadorBase._idCount++; }
+        private uint id { get; set; }
 
-        public uint Id { get => this.id;  }
+        public uint Id => this.id;
 
         protected uint stack { get; set; }
+
+        public uint StackInicial { get; private set; }
 
         public uint Stack { get => this.stack; }
 
@@ -55,21 +59,31 @@ namespace JogadorTH
             get => new List<IPartida>(this.historico);
         }
 
-        private uint seqProximaPartida { get; set; } = 0;
+        private uint seqProximaPartida {
+            get;
+            set;
+        }
 
-        public uint SeqProximaPartida { get => this.seqProximaPartida; set => this.seqProximaPartida++; }
+        public uint SeqProximaPartida { 
+            get => this.seqProximaPartida++; 
+        }
+
+        public IJogadorEstatisticas Estatistica { get; }
 
         public void AddPartidaHistorico(IPartida p) 
         {
             this.historico.Add(p);
             this?.Corrida.ListaPartidas.Add(p);
-            SeqProximaPartida++;
         }
 
         public JogadorBase(ConfiguracaoTHBonus Config, uint valorStackInicial = 200)
         {
             this.config = Config;
             this.stack = valorStackInicial;
+            this.StackInicial = valorStackInicial;
+            this.Estatistica = new JogadorEstatisticas(this.historico);
+            this.id = JogadorBase.getNovoId;
+            this.seqProximaPartida = 0;
         }
 
         public AcaoJogador ExecutaAcao(TipoRodada momento, uint valoPagar, Carta[] mesa)

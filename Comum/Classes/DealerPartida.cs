@@ -133,22 +133,24 @@ namespace Comum.Classes
         {
             foreach (var jog in this.Mesa.PartidasAtuais)
             {
-                IAcaoTomada a = jog.Key.Turn(jog.Value.CartasMesa, this.Mesa.RegrasMesaAtual.Turn);
+                IAcaoTomada acaoJogador = jog.Key.Turn(jog.Value.CartasMesa, this.Mesa.RegrasMesaAtual.Turn);
+                IPartida partida = jog.Value;
+                //IRodada rodada = new RodadaTHB(TipoRodada.River, );
 
-                switch (a.Acao)
+                switch (acaoJogador.Acao)
                 {
                     case AcoesDecisaoJogador.Check:
-                        jog.Value.AddRodada(new RodadaTHB(TipoRodada.River, jog.Value.PoteAgora, jog.Value.CartasMesa));
+                        partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
-                        jog.Value.AddRodada(new RodadaTHB(TipoRodada.River, jog.Value.PoteAgora, jog.Value.CartasMesa));
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
+                        partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
-                        jog.Value.AddRodada(new RodadaTHB(TipoRodada.River, jog.Value.PoteAgora, jog.Value.CartasMesa));
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
+                        partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
                     default: throw new Exception("Ação não esperada.");

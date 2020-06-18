@@ -10,8 +10,6 @@ namespace Comum.Interfaces
     {
         TipoRodada TipoRodada { get; }
         Carta[] CartasMesa { get; set; } 
-        Carta[] CartasJogador { get; set; } 
-        uint ValorPoteAteAgora { get; set; }
-        IAcaoTomada AcaoTomada { get; set; }
+        uint ValorPotePreRodada { get; set; }
     }
 }

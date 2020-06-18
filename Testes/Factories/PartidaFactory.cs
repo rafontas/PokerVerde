@@ -21,21 +21,43 @@ namespace Testes.Factories
         internal PartidaFactory() { }
         internal PartidaFactory(ConfiguracaoTHBonus c) { this._configuracaoPadrao = c; }
 
+        internal IList<IPartida> GetJogadorGanhou(int numPartidasRetornadas, IJogador j = null) 
+        {
+            IList<IPartida> retorno = new List<IPartida>();
 
-        internal IPartida GetJogadorGanhou() 
+            for (int i = 0; i < numPartidasRetornadas; i++)
+                retorno.Add(this.GetJogadorGanhou(j));
+
+            return retorno;
+        }
+
+        internal IPartida GetJogadorGanhou(IJogador j = null) 
         {
             uint stackInicialJogador = 20000;
+            
             Comum.Mesa m = new Comum.Mesa(this.ConfiguracaoPadrao);
             IDealerMesa dealer = new DealerMesa(m, new Banca(this.ConfiguracaoPadrao));
-            IJogador jogador = new DummyJogadorTHB(this.ConfiguracaoPadrao, stackInicialJogador);
+
+            IJogador jogador = j ?? new DummyJogadorTHB(this.ConfiguracaoPadrao, stackInicialJogador);
+
             m.AddParticipante(jogador);
+
             dealer.ExecutarNovaPartidaCompleta();
 
-            while(dealer.HaParticipantesParaJogar() && 
-                  jogador.Historico.Last().JogadorGanhador != Enuns.VencedorPartida.Jogador)
+            while(jogador.Historico.Last().JogadorGanhador != Enuns.VencedorPartida.Jogador)
                 dealer.ExecutarNovaPartidaCompleta();
 
             return jogador.Historico.Last();            
+        }
+
+        internal IList<IPartida> GetBancaGanhou(int numPartidasRetornadas)
+        {
+            IList<IPartida> retorno = new List<IPartida>();
+
+            for (int i = 0; i < numPartidasRetornadas; i++)
+                retorno.Add(this.GetBancaGanhou());
+
+            return retorno;
         }
 
         internal IPartida GetBancaGanhou()
@@ -53,6 +75,16 @@ namespace Testes.Factories
             return jogador.Historico.Last();
         }
 
+        internal IList<IPartida> GetEmpate(int numPartidasRetornadas)
+        {
+            IList<IPartida> retorno = new List<IPartida>();
+
+            for (int i = 0; i < numPartidasRetornadas; i++)
+                retorno.Add(this.GetEmpate());
+
+            return retorno;
+        }
+
         internal IPartida GetEmpate()
         {
             uint stackInicialJogador = 20000;
@@ -66,6 +98,24 @@ namespace Testes.Factories
                 dealer.ExecutarNovaPartidaCompleta();
 
             return jogador.Historico.Last();
+        }
+
+        internal IList<IPartida> GetPartidasSortidas(int qtdJogadorGanhou = 0, int qtdBancaGanhou = 0, int qtdEmpate = 0) 
+        {
+            IList<IPartida> listaFinal = new List<IPartida>();
+
+            if ((qtdJogadorGanhou + qtdBancaGanhou + qtdEmpate) == 0) {
+                Random rnd = new Random();
+                qtdJogadorGanhou = rnd.Next(1, 100);
+                qtdEmpate = rnd.Next(1, 100);
+                qtdJogadorGanhou = rnd.Next(1, 100);
+            }
+
+            listaFinal = listaFinal.Concat(this.GetJogadorGanhou(qtdJogadorGanhou)).ToList();
+            listaFinal = listaFinal.Concat(this.GetBancaGanhou(qtdBancaGanhou)).ToList();
+            listaFinal = listaFinal.Concat(this.GetEmpate(qtdEmpate)).ToList();
+
+            return listaFinal;
         }
     }
 }

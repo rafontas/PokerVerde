@@ -7,6 +7,7 @@ namespace Comum.Interfaces
         uint Id { get; }
 
         uint Stack { get; }
+        uint StackInicial { get; }
 
         Carta[] Cartas { get; }
 
