@@ -23,9 +23,28 @@ namespace Comum.AbstractClasses
 
         public VencedorPartida JogadorGanhador { get; set; }
 
+        uint IPartida.ValorInvestidoBanca => _ValorInvestidoBanca;
+
+        uint IPartida.ValorInvestidoJogador => _ValorInvestidoJogador;
+
+        private uint _ValorInvestidoBanca = 0;
+        private uint _ValorInvestidoJogador = 0;
+
         public void AddRodada(IRodada rodada) => this.Rodadas.Add(rodada);
 
-        public void AddToPote(uint valor) => this.PoteAgora += valor;
+        public void AddToPote(uint valor, TipoJogadorTHB tipoJogador) 
+        { 
+            if (tipoJogador == TipoJogadorTHB.Jogador)
+            {
+                this._ValorInvestidoJogador += valor;
+            }
+            else
+            {
+                this._ValorInvestidoBanca += valor;
+            }
+
+            this.PoteAgora += valor; 
+        }
 
         public abstract IPartida Clone();
 

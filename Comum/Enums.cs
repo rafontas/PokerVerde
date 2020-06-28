@@ -116,7 +116,7 @@ namespace Enuns
     public enum TipoJogadorTHB
     {
         Jogador = 1,
-        Mesa = 2
+        Banca = 2
     }
 
 }

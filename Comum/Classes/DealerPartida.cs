@@ -54,7 +54,7 @@ namespace Comum.Classes
 
         //todo: tirar isso de public
         public void CobrarAnt(IJogador jogador) =>
-                this.Mesa.PartidasAtuais[jogador].AddToPote(jogador.PagaValor(this.Mesa.RegrasMesaAtual.Ant));
+                this.Mesa.PartidasAtuais[jogador].AddToPote(jogador.PagaValor(this.Mesa.RegrasMesaAtual.Ant), TipoJogadorTHB.Jogador);
 
 
         //todo: tirar isso de public
@@ -79,24 +79,32 @@ namespace Comum.Classes
         {
             foreach (var jog in this.Mesa.PartidasAtuais)
             {
-                IAcaoTomada a = jog.Key.PreFlop(this.Mesa.RegrasMesaAtual.Flop);
+                IPartida partida = jog.Value;
+                IJogador jogador = jog.Key;
+                IRodada rodadaAtual = partida.Rodadas.Last();
+                IRodada proximaRodada;
 
-                switch(a.Acao)
+                IAcaoTomada acaoTomada = jogador.PreFlop(this.Mesa.RegrasMesaAtual.Flop);
+                rodadaAtual.AddAcaoTomada(acaoTomada);
+
+                switch (acaoTomada.Acao)
                 {
                     case AcoesDecisaoJogador.PayFlop:
-                        jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Flop);
-                        jog.Value.AddToPote(this.Mesa.RegrasMesaAtual.Flop);
-                        jog.Value.AddToPote(this.Mesa.RegrasMesaAtual.Flop);
-                        jog.Value.AddRodada(new RodadaTHB(TipoRodada.Flop, jog.Value.PoteAgora, jog.Value.CartasMesa));
+                        jogador.PagaValor(this.Mesa.RegrasMesaAtual.Flop);
+                        partida.AddToPote(this.Mesa.RegrasMesaAtual.Flop, TipoJogadorTHB.Jogador);
+                        partida.AddToPote(this.Mesa.RegrasMesaAtual.Flop, TipoJogadorTHB.Banca);
+                        proximaRodada = new RodadaTHB(TipoRodada.Flop, partida.PoteAgora, partida.CartasMesa);
                         break;
 
                     case AcoesDecisaoJogador.Fold:
-                        jog.Value.AddRodada(new RodadaTHB(TipoRodada.FimDeJogo, jog.Value.PoteAgora, jog.Value.CartasMesa));
-                        this.EncerrarPartidaJogador(jog.Key);
+                        proximaRodada = new RodadaTHB(TipoRodada.FimDeJogo, partida.PoteAgora, partida.CartasMesa);
+                        this.EncerrarPartidaJogador(jogador);
                         break;
 
                     default: throw new Exception("Ação não esperada.");
                 }
+
+                partida.AddRodada(proximaRodada);
             }
         }
 
@@ -113,14 +121,14 @@ namespace Comum.Classes
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
-                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
+                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         jog.Value.AddRodada(new RodadaTHB(TipoRodada.Turn, jog.Value.PoteAgora, jog.Value.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
-                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn));
+                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         jog.Value.AddRodada(new RodadaTHB(TipoRodada.Turn, jog.Value.PoteAgora, jog.Value.CartasMesa));
                         break;
 
@@ -144,12 +152,12 @@ namespace Comum.Classes
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2, TipoJogadorTHB.Jogador);
                         partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2);
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2, TipoJogadorTHB.Jogador);
                         partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
@@ -187,8 +195,8 @@ namespace Comum.Classes
 
                 case 0: 
                     p.JogadorGanhador = VencedorPartida.Empate;
-                    p.Banca.RecebeValor(p.PoteAgora / 2);
-                    p.Jogador.RecebeValor(p.PoteAgora / 2);
+                    p.Banca.RecebeValor(p.ValorInvestidoBanca);
+                    p.Jogador.RecebeValor(p.ValorInvestidoJogador);
                     break;
 
                 case 1: 

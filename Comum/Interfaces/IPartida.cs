@@ -11,7 +11,9 @@ namespace Comum.Interfaces
         uint SequencialPartida { get; }
         Carta[] CartasMesa { get; }
         uint PoteAgora { get; }
-        void AddToPote(uint valor);
+        uint ValorInvestidoBanca { get; }
+        uint ValorInvestidoJogador { get; }
+        void AddToPote(uint valor, TipoJogadorTHB tipoJogador);
         IList<IRodada> Rodadas { get; }
         void AddRodada(IRodada rodada);
         void RevelarFlop();

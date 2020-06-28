@@ -11,5 +11,7 @@ namespace Comum.Interfaces
         TipoRodada TipoRodada { get; }
         Carta[] CartasMesa { get; set; } 
         uint ValorPotePreRodada { get; set; }
+        IList<IAcaoTomada> PilhaAcoes { get; }
+        void AddAcaoTomada(IAcaoTomada acao);
     }
 }

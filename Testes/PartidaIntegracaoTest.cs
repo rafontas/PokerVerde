@@ -2,13 +2,9 @@
 using Comum.Interfaces;
 using Enuns;
 using JogadorTH;
-using MesaTH.Comum;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Modelo;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Testes
 {
@@ -51,14 +47,14 @@ namespace Testes
 
             // Pre-jogo (Paga ant, distribui carta ao jogador, adiciona rodada)
             IPartida p = dealer.Mesa.PartidasAtuais[jog];
-            p.AddToPote(jog.PagaValor(PartidaIntegracaoTest.configPadrao.Ant));
+            p.AddToPote(jog.PagaValor(PartidaIntegracaoTest.configPadrao.Ant), TipoJogadorTHB.Jogador);
             jog.RecebeCarta(new Carta(10, Enuns.Naipe.Copas), new Carta(9, Enuns.Naipe.Copas));
             p.AddRodada(new RodadaTHB(Enuns.TipoRodada.PreFlop, p.PoteAgora, null));
             Assert.IsTrue(valorStackJogadorAposPagarAnt == jog.Stack);
 
             // Pre-flop (Pagar para ver flop)
-            p.AddToPote(jog.PagaValor(PartidaIntegracaoTest.configPadrao.Flop));
-            p.AddToPote(banca.PagaValor(PartidaIntegracaoTest.configPadrao.Flop));
+            p.AddToPote(jog.PagaValor(PartidaIntegracaoTest.configPadrao.Flop), TipoJogadorTHB.Jogador);
+            p.AddToPote(banca.PagaValor(PartidaIntegracaoTest.configPadrao.Flop), TipoJogadorTHB.Banca);
             p.AddRodada(new RodadaTHB(Enuns.TipoRodada.Flop, p.PoteAgora, p.CartasMesa));
 
             Assert.IsTrue(jog.Stack == valorStackJogadorAposPagarFlop); // stack jogador

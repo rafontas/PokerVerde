@@ -14,6 +14,11 @@ namespace Modelo
         public IAcoesDecisao AcaoDecisao { get; set; }
         public uint ValorAcaoTomada { get; private set; }
         public AcoesDecisaoJogador Acao { get; set; }
+
+        public uint ValorRequerido => throw new System.NotImplementedException();
+
+        public uint ValorDaAcaoTomada => throw new System.NotImplementedException();
+
         public AcaoJogador(AcoesDecisaoJogador acao, uint valor, IAcoesDecisao quemTomouAcao, uint seq = 0)
         {
             this.Acao = acao;
@@ -21,5 +26,7 @@ namespace Modelo
             this.AcaoDecisao = quemTomouAcao;
             this.Sequencial = (seq == 0 ? AcaoJogador.seq : seq);
         }
+
+        public IAcaoTomada Clone() => new AcaoJogador(this.Acao, this.ValorAcaoTomada, this.AcaoDecisao, this.Sequencial);
     }
 }
