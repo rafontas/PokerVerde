@@ -13,17 +13,19 @@ namespace Comum.Classes
     {
         public Mesa Mesa { get; }
 
+        public IDealerPartida DealerPartida { get; set; }
+
         public DealerMesa(Mesa mesa, IJogador banca, IJogador jogador)
         {
             this.Mesa = mesa;
-            this.dealerPartida = new DealerPartida(this.Mesa, banca);
+            this.DealerPartida = new DealerPartida(this.Mesa, banca);
             this.Mesa.AddParticipante(jogador);
         }
 
         public DealerMesa(Mesa mesa, IJogador banca, IList<IJogador> jogador)
         {
             this.Mesa = mesa;
-            this.dealerPartida = new DealerPartida(this.Mesa, banca);
+            this.DealerPartida = new DealerPartida(this.Mesa, banca);
 
             foreach(var j in jogador) this.Mesa.AddParticipante(j);
         }
@@ -31,12 +33,10 @@ namespace Comum.Classes
         public DealerMesa(Mesa mesa, IJogador banca)
         {
             this.Mesa = mesa;
-            this.dealerPartida = new DealerPartida(this.Mesa, banca);
+            this.DealerPartida = new DealerPartida(this.Mesa, banca);
         }
 
         private TipoRodada UltimaRodada { get => this.Mesa.PartidasAtuais.First().Value.Rodadas.Last().TipoRodada; }
-
-        private IDealerPartida dealerPartida { get; set; } 
 
         public void ExecutarCorrida(IJogador jogador)
         {
@@ -71,38 +71,38 @@ namespace Comum.Classes
 
         public void IniciarNovaPartida()
         {
-            this.dealerPartida.PrepararNovaPartida();
-            this.dealerPartida.PergutarQuemIraJogar();
+            this.DealerPartida.PrepararNovaPartida();
+            this.DealerPartida.PergutarQuemIraJogar();
         }
 
         public void ExecutarProximaRodadaPartidaAtual()
         {
-            if (!this.dealerPartida.ExistePartidaEmAndamento()) 
+            if (!this.DealerPartida.ExistePartidaEmAndamento()) 
                 throw new Exception("Não existe partida em andamento");
 
             switch (this.UltimaRodada)
             {
                 case TipoRodada.PreJogo:
-                    this.dealerPartida.ExecutarPreFlop();
+                    this.DealerPartida.ExecutarPreFlop();
                     break;
 
                 case TipoRodada.PreFlop: 
-                    this.dealerPartida.PerguntarPagarFlop(); 
+                    this.DealerPartida.PerguntarPagarFlop(); 
                     break;
 
                 case TipoRodada.Flop: 
-                    this.dealerPartida.RevelarFlop(); 
-                    this.dealerPartida.PerguntarAumentarPreTurn(); 
+                    this.DealerPartida.RevelarFlop(); 
+                    this.DealerPartida.PerguntarAumentarPreTurn(); 
                     break;
 
                 case TipoRodada.Turn: 
-                    this.dealerPartida.RevelarTurn(); 
-                    this.dealerPartida.PerguntarAumentarPreRiver(); 
+                    this.DealerPartida.RevelarTurn(); 
+                    this.DealerPartida.PerguntarAumentarPreRiver(); 
                     break;
 
                 case TipoRodada.River: 
-                    this.dealerPartida.RevelarRiver(); 
-                    this.dealerPartida.EncerrarPartidas(); 
+                    this.DealerPartida.RevelarRiver(); 
+                    this.DealerPartida.EncerrarPartidas(); 
                     break;
 
                 default: throw new DealerException("Ultima rodada não encontrada.");
@@ -111,7 +111,7 @@ namespace Comum.Classes
 
         public void TerminarPartidaAtual()
         {
-            while (this.dealerPartida.ExistePartidaEmAndamento())
+            while (this.DealerPartida.ExistePartidaEmAndamento())
                 this.ExecutarProximaRodadaPartidaAtual();
         }
 
@@ -127,7 +127,7 @@ namespace Comum.Classes
                 this.ExecutarNovaPartidaCompleta();
         }
 
-        public bool HaParticipantesParaJogar() => this.dealerPartida.HaJogadoresParaJogar();
+        public bool HaParticipantesParaJogar() => this.DealerPartida.HaJogadoresParaJogar();
 
     }
 }

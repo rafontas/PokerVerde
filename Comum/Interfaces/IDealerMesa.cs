@@ -1,10 +1,13 @@
 ﻿using Comum;
+using Comum.Interfaces;
 
 namespace Modelo
 {
     public interface IDealerMesa
     {
         Mesa Mesa { get; }
+
+        IDealerPartida DealerPartida { get; set;  }
 
         bool HaParticipantesParaJogar();
         void IniciarNovaPartida(IJogador j);

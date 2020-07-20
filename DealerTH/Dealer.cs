@@ -18,6 +18,8 @@ namespace DealerTH
 
         public Mesa Mesa => throw new NotImplementedException();
 
+        public IDealerPartida DealerPartida { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public IList<IPartida> GetMemoria() => partidasJogadas;
 
         public IRodada ExecutaProximaRodada()

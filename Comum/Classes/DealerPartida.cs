@@ -1,4 +1,5 @@
-﻿using Comum.Interfaces;
+﻿using Comum.Excecoes;
+using Comum.Interfaces;
 using Enuns;
 using Modelo;
 using System;
@@ -19,6 +20,8 @@ namespace Comum.Classes
             this.Mesa = m;
             this.banca = banca;            
         }
+
+        public IJogador GetBancaPadrao() => this.banca;
 
         public bool HaJogadoresParaJogar() 
             => this.Mesa.Participantes.Count > 0;
@@ -51,6 +54,30 @@ namespace Comum.Classes
                 jogadorPartida.Value.AddRodada(new RodadaTHB(TipoRodada.PreFlop, 0, null));
             }
         }
+
+        public void EncerrarPartidas()
+        {
+            IList<IJogador> jogadores = this.Mesa.Participantes;
+
+            foreach (IJogador jog in jogadores)
+            {
+                IPartida p = this.Mesa.PartidasAtuais[jog];
+
+                this.DistribuirCartasBanca(p);
+                this.VerificarGanhadorPartida(p);
+                this.EntregarPoteAosVencedores(p);
+                this.EncerrarPartidaJogador(jog);
+            }
+        }
+
+        public void EncerrarPartidaJogador(IJogador j)
+        {
+            j.AddPartidaHistorico(this.Mesa.PartidasAtuais[j]);
+            this.Mesa.PartidasAtuais.Remove(j);
+        }
+
+        public bool ExistePartidaEmAndamento()
+            => this.Mesa.PartidasAtuais.Count > 0;
 
         //todo: tirar isso de public
         public void CobrarAnt(IJogador jogador) =>
@@ -141,9 +168,8 @@ namespace Comum.Classes
         {
             foreach (var jog in this.Mesa.PartidasAtuais)
             {
-                IAcaoTomada acaoJogador = jog.Key.Turn(jog.Value.CartasMesa, this.Mesa.RegrasMesaAtual.Turn);
+                IAcaoTomada acaoJogador = jog.Key.Turn(jog.Value.CartasMesa, 0);
                 IPartida partida = jog.Value;
-                //IRodada rodada = new RodadaTHB(TipoRodada.River, );
 
                 switch (acaoJogador.Acao)
                 {
@@ -152,12 +178,14 @@ namespace Comum.Classes
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2, TipoJogadorTHB.Jogador);
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn) * 2, TipoJogadorTHB.Jogador);
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
@@ -166,8 +194,11 @@ namespace Comum.Classes
 
             }
         }
+        
+        protected void DistribuirCartasBanca(IPartida p) => p.Banca.RecebeCarta(p.PopDeck(), p.PopDeck());
 
-        public void VerificarGanhadorPartida(IPartida p)
+        //TODO: verificar se melhor maneira de contornar o virtual
+        public virtual void VerificarGanhadorPartida(IPartida p)
         {
             // Recupera as cartas
             Carta [] CartasBanca = new Carta[] {
@@ -186,52 +217,49 @@ namespace Comum.Classes
             construtorMao = new ConstrutorMelhorMao();
             MaoTexasHoldem melhorMaoBanca = construtorMao.GetMelhorMao(CartasMesa.Union(CartasBanca).ToList());
 
-            switch(melhorMaoJogador.Compara(melhorMaoBanca))
+            switch (melhorMaoJogador.Compara(melhorMaoBanca))
             {
                 case -1: 
                     p.JogadorGanhador = VencedorPartida.Banca;
-                    p.Banca.RecebeValor(p.PoteAgora);
                     break;
 
                 case 0: 
                     p.JogadorGanhador = VencedorPartida.Empate;
-                    p.Banca.RecebeValor(p.ValorInvestidoBanca);
-                    p.Jogador.RecebeValor(p.ValorInvestidoJogador);
                     break;
 
                 case 1: 
                     p.JogadorGanhador = VencedorPartida.Jogador;
+                    break;
+
+                default:
+                    throw new DealerException("Erro ao comparar mão dos jogadores. Retornado valor não previsto.");
+            }
+        }
+
+        /// <summary>
+        /// Distribui o pote de acordo com o final da partida
+        /// </summary>
+        /// <param name="p">IPartida jogada</param>
+        public void EntregarPoteAosVencedores(IPartida p)
+        {
+            switch (p.JogadorGanhador)
+            {
+                case VencedorPartida.Banca:
+                    p.Banca.RecebeValor(p.PoteAgora);
+                    break;
+
+                case VencedorPartida.Empate:
+                    p.Banca.RecebeValor(p.ValorInvestidoBanca);
+                    p.Jogador.RecebeValor(p.ValorInvestidoJogador);
+                    break;
+
+                case VencedorPartida.Jogador:
                     p.Jogador.RecebeValor(p.PoteAgora);
                     break;
+
+                default:
+                    throw new DealerException("Erro ao entregar potes aos vencedores. Jogador ganhador não previsto.");
             }
         }
-
-        public bool ExistePartidaEmAndamento() 
-            => this.Mesa.PartidasAtuais.Count > 0;
-
-        public void EncerrarPartidas()
-        {
-            IList<IJogador> jogadores = this.Mesa.Participantes;
-
-            foreach (IJogador jog in jogadores)
-            {
-                IPartida p = this.Mesa.PartidasAtuais[jog];
-
-                this.DistribuirCartasBanca(p);
-                this.VerificarGanhadorPartida(p);
-                this.EncerrarPartidaJogador(jog);
-            }
-        }
-
-        public void EncerrarPartidaJogador(IJogador j)
-        {
-            j.AddPartidaHistorico(this.Mesa.PartidasAtuais[j]);
-            this.Mesa.PartidasAtuais.Remove(j);
-        }
-
-        public IJogador GetBancaPadrao() => this.banca;
-
-        protected void DistribuirCartasBanca(IPartida p) => p.Banca.RecebeCarta(p.PopDeck(), p.PopDeck());
-
     }
 }

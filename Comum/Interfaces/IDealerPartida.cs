@@ -1,4 +1,5 @@
-﻿using Modelo;
+﻿using Enuns;
+using Modelo;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,6 +25,8 @@ namespace Comum.Interfaces
         void PerguntarAumentarPreRiver();
         void RevelarRiver();
         void EncerrarPartidas();
+
+        void EntregarPoteAosVencedores(IPartida p);
 
         void EncerrarPartidaJogador(IJogador j);
         void VerificarGanhadorPartida(IPartida p);

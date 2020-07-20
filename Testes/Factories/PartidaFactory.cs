@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Testes.Modelos.Mocks;
 
 namespace Testes.Factories
 {
@@ -36,7 +37,9 @@ namespace Testes.Factories
             uint stackInicialJogador = 20000;
             
             Comum.Mesa m = new Comum.Mesa(this.ConfiguracaoPadrao);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(this.ConfiguracaoPadrao));
+            IJogador banca = new Banca(this.ConfiguracaoPadrao);
+            IDealerMesa dealer = new DealerMesa(m, banca);
+            dealer.DealerPartida = new DealerPartidaMock(m, banca, Enuns.VencedorPartida.Jogador );
 
             IJogador jogador = j ?? new DummyJogadorTHB(this.ConfiguracaoPadrao, stackInicialJogador);
 
@@ -44,8 +47,8 @@ namespace Testes.Factories
 
             dealer.ExecutarNovaPartidaCompleta();
 
-            while(jogador.Historico.Last().JogadorGanhador != Enuns.VencedorPartida.Jogador)
-                dealer.ExecutarNovaPartidaCompleta();
+            //while(jogador.Historico.Last().JogadorGanhador != Enuns.VencedorPartida.Jogador)
+            //    dealer.ExecutarNovaPartidaCompleta();
 
             return jogador.Historico.Last();            
         }

@@ -15,11 +15,8 @@ namespace JogadorTH
         private static uint _idCount = 0;
         private static uint getNovoId { get => JogadorBase._idCount++; }
         private uint id { get; set; }
-
         public uint Id => this.id;
-
         protected uint stack { get; set; }
-
         public uint StackInicial { get; private set; }
 
         public uint Stack { get => this.stack; }
@@ -59,14 +56,9 @@ namespace JogadorTH
             get => new List<IPartida>(this.historico);
         }
 
-        private uint seqProximaPartida {
-            get;
-            set;
-        }
+        private uint seqProximaPartida { get; set; }
 
-        public uint SeqProximaPartida { 
-            get => this.seqProximaPartida++; 
-        }
+        public uint SeqProximaPartida { get => this.seqProximaPartida++; }
 
         public IJogadorEstatisticas Estatistica { get; }
 
