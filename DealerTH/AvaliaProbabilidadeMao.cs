@@ -38,6 +38,7 @@ namespace DealerTH.Probabilidade
         const int LIMITE_MAO_S = 2;
 
         private uint NumeroRodadas { get; set; } 
+
         private DeckA Deck { get; set; }
 
         private CartaA [] MaoPrincipal { get; set; }
@@ -82,7 +83,7 @@ namespace DealerTH.Probabilidade
             NumeroRodadas = numeroRodadas;
         }
 
-        public void Avalia(out uint vitorias, out uint derrotas, out uint empate)
+        internal void Avalia(out uint vitorias, out uint derrotas, out uint empate)
         {
             vitorias = 0;
             derrotas = 0;
@@ -94,7 +95,7 @@ namespace DealerTH.Probabilidade
             foreach (var c in Mesa) Deck.Remove(c);
 
             // Monta o limite de cartas que tem que ser preenchidas
-            int limite = (LIMITE_MESA - NumCartasMesa) > (LIMITE_MAO_P - NumCartasMao) ? 
+            int limite = (LIMITE_MESA - NumCartasMesa) > (LIMITE_MAO_P - NumCartasMao) ?
                          (LIMITE_MESA - NumCartasMesa) : (LIMITE_MAO_P - NumCartasMao);
 
             limite = limite > (LIMITE_MAO_S - NumCartasMaoSec) ? limite : (LIMITE_MAO_S - NumCartasMaoSec);
@@ -106,7 +107,7 @@ namespace DealerTH.Probabilidade
                 {
                     CartaA aux;
                     // Preenhce a mao
-                    if(k < LIMITE_MAO_P)
+                    if (k < LIMITE_MAO_P)
                     {
                         aux = Deck.CartaRandom;
                         while (aux.RodadaNum == i) aux = Deck.CartaRandom;
@@ -154,6 +155,43 @@ namespace DealerTH.Probabilidade
                 else if (resultado == -1) derrotas++;
                 else empate++;
             }
+        }
+
+
+        /// <summary>
+        /// Calcula a probabilidade de uma mão vencer.
+        /// </summary>
+        /// <param name="mao">Cartas da mão a ser avaliada. Podem ser passadas 1 ou 2 cartas.</param>
+        /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
+        /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
+        public static float GetPorcentagemVitoria(Carta[] mao, uint numeroRodadas = 200000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, null, null, numeroRodadas);
+
+        /// <summary>
+        /// Calcula a probabilidade de uma mão vencer.
+        /// </summary>
+        /// <param name="mao">Cartas da mão a ser avaliada. Pode ser 1 ou 2.</param>
+        /// <param name="mesa">Cartas que já estão na mesa. De 0 a 5 cartas.</param>
+        /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
+        /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
+        public static float GetPorcentagemVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 200000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, mesa, null, numeroRodadas);
+
+        /// <summary>
+        /// Calcula a probabilidade de uma mão vencer.
+        /// </summary>
+        /// <param name="mao">Cartas da mão a ser avaliada. Pode ser 1 ou 2.</param>
+        /// <param name="mesa">Cartas que já estão na mesa. De 0 a 5 cartas.</param>
+        /// <param name="maoAdversaria">Cartas da mão adversária. Pode ser 0, 1 ou 2.</param>
+        /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
+        /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
+        public static float GetPorcentagemVitoria(Carta [] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 200000)
+        {
+            uint vitorias = 0, derrotas = 0, empate = 0;
+
+            AvaliaProbabilidadeMao avalia = new AvaliaProbabilidadeMao(maoAvaliada, maoAdversaria, mesa, numeroRodadas);
+            avalia.Avalia(out vitorias, out derrotas, out empate);
+
+            return ((vitorias * 100) / numeroRodadas);
+
         }
     }
 }

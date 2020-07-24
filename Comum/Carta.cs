@@ -14,7 +14,7 @@ namespace Modelo
 
         public Carta(uint numero, Naipe naipe)
         {
-            if (numero < 0 || numero > 14) throw new Exception("O número da cartá é inválido.");
+            if (numero <= 0 || numero > 14) throw new Exception("O número da cartá é inválido.");
             Numero = numero;
             Naipe = naipe;
         }
