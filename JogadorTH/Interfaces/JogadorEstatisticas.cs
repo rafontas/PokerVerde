@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JogadorTH.Interfaces
+namespace JogadorTH
 {
     public class JogadorEstatisticas : IJogadorEstatisticas
     {

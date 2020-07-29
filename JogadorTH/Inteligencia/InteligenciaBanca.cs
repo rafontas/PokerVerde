@@ -3,15 +3,19 @@ using Enuns;
 using Modelo;
 using System;
 
-namespace JogadorTH.Acoes
+namespace JogadorTH.Inteligencia
 {
-    public class AcaoDecisoriaBanca : IAcoesDecisao
+    public class InteligenciaBanca : InteligenciaBase
     {
-        public string idMente { get; protected set; }
-        public int versaoIdMente { get; protected set; }
-        public ConfiguracaoTHBonus config { get; protected set; }
+        private string idMente { get; set; }
+        public override string IdMente { get => this.idMente; }
 
-        public AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa)
+        private int versaoIdMente { get; set; }
+        public override int VersaoIdMente { get => this.versaoIdMente; }
+
+        public override ConfiguracaoTHBonus Config { get; set; }
+
+        public override AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa)
         {
             switch (tipoRodada) {
                 case TipoRodada.PreJogo: return this.PreJogo(valor);
@@ -24,9 +28,9 @@ namespace JogadorTH.Acoes
             }
         }
 
-        public AcaoJogador FimDeJogo() => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+        public override AcaoJogador FimDeJogo() => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
 
-        public AcaoJogador Flop(Carta[] cartasMesa, uint valor)
+        public override AcaoJogador Flop(Carta[] cartasMesa, uint valor)
         {
             AcaoJogador a = (valor == 0) ? new AcaoJogador(AcoesDecisaoJogador.Check, 0, this) :
                          new AcaoJogador(AcoesDecisaoJogador.Call, valor, this);
@@ -34,15 +38,13 @@ namespace JogadorTH.Acoes
             return a;
         }
 
-        public AcaoJogador PreFlop(uint valor) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+        public override AcaoJogador PreFlop(uint valor) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
 
-        public AcaoJogador PreJogo(uint valor) => new AcaoJogador(AcoesDecisaoJogador.Play, 0, this);
+        public override AcaoJogador PreJogo(uint valor) => new AcaoJogador(AcoesDecisaoJogador.Play, 0, this);
 
-        public AcaoJogador River(Carta[] cartasMesa) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+        public override AcaoJogador River(Carta[] cartasMesa) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
 
-        public bool TenhoStackParaJogar() => true;
-
-        public AcaoJogador Turn(Carta[] cartasMesa, uint valor)
+        public override AcaoJogador Turn(Carta[] cartasMesa, uint valor)
         {
             AcaoJogador a = (valor == 0) ? 
                 new AcaoJogador(AcoesDecisaoJogador.Check, 0, this) :
@@ -50,6 +52,5 @@ namespace JogadorTH.Acoes
 
             return a;
         }
-
     }
 }

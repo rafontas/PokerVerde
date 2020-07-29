@@ -15,19 +15,18 @@ namespace Comum.Classes
 
         public Mesa Mesa { get; }
 
-        public DealerPartida(Mesa m, IJogador banca)
+        //todo: retirar banca e instanciar como padrão
+        public DealerPartida(Mesa mesa, IJogador banca)
         { 
-            this.Mesa = m;
-            this.banca = banca;            
+            this.Mesa = mesa;
+            this.banca = banca;
         }
 
         public IJogador GetBancaPadrao() => this.banca;
 
-        public bool HaJogadoresParaJogar() 
-            => this.Mesa.Participantes.Count > 0;
+        public bool HaJogadoresParaJogar() => this.Mesa.PartidasAtuais.Count > 0;
 
-        public void PrepararNovaPartida() 
-            => this.Mesa.ReiniciarMesa();
+        public void PrepararNovaPartida() => this.Mesa.ReiniciarMesa();
 
         public void PergutarQuemIraJogar()
         {
@@ -81,11 +80,11 @@ namespace Comum.Classes
 
         //todo: tirar isso de public
         public void CobrarAnt(IJogador jogador) =>
-                this.Mesa.PartidasAtuais[jogador].AddToPote(jogador.PagaValor(this.Mesa.RegrasMesaAtual.Ant), TipoJogadorTHB.Jogador);
+                this.Mesa.PartidasAtuais[jogador].AddToPote(jogador.PagarValor(this.Mesa.RegrasMesaAtual.Ant), TipoJogadorTHB.Jogador);
 
 
         //todo: tirar isso de public
-        public void DistribuirCartasJogadores(IPartida p) => p.Jogador.RecebeCarta(p.PopDeck(), p.PopDeck());
+        public void DistribuirCartasJogadores(IPartida p) => p.Jogador.ReceberCarta(p.PopDeck(), p.PopDeck());
 
         public void RevelarFlop() {
             foreach (var partida in this.Mesa.PartidasAtuais)
@@ -117,7 +116,7 @@ namespace Comum.Classes
                 switch (acaoTomada.Acao)
                 {
                     case AcoesDecisaoJogador.PayFlop:
-                        jogador.PagaValor(this.Mesa.RegrasMesaAtual.Flop);
+                        jogador.PagarValor(this.Mesa.RegrasMesaAtual.Flop);
                         partida.AddToPote(this.Mesa.RegrasMesaAtual.Flop, TipoJogadorTHB.Jogador);
                         partida.AddToPote(this.Mesa.RegrasMesaAtual.Flop, TipoJogadorTHB.Banca);
                         proximaRodada = new RodadaTHB(TipoRodada.Flop, partida.PoteAgora, partida.CartasMesa);
@@ -148,14 +147,14 @@ namespace Comum.Classes
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
-                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
+                        jog.Value.AddToPote(jog.Key.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        jog.Value.AddToPote(jog.Value.Banca.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         jog.Value.AddRodada(new RodadaTHB(TipoRodada.Turn, jog.Value.PoteAgora, jog.Value.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        jog.Value.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
-                        jog.Value.AddToPote(jog.Value.Banca.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
+                        jog.Value.AddToPote(jog.Key.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        jog.Value.AddToPote(jog.Value.Banca.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         jog.Value.AddRodada(new RodadaTHB(TipoRodada.Turn, jog.Value.PoteAgora, jog.Value.CartasMesa));
                         break;
 
@@ -178,14 +177,14 @@ namespace Comum.Classes
                         break;
 
                     case AcoesDecisaoJogador.Call:
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
+                        partida.AddToPote(jog.Key.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        partida.AddToPote(jog.Key.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
                     case AcoesDecisaoJogador.Raise:
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
-                        partida.AddToPote(jog.Key.PagaValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
+                        partida.AddToPote(jog.Key.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Jogador);
+                        partida.AddToPote(jog.Key.PagarValor(this.Mesa.RegrasMesaAtual.Turn), TipoJogadorTHB.Banca);
                         partida.AddRodada(new RodadaTHB(TipoRodada.River, partida.PoteAgora, partida.CartasMesa));
                         break;
 
@@ -195,7 +194,7 @@ namespace Comum.Classes
             }
         }
         
-        protected void DistribuirCartasBanca(IPartida p) => p.Banca.RecebeCarta(p.PopDeck(), p.PopDeck());
+        protected void DistribuirCartasBanca(IPartida p) => p.Banca.ReceberCarta(p.PopDeck(), p.PopDeck());
 
         //TODO: verificar se melhor maneira de contornar o virtual
         public virtual void VerificarGanhadorPartida(IPartida p)
@@ -245,16 +244,16 @@ namespace Comum.Classes
             switch (p.JogadorGanhador)
             {
                 case VencedorPartida.Banca:
-                    p.Banca.RecebeValor(p.PoteAgora);
+                    p.Banca.ReceberValor(p.PoteAgora);
                     break;
 
                 case VencedorPartida.Empate:
-                    p.Banca.RecebeValor(p.ValorInvestidoBanca);
-                    p.Jogador.RecebeValor(p.ValorInvestidoJogador);
+                    p.Banca.ReceberValor(p.ValorInvestidoBanca);
+                    p.Jogador.ReceberValor(p.ValorInvestidoJogador);
                     break;
 
                 case VencedorPartida.Jogador:
-                    p.Jogador.RecebeValor(p.PoteAgora);
+                    p.Jogador.ReceberValor(p.PoteAgora);
                     break;
 
                 default:

@@ -26,23 +26,23 @@ namespace Testes
 
             // Pagamento Normal
             valorPago = 50;
-            j.PagaValor(valorPago);
+            j.PagarValor(valorPago);
             Assert.IsTrue(j.Stack == 100);
 
             // Pagamento maior do que o que tem
             // Stack jogador = 100
             valorPago = 150;
-            Assert.ThrowsException<JogadorException>(() => j.PagaValor(valorPago));
+            Assert.ThrowsException<JogadorException>(() => j.PagarValor(valorPago));
 
             // Pagamento para zero
             // Stack = 100
             valorPago = 100;
-            j.PagaValor(valorPago);
+            j.PagarValor(valorPago);
             Assert.IsTrue(j.Stack == 0);
 
             // Stack = 0
             valorRecebido = 75;
-            j.RecebeValor(valorRecebido);
+            j.ReceberValor(valorRecebido);
             Assert.IsTrue(75 == j.Stack);
         }
 
@@ -50,7 +50,7 @@ namespace Testes
         public void RecebeCartasTest() {
             IJogador j = new DummyJogadorTHB(this.configPadrao, 100);
             
-            j.RecebeCarta(
+            j.ReceberCarta(
                 new Carta(9, Enuns.Naipe.Ouros),
                 new Carta(10, Enuns.Naipe.Copas)
             );
@@ -67,7 +67,7 @@ namespace Testes
         {
             IJogador j = new DummyJogadorTHB(this.configPadrao, 100);
 
-            j.RecebeCarta(
+            j.ReceberCarta(
                 new Carta(9, Enuns.Naipe.Ouros),
                 new Carta(10, Enuns.Naipe.Copas)
             );

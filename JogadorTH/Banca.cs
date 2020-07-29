@@ -1,4 +1,4 @@
-﻿using JogadorTH.Acoes;
+﻿using JogadorTH.Inteligencia;
 using Modelo;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace JogadorTH
     {
         public Banca(ConfiguracaoTHBonus Config, uint valorStackInicial = 500000) : base(Config, valorStackInicial)
         {
-            this.Mente.Add(new AcaoDecisoriaBanca());
+            this.Mente.Add(new InteligenciaBanca());
         }
 
     }

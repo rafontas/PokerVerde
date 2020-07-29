@@ -8,15 +8,17 @@ namespace Modelo
 {
     public interface IJogador : IAcoesBasicasJogador, IEqualityComparer<IJogador>
     {
-        IList<IAcoesDecisao> Mente { get; }
-        AcaoJogador ExecutaAcao(TipoRodada momento, uint valorPagar, Carta[] mesa);
-        void AddPartidaHistorico(IPartida p);
-        ICorrida Corrida { get; set; }
         uint SeqProximaPartida { get; }
-        IList<IPartida> Historico { get; }
         bool VouJogarMaisUmaPartida();
-        IJogadorEstatisticas Estatistica { get; }
 
+        void AddPartidaHistorico(IPartida p);
+        IList<IAcoesDecisao> Mente { get; }
+        IList<IPartida> Historico { get; }
+        ICorrida Corrida { get; set; }
+        IJogadorEstatisticas Estatistica { get; }
+        IJogadorStack JogadorStack { get; }
+
+        AcaoJogador ExecutaAcao(TipoRodada momento, uint valorPagar, Carta[] mesa);
         AcaoJogador PreJogo(uint valor);
         AcaoJogador PreFlop(uint valor);
         AcaoJogador Flop(Carta[] cartasMesa, uint valor);

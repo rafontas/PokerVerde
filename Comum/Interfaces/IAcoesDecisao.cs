@@ -8,9 +8,11 @@ namespace Comum.Interfaces
 {
     public interface IAcoesDecisao
     {
-        string idMente { get; }
-        int versaoIdMente { get; }
-        ConfiguracaoTHBonus config { get; }
+        string IdMente { get; }
+        int VersaoIdMente { get; }
+        ConfiguracaoTHBonus Config { get; }
+        void SetStackAgora(uint StackInicial, uint Stack);
+        bool PossoPagarValor(uint ValorAhPagar);
         AcaoJogador PreJogo(uint valor);
         AcaoJogador PreFlop(uint valor);
         AcaoJogador Flop(Carta[] cartasMesa, uint valor);

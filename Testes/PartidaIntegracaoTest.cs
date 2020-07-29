@@ -47,14 +47,14 @@ namespace Testes
 
             // Pre-jogo (Paga ant, distribui carta ao jogador, adiciona rodada)
             IPartida p = dealer.Mesa.PartidasAtuais[jog];
-            p.AddToPote(jog.PagaValor(PartidaIntegracaoTest.configPadrao.Ant), TipoJogadorTHB.Jogador);
-            jog.RecebeCarta(new Carta(10, Enuns.Naipe.Copas), new Carta(9, Enuns.Naipe.Copas));
+            p.AddToPote(jog.PagarValor(PartidaIntegracaoTest.configPadrao.Ant), TipoJogadorTHB.Jogador);
+            jog.ReceberCarta(new Carta(10, Enuns.Naipe.Copas), new Carta(9, Enuns.Naipe.Copas));
             p.AddRodada(new RodadaTHB(Enuns.TipoRodada.PreFlop, p.PoteAgora, null));
             Assert.IsTrue(valorStackJogadorAposPagarAnt == jog.Stack);
 
             // Pre-flop (Pagar para ver flop)
-            p.AddToPote(jog.PagaValor(PartidaIntegracaoTest.configPadrao.Flop), TipoJogadorTHB.Jogador);
-            p.AddToPote(banca.PagaValor(PartidaIntegracaoTest.configPadrao.Flop), TipoJogadorTHB.Banca);
+            p.AddToPote(jog.PagarValor(PartidaIntegracaoTest.configPadrao.Flop), TipoJogadorTHB.Jogador);
+            p.AddToPote(banca.PagarValor(PartidaIntegracaoTest.configPadrao.Flop), TipoJogadorTHB.Banca);
             p.AddRodada(new RodadaTHB(Enuns.TipoRodada.Flop, p.PoteAgora, p.CartasMesa));
 
             Assert.IsTrue(jog.Stack == valorStackJogadorAposPagarFlop); // stack jogador
@@ -73,7 +73,7 @@ namespace Testes
             typeof(Partida).GetProperty("River").SetValue(p, river);
 
 
-            banca.RecebeCarta(new Carta(2, Enuns.Naipe.Espadas), new Carta(3, Enuns.Naipe.Espadas));
+            banca.ReceberCarta(new Carta(2, Enuns.Naipe.Espadas), new Carta(3, Enuns.Naipe.Espadas));
 
             Carta[] CartasBanca = new Carta[] {
                 p.Banca.Cartas[0],
@@ -94,7 +94,7 @@ namespace Testes
             Assert.IsTrue(melhorMaoJogador.Compara(melhorMaoBanca) == 1);
             
             p.JogadorGanhador = VencedorPartida.Jogador;
-            p.Jogador.RecebeValor(p.PoteAgora);
+            p.Jogador.ReceberValor(p.PoteAgora);
 
             Assert.IsTrue(p.Jogador.Stack == 510);
 

@@ -11,12 +11,12 @@ namespace Comum.Interfaces
 
         Carta[] Cartas { get; }
 
-        void RecebeCarta(Carta c1, Carta c2);
+        void ReceberCarta(Carta c1, Carta c2);
 
         void ResetaMao();
 
-        uint RecebeValor(uint Valor);
+        uint ReceberValor(uint Valor);
 
-        uint PagaValor(uint Valor);
+        uint PagarValor(uint Valor);
     }
 }

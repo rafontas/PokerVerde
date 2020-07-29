@@ -59,11 +59,7 @@ namespace DealerTH.Probabilidade
                 array[indice++] = new CartaA() { Numero = c.Numero, Naipe = c.Naipe, RodadaNum = 0 };
         }
 
-        public AvaliaProbabilidadeMao(
-            IList<Carta> mao, 
-            IList<Carta> maoSecundaria, 
-            IList<Carta> mesa, 
-            uint numeroRodadas = 100000)
+        public AvaliaProbabilidadeMao(IList<Carta> mao, IList<Carta> maoSecundaria, IList<Carta> mesa, uint numeroRodadas = 100000)
         {
             Deck = new DeckA();
             Deck.CriaDeckAvaliacao();
@@ -156,7 +152,6 @@ namespace DealerTH.Probabilidade
                 else empate++;
             }
         }
-
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.

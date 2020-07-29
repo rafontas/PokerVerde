@@ -2,7 +2,6 @@
 using Comum.Excecoes;
 using Comum.Interfaces;
 using Enuns;
-using JogadorTH.Interfaces;
 using Modelo;
 using System;
 using System.Collections.Generic;
@@ -16,17 +15,13 @@ namespace JogadorTH
         private static uint getNovoId { get => JogadorBase._idCount++; }
         private uint id { get; set; }
         public uint Id => this.id;
-        protected uint stack { get; set; }
-        public uint StackInicial { get; private set; }
+        public uint StackInicial { get => this.JogadorStack.StackInicial; }
+        public uint Stack { get => this.JogadorStack.Stack; }
+        public IJogadorStack JogadorStack { get; private set; }
 
-        public uint Stack { get => this.stack; }
+        public uint PagarValor(uint ValorAhPagar) => this.JogadorStack.PagarValor(ValorAhPagar);
 
-        public uint PagaValor(uint Valor) {
-            if (this.stack < Valor) throw new JogadorException("Não há stack para pagar o valor passado.");
-            this.stack -= Valor;
-            return Valor;
-        }
-
+        public uint ReceberValor(uint ValorAhReceber) => this.JogadorStack.ReceberValor(ValorAhReceber);
         public Carta[] cartas { get; set; } = new Carta[] { null, null };
         
         public Carta[] Cartas { get => this.cartas; } 
@@ -35,16 +30,11 @@ namespace JogadorTH
 
         public IList<IAcoesDecisao> Mente { get; set; } = new List<IAcoesDecisao>();
 
-        public void RecebeCarta(Carta c1, Carta c2)
+        public void ReceberCarta(Carta c1, Carta c2)
         {
             this.cartas[0] = c1;
             this.cartas[1] = c2;
         }
-
-        public uint RecebeValor(uint Valor) {
-            this.stack += Valor;
-            return Valor;
-        } 
 
         public void ResetaMao() => this.cartas = new Carta[] { null, null };
 
@@ -71,11 +61,10 @@ namespace JogadorTH
         public JogadorBase(ConfiguracaoTHBonus Config, uint valorStackInicial = 200)
         {
             this.config = Config;
-            this.stack = valorStackInicial;
-            this.StackInicial = valorStackInicial;
             this.Estatistica = new JogadorEstatisticas(this.historico);
             this.id = JogadorBase.getNovoId;
             this.seqProximaPartida = 0;
+            this.JogadorStack = new JogadorStack(valorStackInicial);
         }
 
         public AcaoJogador ExecutaAcao(TipoRodada momento, uint valoPagar, Carta[] mesa)
@@ -117,6 +106,7 @@ namespace JogadorTH
             if (!this.TenhoStackParaJogar()) 
                 return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
 
+            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().PreJogo(valor);
         }
 
@@ -124,16 +114,33 @@ namespace JogadorTH
         {
             if (!this.TenhoStackParaJogar()) 
                 return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
-            
+         
+            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().PreFlop(valor); 
         }
 
-        public AcaoJogador Flop(Carta[] cartasMesa, uint valor) => this.Mente.First().Flop(cartasMesa, valor);
+        public AcaoJogador Flop(Carta[] cartasMesa, uint valor) 
+        { 
+            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
+            return this.Mente.First().Flop(cartasMesa, valor);
+        }
 
-        public AcaoJogador Turn(Carta[] cartasMesa, uint valor) => this.Mente.First().Turn(cartasMesa, valor);
+        public AcaoJogador Turn(Carta[] cartasMesa, uint valor)
+        {
+            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
+            return this.Mente.First().Turn(cartasMesa, valor);
+        }
 
-        public AcaoJogador River(Carta[] cartasMesa) => this.Mente.First().River(cartasMesa);
+        public AcaoJogador River(Carta[] cartasMesa)
+        {
+            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
+            return this.Mente.First().River(cartasMesa);
+        }
 
-        public AcaoJogador FimDeJogo() =>  this.Mente.First().FimDeJogo();
+        public AcaoJogador FimDeJogo()
+        {
+            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
+            return this.Mente.First().FimDeJogo();
+        }
     }
 }

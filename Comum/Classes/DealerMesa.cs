@@ -121,11 +121,7 @@ namespace Comum.Classes
             this.TerminarPartidaAtual();
         }
 
-        public void ExecutarCorrida()
-        {
-            while (this.Mesa.ParticipantesJogando.First().VouJogarMaisUmaPartida())
-                this.ExecutarNovaPartidaCompleta();
-        }
+        public void ExecutarCorrida() => throw new NotImplementedException("Execução de corrida não implementada.");
 
         public bool HaParticipantesParaJogar() => this.DealerPartida.HaJogadoresParaJogar();
 

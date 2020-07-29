@@ -39,13 +39,13 @@ namespace Testes
             IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
 
             AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
-            j.PagaValor(this.configPadrao.Ant);
+            j.PagarValor(this.configPadrao.Ant);
             valorStackPago -= this.configPadrao.Ant;
 
             Assert.IsTrue(j.Stack == valorStackPago);
 
             AcaoJogador preFlop = j.PreFlop(this.configPadrao.Flop);
-            j.PagaValor(this.configPadrao.Flop);
+            j.PagarValor(this.configPadrao.Flop);
             valorStackPago -= this.configPadrao.Flop;
 
             Assert.IsTrue(j.Stack == valorStackPago);
@@ -61,17 +61,17 @@ namespace Testes
             IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
 
             AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
-            j.PagaValor(this.configPadrao.Ant);
+            j.PagarValor(this.configPadrao.Ant);
             valorStackPago -= this.configPadrao.Ant;
 
             Assert.IsTrue(j.Stack == valorStackPago);
 
             AcaoJogador preFlop = j.PreFlop(this.configPadrao.Flop);
-            j.PagaValor(this.configPadrao.Flop);
+            j.PagarValor(this.configPadrao.Flop);
             valorStackPago -= this.configPadrao.Flop;
 
             AcaoJogador turn = j.Flop(null, this.configPadrao.Turn);
-            j.PagaValor(this.configPadrao.Turn);
+            j.PagarValor(this.configPadrao.Turn);
             valorStackPago -= this.configPadrao.Turn;
 
             Assert.IsTrue(j.Stack == valorStackPago);
@@ -87,17 +87,17 @@ namespace Testes
             IJogador j = new DummyJogadorTHB(this.configPadrao, valorStackInicial);
 
             AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
-            j.PagaValor(this.configPadrao.Ant);
+            j.PagarValor(this.configPadrao.Ant);
             valorStackPago -= this.configPadrao.Ant;
 
             Assert.IsTrue(j.Stack == valorStackPago);
 
             AcaoJogador preFlop = j.PreFlop(this.configPadrao.Flop);
-            j.PagaValor(this.configPadrao.Flop);
+            j.PagarValor(this.configPadrao.Flop);
             valorStackPago -= this.configPadrao.Flop;
 
             AcaoJogador turn = j.Flop(null, 0);
-            j.PagaValor(0);
+            j.PagarValor(0);
             valorStackPago -= 0;
 
             Assert.IsTrue(j.Stack == valorStackPago);
@@ -114,12 +114,12 @@ namespace Testes
 
             // Pre Jogo
             AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
-            j.PagaValor(this.configPadrao.Ant);
+            j.PagarValor(this.configPadrao.Ant);
             valorStackPago -= this.configPadrao.Ant;
 
             // Ver Flop
             AcaoJogador verFlop = j.PreFlop(this.configPadrao.Flop);
-            j.PagaValor(this.configPadrao.Flop);
+            j.PagarValor(this.configPadrao.Flop);
             valorStackPago -= this.configPadrao.Flop;
 
             // Ver Turn
@@ -127,7 +127,7 @@ namespace Testes
 
             // Ver River
             AcaoJogador verRiver = j.Turn(null, this.configPadrao.Turn);
-            j.PagaValor(this.configPadrao.Turn);
+            j.PagarValor(this.configPadrao.Turn);
             valorStackPago -= this.configPadrao.Turn;
 
             // Testa
@@ -145,12 +145,12 @@ namespace Testes
 
             // Pre Jogo
             AcaoJogador preJogo = j.PreJogo(this.configPadrao.Ant);
-            j.PagaValor(this.configPadrao.Ant);
+            j.PagarValor(this.configPadrao.Ant);
             valorStackPago -= this.configPadrao.Ant;
 
             // Ver Flop
             AcaoJogador verFlop = j.PreFlop(this.configPadrao.Flop);
-            j.PagaValor(this.configPadrao.Flop);
+            j.PagarValor(this.configPadrao.Flop);
             valorStackPago -= this.configPadrao.Flop;
 
             // Ver Turn
