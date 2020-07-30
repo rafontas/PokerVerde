@@ -24,22 +24,31 @@ namespace Comum.Classes
 
         public IJogador GetBancaPadrao() => this.banca;
 
-        public bool HaJogadoresParaJogar() => this.Mesa.PartidasAtuais.Count > 0;
+        public bool HaJogadoresParaJogar() => this.Mesa.JogadoresNaMesa.Count > 0;
 
         public void PrepararNovaPartida() => this.Mesa.ReiniciarMesa();
 
         public void PergutarQuemIraJogar()
         {
-            foreach (IJogador j in this.Mesa.Participantes)
+            foreach (IJogador j in this.Mesa.JogadoresNaMesa)
             {
                 IAcaoTomada a = j.PreJogo(this.Mesa.RegrasMesaAtual.Ant);
 
-                if (a.Acao == AcoesDecisaoJogador.Play) {
-                    this.Mesa.PartidasAtuais.Add(j, new Partida(j.SeqProximaPartida, j, this.banca));
-                }
-                else if (a.Acao == AcoesDecisaoJogador.Stop)
+                switch(a.Acao)
                 {
-                    this.EncerrarPartidaJogador(j);
+                    case AcoesDecisaoJogador.Play:
+                        this.Mesa.PartidasAtuais.Add(j, new Partida(j.SeqProximaPartida, j, this.banca));
+                        break;
+
+                    case AcoesDecisaoJogador.Fold:
+                        break;
+
+                    case AcoesDecisaoJogador.Stop:
+                        this.RetirarJogadorDaMesa(j);
+                        break;
+
+                    default:
+                        throw new JogadorException("Jogador devolveu ação não possível");
                 }
             }
         }
@@ -56,7 +65,7 @@ namespace Comum.Classes
 
         public void EncerrarPartidas()
         {
-            IList<IJogador> jogadores = this.Mesa.Participantes;
+            IList<IJogador> jogadores = this.Mesa.JogadoresNaMesa;
 
             foreach (IJogador jog in jogadores)
             {
@@ -75,13 +84,10 @@ namespace Comum.Classes
             this.Mesa.PartidasAtuais.Remove(j);
         }
 
-        public bool ExistePartidaEmAndamento()
-            => this.Mesa.PartidasAtuais.Count > 0;
+        public bool ExistePartidaEmAndamento() => this.Mesa.PartidasAtuais.Count > 0;
 
         //todo: tirar isso de public
-        public void CobrarAnt(IJogador jogador) =>
-                this.Mesa.PartidasAtuais[jogador].AddToPote(jogador.PagarValor(this.Mesa.RegrasMesaAtual.Ant), TipoJogadorTHB.Jogador);
-
+        public void CobrarAnt(IJogador jogador) => this.Mesa.PartidasAtuais[jogador].AddToPote(jogador.PagarValor(this.Mesa.RegrasMesaAtual.Ant), TipoJogadorTHB.Jogador);
 
         //todo: tirar isso de public
         public void DistribuirCartasJogadores(IPartida p) => p.Jogador.ReceberCarta(p.PopDeck(), p.PopDeck());
@@ -259,6 +265,17 @@ namespace Comum.Classes
                 default:
                     throw new DealerException("Erro ao entregar potes aos vencedores. Jogador ganhador não previsto.");
             }
+        }
+
+        /// <summary>
+        /// Retira jogador da mesa.
+        /// </summary>
+        /// <param name="j">Jogador a sair.</param>
+        public void RetirarJogadorDaMesa(IJogador j)
+        {
+            if (!this.Mesa.JogadoresNaMesa.Contains(j)) throw new DealerException("Tentando retirar jogador que não está na mesa.");
+
+            this.Mesa.JogadoresNaMesa.Remove(j);
         }
     }
 }

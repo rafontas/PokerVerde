@@ -1,8 +1,8 @@
 ﻿using Comum.Interfaces;
 using Enuns;
 
-namespace Modelo
-{
+namespace Modelo 
+{ 
     public class AcaoJogador : IAcaoTomada
     {
         private static uint _seq = 0;

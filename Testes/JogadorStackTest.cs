@@ -14,7 +14,7 @@ namespace Testes
         [TestMethod]
         public void PagarValorTest() 
         {
-            uint stackInicial = 500, valorHaPagar = 50;
+            uint stackInicial = 500, valorHaPagar = 50, valorPagarAgora = 0;
             IJogadorStack jogadorStack = new JogadorStack(stackInicial);
             
             jogadorStack.PagarValor(valorHaPagar); // 450 = 500 - 50
@@ -22,9 +22,12 @@ namespace Testes
 
             Assert.IsTrue(jogadorStack.Stack == 400);
             Assert.IsTrue(jogadorStack.StackInicial == stackInicial);
+
+            valorPagarAgora = valorHaPagar * 4; // 200
+            valorPagarAgora = jogadorStack.PagarValor(valorPagarAgora); // 200 = 400 - (4 * 50)
             
-            jogadorStack.PagarValor(valorHaPagar * 4); // 200 = 400 - (4 * 50)
             Assert.IsTrue(jogadorStack.Stack == 200);
+            Assert.IsTrue(valorPagarAgora == 200);
 
             // 200 = 200 - 250 > Exceção
             Assert.ThrowsException<JogadorException>(() => jogadorStack.PagarValor(stackInicial));

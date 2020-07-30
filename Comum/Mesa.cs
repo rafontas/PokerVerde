@@ -9,22 +9,18 @@ namespace Comum
 {
     public class Mesa
     {
+        public ConfiguracaoTHBonus RegrasMesaAtual { get; private set; }
 
         public Mesa (ConfiguracaoTHBonus RegrasMesaAtual)
         {
             this.RegrasMesaAtual = RegrasMesaAtual;
         }
-        
-        public ConfiguracaoTHBonus RegrasMesaAtual { get; private set; }
 
-        public void AddParticipante(IJogador j) => this.Participantes.Add(j);
+        public void AddParticipante(IJogador j) => this.JogadoresNaMesa.Add(j);
 
-        public IDictionary<IJogador, IPartida> PartidasAtuais { get; set; } 
-            = new Dictionary<IJogador, IPartida>();
+        public IDictionary<IJogador, IPartida> PartidasAtuais { get; set; } = new Dictionary<IJogador, IPartida>();
 
-        public IList<IJogador> ParticipantesJogando { get => this.PartidasAtuais.Keys.ToList<IJogador>(); }
-
-        public IList<IJogador> Participantes { get; private set; } = new List<IJogador>();
+        public IList<IJogador> JogadoresNaMesa { get; private set; } = new List<IJogador>();
 
         public void ReiniciarMesa()
         {

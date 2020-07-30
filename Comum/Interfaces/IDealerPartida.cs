@@ -29,6 +29,13 @@ namespace Comum.Interfaces
         void EntregarPoteAosVencedores(IPartida p);
 
         void EncerrarPartidaJogador(IJogador j);
+        
+        /// <summary>
+        /// Retira jogador da mesa.
+        /// </summary>
+        /// <param name="j">Jogador a sair.</param>
+        void RetirarJogadorDaMesa(IJogador j);
+
         void VerificarGanhadorPartida(IPartida p);
 
         IJogador GetBancaPadrao();

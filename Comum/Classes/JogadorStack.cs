@@ -21,14 +21,14 @@ namespace Comum.Classes
 
         public uint PagarValor(uint ValorHaPagar)
         {
-            if (this._Stack < ValorHaPagar) throw new JogadorException("O jogador não tem este valor para pagar");
+            if (!this.PossoPagarValor(ValorHaPagar)) throw new JogadorException("Jogador sem stack para efetuar pagamento");
 
             this._Stack -= ValorHaPagar;
-            return this.Stack;
+            return ValorHaPagar;
         }
 
-        public uint ReceberValor(uint ValorHaReceber) => (this._Stack += ValorHaReceber);
+        public void ReceberValor(uint ValorHaReceber) => this._Stack += ValorHaReceber;
 
-        public bool PossoPagarValor(uint Valor) => (this._Stack >= Valor);
+        public bool PossoPagarValor(uint ValorAhPagar) => (this._Stack >= ValorAhPagar);
     }
 }

@@ -24,11 +24,11 @@ namespace Testes
             Comum.Mesa m = new Comum.Mesa(MesaTest.configPadrao);
             IDealerPartida d = new Comum.Classes.DealerPartida(m, banca);
 
-            Assert.AreNotEqual(d.Mesa.Participantes.Count, 1);
+            Assert.AreNotEqual(d.Mesa.JogadoresNaMesa.Count, 1);
 
             d.Mesa.AddParticipante(jogador);
 
-            Assert.AreEqual(d.Mesa.Participantes.Count, 1);
+            Assert.AreEqual(d.Mesa.JogadoresNaMesa.Count, 1);
 
         }
 

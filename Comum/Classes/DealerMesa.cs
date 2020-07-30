@@ -105,7 +105,8 @@ namespace Comum.Classes
                     this.DealerPartida.EncerrarPartidas(); 
                     break;
 
-                default: throw new DealerException("Ultima rodada não encontrada.");
+                default: 
+                    throw new DealerException("Ultima rodada não encontrada.");
             }
         }
 

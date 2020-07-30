@@ -21,7 +21,7 @@ namespace JogadorTH
 
         public uint PagarValor(uint ValorAhPagar) => this.JogadorStack.PagarValor(ValorAhPagar);
 
-        public uint ReceberValor(uint ValorAhReceber) => this.JogadorStack.ReceberValor(ValorAhReceber);
+        public void ReceberValor(uint ValorAhReceber) => this.JogadorStack.ReceberValor(ValorAhReceber);
         public Carta[] cartas { get; set; } = new Carta[] { null, null };
         
         public Carta[] Cartas { get => this.cartas; } 
@@ -103,10 +103,10 @@ namespace JogadorTH
 
         public AcaoJogador PreJogo(uint valor) 
         {
-            if (!this.TenhoStackParaJogar()) 
-                return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
-
             this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
+
+            if (!this.TenhoStackParaJogar()) return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
+
             return this.Mente.First().PreJogo(valor);
         }
 

@@ -13,8 +13,6 @@ namespace JogadorTH.Inteligencia
         private int versaoIdMente { get; set; }
         public override int VersaoIdMente { get => this.versaoIdMente; }
 
-        public override ConfiguracaoTHBonus Config { get; set; }
-
         public override AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa)
         {
             switch (tipoRodada) {

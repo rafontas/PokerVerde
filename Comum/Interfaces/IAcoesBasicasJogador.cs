@@ -15,7 +15,7 @@ namespace Comum.Interfaces
 
         void ResetaMao();
 
-        uint ReceberValor(uint Valor);
+        void ReceberValor(uint Valor);
 
         uint PagarValor(uint Valor);
     }

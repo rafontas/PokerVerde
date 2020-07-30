@@ -21,7 +21,7 @@ namespace JogadorTH.Inteligencia
         
         public bool PossoPagarValor(uint ValorAhPagar) => (this.Stack >= ValorAhPagar);
 
-        public abstract ConfiguracaoTHBonus Config { get; set;  }
+        public ConfiguracaoTHBonus Config { get; set; } = new ConfiguracaoTHBonus();
 
         public abstract AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa);
 
