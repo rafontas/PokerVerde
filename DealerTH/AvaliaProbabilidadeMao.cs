@@ -178,14 +178,17 @@ namespace DealerTH.Probabilidade
         /// <param name="maoAdversaria">Cartas da mão adversária. Pode ser 0, 1 ou 2.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetPorcentagemVitoria(Carta [] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 200000)
+        public static float GetPorcentagemVitoria(Carta [] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000)
         {
             uint vitorias = 0, derrotas = 0, empate = 0;
 
             AvaliaProbabilidadeMao avalia = new AvaliaProbabilidadeMao(maoAvaliada, maoAdversaria, mesa, numeroRodadas);
             avalia.Avalia(out vitorias, out derrotas, out empate);
 
-            return ((vitorias * 100) / numeroRodadas);
+            float _vitorias = vitorias, _derrotas = derrotas, _empates = empate, _numRod = numeroRodadas; 
+            float probabilidadeFinal = ((_vitorias * 100) / _numRod);
+            
+            return probabilidadeFinal;
 
         }
     }

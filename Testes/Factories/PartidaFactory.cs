@@ -13,6 +13,7 @@ namespace Testes.Factories
     internal class PartidaFactory
     {
         private ConfiguracaoTHBonus _configuracaoPadrao { get; set; } = null;
+        
         internal ConfiguracaoTHBonus ConfiguracaoPadrao 
         {
             get => this._configuracaoPadrao ?? new ConfiguracaoTHBonus(){ Ant = 5, Flop = 10, Turn = 5, River = 5 };
@@ -20,6 +21,7 @@ namespace Testes.Factories
         }
         
         internal PartidaFactory() { }
+        
         internal PartidaFactory(ConfiguracaoTHBonus c) { this._configuracaoPadrao = c; }
 
         internal IList<IPartida> GetJogadorGanhou(int numPartidasRetornadas, IJogador j = null) 

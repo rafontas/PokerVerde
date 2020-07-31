@@ -1,6 +1,7 @@
 ﻿using Comum.Interfaces;
 using DealerTH.Probabilidade;
 using Enuns;
+using JogadorTH.Inteligencia.Probabilidade;
 using Modelo;
 using System;
 
@@ -12,6 +13,13 @@ namespace JogadorTH.Inteligencia
         public override string IdMente { get => this.idMente; }
         private int versaoIdMente { get; set; }
         public override int VersaoIdMente { get => this.versaoIdMente; }
+
+        private AcaoProbabilidade AcaoProbabilidade { get; set; }
+
+        public InteligenciaProb() : base()
+        {
+            this.AcaoProbabilidade = new AcaoProbabilidade();
+        }
 
         public override AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa)
         {
@@ -28,28 +36,67 @@ namespace JogadorTH.Inteligencia
 
         public override AcaoJogador PreJogo(uint valor)
         {
-            AcaoJogador acao = new AcaoJogador(AcoesDecisaoJogador.Play, 0, this);
+            AcaoJogador acao;
+            
+            if (this.PossoPagarValor(this.Config.Ant))
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Play, 0, this); 
+            }
+            else
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Stop, 0, this); 
+            }
 
             return acao;
         }
 
-        public override AcaoJogador PreFlop(uint valor) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+        public override AcaoJogador PreFlop(uint valor) 
+        {
+            AcaoJogador acao;
+            float minhaProbAgora = this.getMinhaProbalidadeAgora(this.JogadorStack.Mao);
+
+            if (minhaProbAgora >= this.AcaoProbabilidade.probMinimaChamarFlop)
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.PayFlop, this.Config.Flop, this);
+            }
+            else
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Fold, 0, this);
+            }
+
+            return acao;
+        }
 
         public override AcaoJogador Flop(Carta[] cartasMesa, uint valor)
         {
-            AcaoJogador a = (valor == 0) ? new AcaoJogador(AcoesDecisaoJogador.Check, 0, this) :
-                         new AcaoJogador(AcoesDecisaoJogador.Call, valor, this);
+            AcaoJogador acao;
 
-            return a;
+            if (this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoFlop)
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.Turn, this);
+            }
+            else
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+            }
+
+            return acao;
         }
         
         public override AcaoJogador Turn(Carta[] cartasMesa, uint valor)
         {
-            AcaoJogador a = (valor == 0) ? 
-                new AcaoJogador(AcoesDecisaoJogador.Check, 0, this) :
-                new AcaoJogador(AcoesDecisaoJogador.Call, valor, this);
+            AcaoJogador acao;
 
-            return a;
+            if (this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoTurn)
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.River, this);
+            }
+            else
+            {
+                acao = new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+            }
+
+            return acao;
         }
 
         public override AcaoJogador River(Carta[] cartasMesa) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
@@ -62,7 +109,7 @@ namespace JogadorTH.Inteligencia
         /// <param name="minhasCartas">cartas na mão</param>
         /// <param name="cartasMesa">cartas na mesa</param>
         /// <returns></returns>
-        private float getMinhaProbabilidadeGanhar(Carta[] minhasCartas, Carta[] cartasMesa) 
+        private float getMinhaProbalidadeAgora(Carta[] minhasCartas, Carta[] cartasMesa = null) 
         {
             return (cartasMesa == null ?
                 AvaliaProbabilidadeMao.GetPorcentagemVitoria(minhasCartas) :

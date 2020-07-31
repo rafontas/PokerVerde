@@ -10,8 +10,8 @@ namespace Comum.Interfaces
     {
         string IdMente { get; }
         int VersaoIdMente { get; }
+        IJogadorStack JogadorStack { get; set; }
         ConfiguracaoTHBonus Config { get; }
-        void SetStackAgora(uint StackInicial, uint Stack);
         bool PossoPagarValor(uint ValorAhPagar);
         AcaoJogador PreJogo(uint valor);
         AcaoJogador PreFlop(uint valor);

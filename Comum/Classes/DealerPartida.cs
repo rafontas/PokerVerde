@@ -71,10 +71,27 @@ namespace Comum.Classes
             {
                 IPartida p = this.Mesa.PartidasAtuais[jog];
 
+                if (p.Rodadas.Last().TipoRodada == TipoRodada.FimDeJogo) continue;
+
                 this.DistribuirCartasBanca(p);
                 this.VerificarGanhadorPartida(p);
                 this.EntregarPoteAosVencedores(p);
                 this.EncerrarPartidaJogador(jog);
+            }
+        }
+
+        public void EncerrarPartidasTerminadas()
+        {
+            //int numeroPartidas = this.Mesa.PartidasAtuais.Count;
+            for (int i = 0; i < this.Mesa.PartidasAtuais.Count; i++)
+            {
+                KeyValuePair<IJogador, IPartida> item = this.Mesa.PartidasAtuais.ElementAt(i);
+                
+                if(item.Value.Rodadas.Last().TipoRodada == TipoRodada.FimDeJogo)
+                {
+                    this.EncerrarPartidaJogador(item.Key);
+                    i--;
+                }
             }
         }
 
@@ -130,7 +147,6 @@ namespace Comum.Classes
 
                     case AcoesDecisaoJogador.Fold:
                         proximaRodada = new RodadaTHB(TipoRodada.FimDeJogo, partida.PoteAgora, partida.CartasMesa);
-                        this.EncerrarPartidaJogador(jogador);
                         break;
 
                     default: throw new Exception("Ação não esperada.");
@@ -138,6 +154,9 @@ namespace Comum.Classes
 
                 partida.AddRodada(proximaRodada);
             }
+
+            this.EncerrarPartidasTerminadas();
+
         }
 
         public void PerguntarAumentarPreTurn()
@@ -167,6 +186,8 @@ namespace Comum.Classes
                     default: throw new Exception("Ação não esperada.");
                 }
             }
+
+            this.EncerrarPartidasTerminadas();
         }
 
         public void PerguntarAumentarPreRiver()
@@ -198,8 +219,10 @@ namespace Comum.Classes
                 }
 
             }
+
+            this.EncerrarPartidasTerminadas();
         }
-        
+
         protected void DistribuirCartasBanca(IPartida p) => p.Banca.ReceberCarta(p.PopDeck(), p.PopDeck());
 
         //TODO: verificar se melhor maneira de contornar o virtual

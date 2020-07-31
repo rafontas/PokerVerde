@@ -6,20 +6,15 @@ namespace JogadorTH.Inteligencia
 {
     public abstract class InteligenciaBase : IAcoesDecisao
     {
-        private uint StackInicial { get; set; }
-        private uint Stack { get; set; }
-
         public abstract string IdMente { get; }
 
         public abstract int VersaoIdMente { get; }
 
-        public void SetStackAgora(uint StackInicial, uint Stack)
-        {
-            this.StackInicial = StackInicial;
-            this.Stack = Stack;
-        }
-        
-        public bool PossoPagarValor(uint ValorAhPagar) => (this.Stack >= ValorAhPagar);
+        public IJogadorStack JogadorStack { get; set; }
+
+        public InteligenciaBase() {}
+
+        public bool PossoPagarValor(uint ValorAhPagar) => (this.JogadorStack.Stack >= ValorAhPagar);
 
         public ConfiguracaoTHBonus Config { get; set; } = new ConfiguracaoTHBonus();
 

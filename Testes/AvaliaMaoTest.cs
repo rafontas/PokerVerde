@@ -12,8 +12,8 @@ namespace Testes
         public void Teste1()
         {
             IList<Carta> MaoP = new List<Carta>() {
-                new Carta(14, Enuns.Naipe.Espadas),
-                new Carta(14, Enuns.Naipe.Copas),
+                new Carta(12, Enuns.Naipe.Copas),
+                new Carta(13, Enuns.Naipe.Copas),
             };
 
             IList<Carta> MaoS = new List<Carta>() {

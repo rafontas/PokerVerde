@@ -22,7 +22,7 @@ namespace JogadorTH.Inteligencia
         private int versaoIdMente { get; set; }
         public override int VersaoIdMente { get => this.versaoIdMente; }
 
-        public DummyInteligencia(ConfiguracaoTHBonus Config)
+        public DummyInteligencia(ConfiguracaoTHBonus Config) : base()
         {
             this.sequencialAcao = 1;
             this.Config = new ConfiguracaoTHBonus();

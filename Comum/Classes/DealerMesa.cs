@@ -36,6 +36,13 @@ namespace Comum.Classes
             this.DealerPartida = new DealerPartida(this.Mesa, banca);
         }
 
+        public DealerMesa(IJogador banca)
+        {
+            ConfiguracaoTHBonus config = new ConfiguracaoTHBonus(){ Ant = 5, Flop = 10, Turn = 5, River = 5 };
+            this.Mesa = new Mesa(config);
+            this.DealerPartida = new DealerPartida(this.Mesa, banca);
+        }
+
         private TipoRodada UltimaRodada { get => this.Mesa.PartidasAtuais.First().Value.Rodadas.Last().TipoRodada; }
 
         public void ExecutarCorrida(IJogador jogador)

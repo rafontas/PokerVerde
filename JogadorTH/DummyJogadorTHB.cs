@@ -1,4 +1,5 @@
 ﻿using Comum.Excecoes;
+using Comum.Interfaces;
 using Enuns;
 using JogadorTH.Inteligencia;
 using Modelo;
@@ -10,10 +11,17 @@ namespace JogadorTH
 {
     public class DummyJogadorTHB : JogadorBase
     {
-        public DummyJogadorTHB(ConfiguracaoTHBonus Config, uint valorStackInicial = 200) : base(Config, valorStackInicial)
+        public DummyJogadorTHB(ConfiguracaoTHBonus Config, uint valorStackInicial = 200, IAcoesDecisao inteligencia = null) : base(Config, valorStackInicial)
         {
             this.config = Config;
-            this.Mente.Add(new DummyInteligencia());
+
+            if (inteligencia == null)
+            {
+                inteligencia = new DummyInteligencia();
+            }
+
+            inteligencia.JogadorStack = this.JogadorStack;
+            this.Mente.Add(inteligencia);
         }
     }
 }

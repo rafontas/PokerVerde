@@ -22,29 +22,22 @@ namespace JogadorTH
         public uint PagarValor(uint ValorAhPagar) => this.JogadorStack.PagarValor(ValorAhPagar);
 
         public void ReceberValor(uint ValorAhReceber) => this.JogadorStack.ReceberValor(ValorAhReceber);
-        public Carta[] cartas { get; set; } = new Carta[] { null, null };
         
-        public Carta[] Cartas { get => this.cartas; } 
+        public Carta[] Cartas { get => this.JogadorStack.Mao; } 
 
         protected ConfiguracaoTHBonus config { get; set; }
 
         public IList<IAcoesDecisao> Mente { get; set; } = new List<IAcoesDecisao>();
 
-        public void ReceberCarta(Carta c1, Carta c2)
-        {
-            this.cartas[0] = c1;
-            this.cartas[1] = c2;
-        }
+        public void ReceberCarta(Carta c1, Carta c2) => this.JogadorStack.ReceberCarta(c1, c2);
 
-        public void ResetaMao() => this.cartas = new Carta[] { null, null };
+        public void ResetaMao() => this.JogadorStack.ResetaMao();
 
         public ICorrida Corrida { get; set; } = new Corrida();
 
         private IList<IPartida> historico { get; set; } = new List<IPartida>();
 
-        public IList<IPartida> Historico {
-            get => new List<IPartida>(this.historico);
-        }
+        public IList<IPartida> Historico { get => new List<IPartida>(this.historico); }
 
         private uint seqProximaPartida { get; set; }
 
@@ -103,8 +96,6 @@ namespace JogadorTH
 
         public AcaoJogador PreJogo(uint valor) 
         {
-            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
-
             if (!this.TenhoStackParaJogar()) return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
 
             return this.Mente.First().PreJogo(valor);
@@ -115,31 +106,26 @@ namespace JogadorTH
             if (!this.TenhoStackParaJogar()) 
                 return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
          
-            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().PreFlop(valor); 
         }
 
         public AcaoJogador Flop(Carta[] cartasMesa, uint valor) 
         { 
-            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().Flop(cartasMesa, valor);
         }
 
         public AcaoJogador Turn(Carta[] cartasMesa, uint valor)
         {
-            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().Turn(cartasMesa, valor);
         }
 
         public AcaoJogador River(Carta[] cartasMesa)
         {
-            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().River(cartasMesa);
         }
 
         public AcaoJogador FimDeJogo()
         {
-            this.Mente.First().SetStackAgora(this.JogadorStack.StackInicial, this.JogadorStack.Stack);
             return this.Mente.First().FimDeJogo();
         }
     }

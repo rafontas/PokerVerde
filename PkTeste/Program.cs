@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using DealerTH;
 using PkTeste.Interfaces;
 using Comum.Classes;
+using JogadorTH.Inteligencia;
 
 namespace PkTeste
 {
@@ -36,8 +37,7 @@ namespace PkTeste
             
             Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
             IDealerMesa dealer = new DealerMesa(m, new Banca(Program.configPadrao));
-
-            m.AddParticipante(new DummyJogadorTHB(Program.configPadrao));
+            m.AddParticipante(new DummyJogadorTHB(Program.configPadrao, 400, new InteligenciaProb()));
 
             dealer.ExecutarNovaPartidaCompleta();
             dealer.ExecutarNovaPartidaCompleta();
