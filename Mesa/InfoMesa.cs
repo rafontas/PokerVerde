@@ -91,9 +91,6 @@ namespace MesaTH
             conteudo += "Jogador (" + Jogador.Stack + ") " + PrintCartasJogador() + Environment.NewLine;
             conteudo += "Valores investidos: " + "[" + ValorInvestidoAnt + " " + ValorInvestidoFlop + " " + ValorInvestidoTurn + " " + ValorInvestidoRiver + "]" + Environment.NewLine;
 
-            if(Momento == TipoRodada.PosRiver)
-                conteudo += "O JOGADOR " + JogadorGanhador + " VENCEU!!!";
-
             return conteudo;
         }
 

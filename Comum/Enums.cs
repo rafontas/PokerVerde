@@ -32,8 +32,11 @@ namespace Enuns
 
     public enum VencedorPartida
     {
+        [Display(Name = "E")]
         Empate = 1,
+        [Display(Name = "B")]
         Banca = 2,
+        [Display(Name = "J")]
         Jogador = 3
     }
 
@@ -69,10 +72,8 @@ namespace Enuns
         Turn = 4,
         [Display(Name = "River")]
         River = 5,
-        [Display(Name = "Pós River")]
-        PosRiver = 6,
         [Display(Name = "Terminou Rodada")]
-        FimDeJogo = 7
+        FimDeJogo = 6
     }
 
     public enum TipoJogadorTHB

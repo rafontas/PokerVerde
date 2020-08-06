@@ -21,6 +21,7 @@ namespace JogadorTH
             }
 
             inteligencia.JogadorStack = this.JogadorStack;
+            inteligencia.Corrida = this.Corrida;
             this.Mente.Add(inteligencia);
         }
     }

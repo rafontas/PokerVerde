@@ -45,6 +45,8 @@ namespace JogadorTH
 
         public IJogadorEstatisticas Estatistica { get; }
 
+        public IList<IImprimePartida> ImprimePartida { get; protected set; }
+
         public void AddPartidaHistorico(IPartida p) 
         {
             this.historico.Add(p);
@@ -58,6 +60,7 @@ namespace JogadorTH
             this.id = JogadorBase.getNovoId;
             this.seqProximaPartida = 0;
             this.JogadorStack = new JogadorStack(valorStackInicial);
+            this.ImprimePartida = new List<IImprimePartida>(){ new ImprimePartida() };
         }
 
         public AcaoJogador ExecutaAcao(TipoRodada momento, uint valoPagar, Carta[] mesa)
@@ -81,10 +84,9 @@ namespace JogadorTH
         
         public bool VouJogarMaisUmaPartida()
         {
-            if (!this.TenhoStackParaJogar()) 
-                return false;
+            bool haPartidaParaJogar = this.Corrida?.HaPartidaParaJogar() ?? false;
 
-            if (!(this.Corrida is null) && !this.Corrida.HaPartidaParaJogar())
+            if (!this.TenhoStackParaJogar() || haPartidaParaJogar) 
                 return false;
 
             return true;
@@ -96,7 +98,8 @@ namespace JogadorTH
 
         public AcaoJogador PreJogo(uint valor) 
         {
-            if (!this.TenhoStackParaJogar()) return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
+            if (!this.VouJogarMaisUmaPartida()) 
+                return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
 
             return this.Mente.First().PreJogo(valor);
         }

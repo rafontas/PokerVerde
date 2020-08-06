@@ -6,8 +6,8 @@ namespace Comum.Interfaces
 {
     public interface ICorrida
     {
+        void AddPartida(IPartida p);
         uint QtdPartidasJogadas { get; }
-        uint ValorInicial { get; }
         uint ValorAtual { get; }
 
         uint ValorGanho { get; }

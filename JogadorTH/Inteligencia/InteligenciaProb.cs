@@ -36,18 +36,19 @@ namespace JogadorTH.Inteligencia
 
         public override AcaoJogador PreJogo(uint valor)
         {
-            AcaoJogador acao;
+            AcoesDecisaoJogador acao;
+            bool HaJogosParaJogar = this.Corrida?.HaPartidaParaJogar() ?? true;
             
-            if (this.PossoPagarValor(this.Config.Ant))
+            if (this.PossoPagarValor(this.Config.Ant + this.Config.Flop) || HaJogosParaJogar)
             {
-                acao = new AcaoJogador(AcoesDecisaoJogador.Play, 0, this); 
+                acao = AcoesDecisaoJogador.Play;
             }
             else
             {
-                acao = new AcaoJogador(AcoesDecisaoJogador.Stop, 0, this); 
+                acao = AcoesDecisaoJogador.Stop;
             }
 
-            return acao;
+            return new AcaoJogador(acao, 0, this);
         }
 
         public override AcaoJogador PreFlop(uint valor) 

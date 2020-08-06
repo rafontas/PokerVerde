@@ -30,6 +30,8 @@ namespace Comum.Classes
 
         public void PergutarQuemIraJogar()
         {
+            IList<IJogador> jogadoresPararamDeJogar = new List<IJogador>();
+             
             foreach (IJogador j in this.Mesa.JogadoresNaMesa)
             {
                 IAcaoTomada a = j.PreJogo(this.Mesa.RegrasMesaAtual.Ant);
@@ -40,17 +42,17 @@ namespace Comum.Classes
                         this.Mesa.PartidasAtuais.Add(j, new Partida(j.SeqProximaPartida, j, this.banca));
                         break;
 
-                    case AcoesDecisaoJogador.Fold:
-                        break;
-
                     case AcoesDecisaoJogador.Stop:
-                        this.RetirarJogadorDaMesa(j);
+                        jogadoresPararamDeJogar.Add(j);
                         break;
 
                     default:
                         throw new JogadorException("Jogador devolveu ação não possível");
                 }
             }
+
+            foreach(IJogador j in jogadoresPararamDeJogar)
+                this.RetirarJogadorDaMesa(j);
         }
 
         public void ExecutarPreFlop()
@@ -97,6 +99,8 @@ namespace Comum.Classes
 
         public void EncerrarPartidaJogador(IJogador j)
         {
+            IPartida partidaAtual = this.Mesa.PartidasAtuais[j];
+            this.VerificarGanhadorPartida(partidaAtual);
             j.AddPartidaHistorico(this.Mesa.PartidasAtuais[j]);
             this.Mesa.PartidasAtuais.Remove(j);
         }
@@ -156,7 +160,6 @@ namespace Comum.Classes
             }
 
             this.EncerrarPartidasTerminadas();
-
         }
 
         public void PerguntarAumentarPreTurn()
@@ -228,24 +231,25 @@ namespace Comum.Classes
         //TODO: verificar se melhor maneira de contornar o virtual
         public virtual void VerificarGanhadorPartida(IPartida p)
         {
-            // Recupera as cartas
-            Carta [] CartasBanca = new Carta[] {
-                p.Banca.Cartas[0],
-                p.Banca.Cartas[1]
-            };
-            Carta [] CartasJogador = new Carta[] {
-                p.Jogador.Cartas[0],
-                p.Jogador.Cartas[1]
-            };
-            Carta[] CartasMesa = p.CartasMesa;
+            int jogadorVencedor;
+            TipoRodada tipoRodada = p.Rodadas.Last().TipoRodada;
 
-            ConstrutorMelhorMao construtorMao = new ConstrutorMelhorMao();
-            MaoTexasHoldem melhorMaoJogador = construtorMao.GetMelhorMao(CartasMesa.Union(CartasJogador).ToList());
+            if ((tipoRodada == TipoRodada.PreFlop) ||
+                (tipoRodada == TipoRodada.Flop) ||
+                (tipoRodada == TipoRodada.Turn))
+            {
+                jogadorVencedor = -1;
+            }
+            else if (tipoRodada == TipoRodada.River)
+            {
+                jogadorVencedor = this.RetornaMelhorMaoPartidaFinalizada(p);
+            }
+            else
+            {
+                throw new DealerException("Passada partida em rodada errada para atribuir vencedor.");
+            }
 
-            construtorMao = new ConstrutorMelhorMao();
-            MaoTexasHoldem melhorMaoBanca = construtorMao.GetMelhorMao(CartasMesa.Union(CartasBanca).ToList());
-
-            switch (melhorMaoJogador.Compara(melhorMaoBanca))
+            switch (jogadorVencedor)
             {
                 case -1: 
                     p.JogadorGanhador = VencedorPartida.Banca;
@@ -262,6 +266,31 @@ namespace Comum.Classes
                 default:
                     throw new DealerException("Erro ao comparar mão dos jogadores. Retornado valor não previsto.");
             }
+        }
+        
+        private int RetornaMelhorMaoPartidaFinalizada(IPartida p) 
+        {
+            if (p.Rodadas.Last().TipoRodada != TipoRodada.River)
+                throw new DealerException("Rodada inválida para avaliação de mãos.");
+
+            // Recupera as cartas
+            Carta[] CartasBanca = new Carta[] {
+                p.Banca.Cartas[0],
+                p.Banca.Cartas[1]
+            };
+            Carta[] CartasJogador = new Carta[] {
+                p.Jogador.Cartas[0],
+                p.Jogador.Cartas[1]
+            };
+            Carta[] CartasMesa = p.CartasMesa;
+
+            ConstrutorMelhorMao construtorMao = new ConstrutorMelhorMao();
+            MaoTexasHoldem melhorMaoJogador = construtorMao.GetMelhorMao(CartasMesa.Union(CartasJogador).ToList());
+
+            construtorMao = new ConstrutorMelhorMao();
+            MaoTexasHoldem melhorMaoBanca = construtorMao.GetMelhorMao(CartasMesa.Union(CartasBanca).ToList());
+
+            return melhorMaoJogador.Compara(melhorMaoBanca);
         }
 
         /// <summary>

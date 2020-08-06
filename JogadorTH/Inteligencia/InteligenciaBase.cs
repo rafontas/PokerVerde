@@ -11,6 +11,8 @@ namespace JogadorTH.Inteligencia
         public abstract int VersaoIdMente { get; }
 
         public IJogadorStack JogadorStack { get; set; }
+        
+        public ICorrida Corrida { get; set; }
 
         public InteligenciaBase() {}
 

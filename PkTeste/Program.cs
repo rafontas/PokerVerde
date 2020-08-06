@@ -8,6 +8,7 @@ using DealerTH;
 using PkTeste.Interfaces;
 using Comum.Classes;
 using JogadorTH.Inteligencia;
+using Comum.Interfaces;
 
 namespace PkTeste
 {
@@ -33,19 +34,29 @@ namespace PkTeste
             IPokerComandos cmBasicos = new ComandosBasicos();
             Console.WriteLine(cmBasicos.getHelp());
             
-            bool saiPrograma = false;
-            
             Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
             IDealerMesa dealer = new DealerMesa(m, new Banca(Program.configPadrao));
-            m.AddParticipante(new DummyJogadorTHB(Program.configPadrao, 400, new InteligenciaProb()));
+            //IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 400, new InteligenciaProb());
+            IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 400, new DummyInteligencia());
+            jogador.Corrida = new Corrida(5);
+            m.AddParticipante(jogador);
+            
+            dealer.ExecutaTodasCorridas();
 
-            dealer.ExecutarNovaPartidaCompleta();
-            dealer.ExecutarNovaPartidaCompleta();
-            dealer.ExecutarNovaPartidaCompleta();
-            dealer.ExecutarNovaPartidaCompleta();
-            dealer.ExecutarNovaPartidaCompleta();
+            IImprimePartida imp = jogador.ImprimePartida.First();
 
-            saiPrograma = true;
+            Console.WriteLine(Environment.NewLine + Environment.NewLine);
+            Console.WriteLine(imp.pequenoResumo(jogador.Historico));
+            Console.WriteLine(Environment.NewLine);
+            Console.WriteLine("Resumo das Partidas: " + Environment.NewLine);
+            Console.WriteLine(imp.pequenoResumoTodasPartidas(jogador.Historico));
+            Console.WriteLine(Environment.NewLine);
+
+            //dealer.ExecutarNovaPartidaCompleta();
+            //dealer.ExecutarNovaPartidaCompleta();
+            //dealer.ExecutarNovaPartidaCompleta();
+            //dealer.ExecutarNovaPartidaCompleta();
+            //dealer.ExecutarNovaPartidaCompleta();
 
             //while (!saiPrograma)
             //{

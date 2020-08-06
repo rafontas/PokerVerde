@@ -11,6 +11,7 @@ namespace Comum.Interfaces
         string IdMente { get; }
         int VersaoIdMente { get; }
         IJogadorStack JogadorStack { get; set; }
+        ICorrida Corrida { get; set; }
         ConfiguracaoTHBonus Config { get; }
         bool PossoPagarValor(uint ValorAhPagar);
         AcaoJogador PreJogo(uint valor);

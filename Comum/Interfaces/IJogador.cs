@@ -17,6 +17,7 @@ namespace Modelo
         ICorrida Corrida { get; set; }
         IJogadorEstatisticas Estatistica { get; }
         IJogadorStack JogadorStack { get; }
+        IList<IImprimePartida> ImprimePartida { get; }
 
         AcaoJogador ExecutaAcao(TipoRodada momento, uint valorPagar, Carta[] mesa);
         AcaoJogador PreJogo(uint valor);

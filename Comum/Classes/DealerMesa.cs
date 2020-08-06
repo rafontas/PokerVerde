@@ -35,7 +35,7 @@ namespace Comum.Classes
             this.Mesa = mesa;
             this.DealerPartida = new DealerPartida(this.Mesa, banca);
         }
-
+        
         public DealerMesa(IJogador banca)
         {
             ConfiguracaoTHBonus config = new ConfiguracaoTHBonus(){ Ant = 5, Flop = 10, Turn = 5, River = 5 };
@@ -50,7 +50,7 @@ namespace Comum.Classes
             throw new NotImplementedException();
         }
 
-        public void ExecutarNovaPartidaCompleta(IJogador j)
+        public void ExecutarNovaPartidaCompleta(IJogador jogador)
         {
             throw new NotImplementedException();
         }
@@ -62,7 +62,8 @@ namespace Comum.Classes
 
         public void ExecutaTodasCorridas()
         {
-
+            while(this.HaParticipantesParaJogar())
+                this.ExecutarNovaPartidaCompleta();
         }
 
         public void IniciarNovaPartida(IJogador j)
