@@ -38,15 +38,16 @@ namespace Comum.Classes
 
         public string pequenoResumo(IPartida partida)
         {
-            string seq, ganhador, valorGanho;
+            string seq, ganhador, valorGanho, totalPote;
             
             StringBuilder stringBuilder = new StringBuilder();
 
             seq = partida.SequencialPartida.ToString();
             ganhador = partida.JogadorGanhador.ToString();
             valorGanho = this.GetValorGanho(partida);
+            totalPote = partida.PoteAgora.ToString();
 
-            stringBuilder.AppendFormat("{0}\t\t{1}\t\t{2}", seq, ganhador, valorGanho);
+            stringBuilder.AppendFormat("{0}\t\t{1}\t\t{2}\t\t{3}", seq, ganhador, valorGanho, totalPote);
 
             return stringBuilder.ToString();
         }
@@ -56,7 +57,7 @@ namespace Comum.Classes
             this.valorTotalGanho = 0;
             this.valorTotalPerdido = 0;
 
-            StringBuilder stringBuilder = new StringBuilder("#\t\tGanhador\tValorGanho" + Environment.NewLine);
+            StringBuilder stringBuilder = new StringBuilder("#\t\tGanhador\tValorGanho\tTotalPote" + Environment.NewLine);
 
             foreach (IPartida p in partidas)
                 stringBuilder.AppendLine(this.pequenoResumo(p));
@@ -66,8 +67,8 @@ namespace Comum.Classes
 
             stringBuilder.AppendLine();
             stringBuilder.AppendLine();
-            stringBuilder.AppendFormat("Ganhos: {0}" + Environment.NewLine, this.valorTotalGanho);
-            stringBuilder.AppendFormat("Perdas: {0}" + Environment.NewLine, this.valorTotalPerdido);
+            stringBuilder.AppendFormat("Ganhos: {0}", this.valorTotalGanho);
+            stringBuilder.AppendFormat("\tPerdas: {0}" + Environment.NewLine, this.valorTotalPerdido);
 
             return stringBuilder.ToString();
         }

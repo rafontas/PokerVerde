@@ -15,7 +15,7 @@ namespace Comum.Interfaces
         void PrepararNovaPartida();
         void PergutarQuemIraJogar();
 
-        void CobrarAnt(IJogador j);
+        void CobrarAnt(IPartida p);
         void DistribuirCartasJogadores(IPartida p);
         void ExecutarPreFlop();
         void PerguntarPagarFlop();

@@ -11,5 +11,6 @@ namespace Comum.Interfaces
         string pequenoResumo (IList<IPartida> partidas);
 
         string pequenoResumoTodasPartidas (IList<IPartida> partidas);
+
     }
 }

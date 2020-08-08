@@ -9,6 +9,7 @@ using PkTeste.Interfaces;
 using Comum.Classes;
 using JogadorTH.Inteligencia;
 using Comum.Interfaces;
+using System.IO;
 
 namespace PkTeste
 {
@@ -28,29 +29,33 @@ namespace PkTeste
             }
         }
 
+        static void SalvaArquivo(string conteudoArquivo)
+        {
+            string nome = "resumo_" + DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + ".txt";
+            File.WriteAllText("D:\\Rafael\\Poker\\" + nome, conteudoArquivo);
+        }
+
         static void Main(string[] args)
         {
-
             IPokerComandos cmBasicos = new ComandosBasicos();
-            Console.WriteLine(cmBasicos.getHelp());
+            //Console.WriteLine(cmBasicos.getHelp());
             
             Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
             IDealerMesa dealer = new DealerMesa(m, new Banca(Program.configPadrao));
-            //IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 400, new InteligenciaProb());
-            IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 400, new DummyInteligencia());
-            jogador.Corrida = new Corrida(5);
+            IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 2000, new InteligenciaProb());
+            //IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 1000, new DummyInteligencia());
+            jogador.Corrida = new Corrida(5000);
             m.AddParticipante(jogador);
             
             dealer.ExecutaTodasCorridas();
 
             IImprimePartida imp = jogador.ImprimePartida.First();
 
-            Console.WriteLine(Environment.NewLine + Environment.NewLine);
-            Console.WriteLine(imp.pequenoResumo(jogador.Historico));
-            Console.WriteLine(Environment.NewLine);
-            Console.WriteLine("Resumo das Partidas: " + Environment.NewLine);
-            Console.WriteLine(imp.pequenoResumoTodasPartidas(jogador.Historico));
-            Console.WriteLine(Environment.NewLine);
+            string content = imp.pequenoResumo(jogador.Historico) + Environment.NewLine + Environment.NewLine;
+            content += "Resumo das Partidas: " + Environment.NewLine;
+            content += imp.pequenoResumoTodasPartidas(jogador.Historico);
+            content += Environment.NewLine;
+            Program.SalvaArquivo(content);
 
             //dealer.ExecutarNovaPartidaCompleta();
             //dealer.ExecutarNovaPartidaCompleta();
