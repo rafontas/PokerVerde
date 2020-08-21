@@ -49,7 +49,7 @@ namespace Testes.ComumTeste
             stringBuilder.Append(Environment.NewLine);
             stringBuilder.AppendFormat("\t\"Numero\":\"9\"");
             stringBuilder.Append("," + Environment.NewLine);
-            stringBuilder.AppendFormat("\t\"Naipe\":\"C\"");
+            stringBuilder.AppendFormat("\t\"Naipe\":\"♥\"");
             stringBuilder.Append(Environment.NewLine);
             stringBuilder.Append("}");
 
@@ -62,7 +62,7 @@ namespace Testes.ComumTeste
             stringBuilder2.Append(Environment.NewLine);
             stringBuilder2.AppendFormat("\t\"Numero\":\"11\"");
             stringBuilder2.Append("," + Environment.NewLine);
-            stringBuilder2.AppendFormat("\t\"Naipe\":\"O\"");
+            stringBuilder2.AppendFormat("\t\"Naipe\":\"♦\"");
             stringBuilder2.Append(Environment.NewLine);
             stringBuilder2.Append("}");
 
@@ -74,13 +74,13 @@ namespace Testes.ComumTeste
         {
             Carta carta = new Carta(9, Enuns.Naipe.Copas);
 
-            Assert.IsTrue(carta.Equals(Carta.FromString("9_C")));
+            Assert.IsTrue(carta.Equals(Carta.FromString("9_♥")));
 
             carta = new Carta(12, Enuns.Naipe.Copas);
-            Assert.IsTrue(carta.Equals(Carta.FromString("12_C")));
+            Assert.IsTrue(carta.Equals(Carta.FromString("12_♥")));
 
             carta = new Carta(14, Enuns.Naipe.Ouros);
-            Assert.IsTrue(carta.Equals(Carta.FromString("14_O")));
+            Assert.IsTrue(carta.Equals(Carta.FromString("14_♦")));
         }
     }
 }

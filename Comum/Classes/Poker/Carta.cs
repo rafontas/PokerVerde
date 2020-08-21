@@ -104,10 +104,10 @@ namespace Modelo
             meuNumero = uint.Parse(meuNumeroStr);
             switch(meuNaipeStr) 
             {
-                case "C": meuNaipe = Naipe.Copas; break;
-                case "O": meuNaipe = Naipe.Ouros; break;
-                case "E": meuNaipe = Naipe.Espadas; break;
-                case "P": meuNaipe = Naipe.Paus; break;
+                case "♥": meuNaipe = Naipe.Copas; break;
+                case "♦": meuNaipe = Naipe.Ouros; break;
+                case "♠": meuNaipe = Naipe.Espadas; break;
+                case "♣": meuNaipe = Naipe.Paus; break;
                 default: throw new Exception("Naipe não existente.");
             }
 
