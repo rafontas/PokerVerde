@@ -37,7 +37,7 @@ namespace Testes
             
             IJogador jog = new DummyJogadorTHB(PartidaIntegracaoTest.configPadrao, stackJogadorInicial);
             IJogador banca = new Banca(PartidaIntegracaoTest.configPadrao);
-            IDealerMesa dealer = new DealerMesa(
+            ICroupier dealer = new Croupier(
                 new Comum.Mesa(PartidaIntegracaoTest.configPadrao),
                 banca,
                 jog
@@ -63,10 +63,12 @@ namespace Testes
             // Flop (Revelar Flop - Perguntar pagar turn)
             Carta[] flop = new Carta[] { new Carta(12, Enuns.Naipe.Copas), new Carta(13, Enuns.Naipe.Copas), new Carta(11, Enuns.Naipe.Copas) };
             typeof(Partida).GetProperty("Flop").SetValue(p, flop);
+            p.AddRodada(new RodadaTHB(Enuns.TipoRodada.Turn, p.PoteAgora, p.CartasMesa));
 
             // Turn
             Carta turn = new Carta(4, Enuns.Naipe.Paus);
             typeof(Partida).GetProperty("Turn").SetValue(p, turn);
+            p.AddRodada(new RodadaTHB(Enuns.TipoRodada.River, p.PoteAgora, p.CartasMesa));
 
             // River
             Carta river = new Carta(8, Enuns.Naipe.Ouros);

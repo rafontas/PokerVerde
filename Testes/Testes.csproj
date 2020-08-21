@@ -19,9 +19,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Comum\Comum.csproj" />
-    <ProjectReference Include="..\DealerTH\DealerTH.csproj" />
+    <ProjectReference Include="..\DealerTH\MaoTH.csproj" />
     <ProjectReference Include="..\JogadorTH\JogadorTH.csproj" />
-    <ProjectReference Include="..\Mesa\MesaTH.csproj" />
+    <ProjectReference Include="..\PokerDAO\PokerDAO.csproj" />
   </ItemGroup>
 
 </Project>

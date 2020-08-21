@@ -9,38 +9,31 @@ using System.Text;
 
 namespace Comum.Classes
 {
-    public class DealerMesa : IDealerMesa
+    public class Croupier : ICroupier
     {
         public Mesa Mesa { get; }
 
         public IDealerPartida DealerPartida { get; set; }
 
-        public DealerMesa(Mesa mesa, IJogador banca, IJogador jogador)
+        //todo: retirar este construtor
+        public Croupier(Mesa mesa, IJogador banca, IJogador jogador)
         {
             this.Mesa = mesa;
             this.DealerPartida = new DealerPartida(this.Mesa, banca);
             this.Mesa.AddParticipante(jogador);
         }
 
-        public DealerMesa(Mesa mesa, IJogador banca, IList<IJogador> jogador)
-        {
-            this.Mesa = mesa;
-            this.DealerPartida = new DealerPartida(this.Mesa, banca);
-
-            foreach(var j in jogador) this.Mesa.AddParticipante(j);
-        }
-
-        public DealerMesa(Mesa mesa, IJogador banca)
+        public Croupier(Mesa mesa, IJogador banca)
         {
             this.Mesa = mesa;
             this.DealerPartida = new DealerPartida(this.Mesa, banca);
         }
         
-        public DealerMesa(IJogador banca)
+        public Croupier(IConfiguracaoPoker config, IJogador banca, IList<IJogador> jogador)
         {
-            ConfiguracaoTHBonus config = new ConfiguracaoTHBonus(){ Ant = 5, Flop = 10, Turn = 5, River = 5 };
             this.Mesa = new Mesa(config);
             this.DealerPartida = new DealerPartida(this.Mesa, banca);
+            foreach (var j in jogador) this.Mesa.AddParticipante(j);
         }
 
         private TipoRodada UltimaRodada { get => this.Mesa.PartidasAtuais.First().Value.Rodadas.Last().TipoRodada; }

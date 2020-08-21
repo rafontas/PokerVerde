@@ -6,6 +6,9 @@
 *.user
 *.userosscache
 *.sln.docstates
+PokerDAO/App.config
+Testes/App.config
+PkTeste/App.config
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

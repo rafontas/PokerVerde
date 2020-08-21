@@ -1,13 +1,14 @@
-﻿using Enuns;
+﻿using Comum.Interfaces;
+using Enuns;
 
 namespace Modelo
 {
-    public class ConfiguracaoTHBonus
+    public class ConfiguracaoTHBonus : IConfiguracaoPoker
     {
-        public uint Ant { get; set; }
-        public uint Flop { get; set; }
-        public uint Turn { get; set; }
-        public uint River { get; set; }
+        public uint Ant { get; set; } = 5;
+        public uint Flop { get; set; } = 10;
+        public uint Turn { get; set; } = 5;
+        public uint River { get; set; } = 5;
         public uint ValorMomento (TipoRodada tipo)
         {
             switch (tipo)

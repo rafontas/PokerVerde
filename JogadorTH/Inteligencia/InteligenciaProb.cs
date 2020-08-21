@@ -39,7 +39,7 @@ namespace JogadorTH.Inteligencia
             AcoesDecisaoJogador acao;
             bool HaJogosParaJogar = this.Corrida?.HaPartidaParaJogar() ?? true;
             
-            if (this.PossoPagarValor(this.Config.Ant + this.Config.Flop) || HaJogosParaJogar)
+            if (this.PossoPagarValor(this.Config.Ant + this.Config.Flop) && HaJogosParaJogar)
             {
                 acao = AcoesDecisaoJogador.Play;
             }

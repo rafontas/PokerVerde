@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Comum\Comum.csproj" />
-    <ProjectReference Include="..\DealerTH\DealerTH.csproj" />
+    <ProjectReference Include="..\DealerTH\MaoTH.csproj" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

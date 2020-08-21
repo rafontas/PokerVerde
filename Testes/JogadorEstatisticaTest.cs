@@ -22,7 +22,7 @@ namespace Testes
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
             int numeroPartidas = 5;
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config);
             m.AddParticipante(j);
@@ -41,7 +41,7 @@ namespace Testes
         {
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config, 1500);
             m.AddParticipante(j);
@@ -57,7 +57,7 @@ namespace Testes
         {
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config, 1500);
             m.AddParticipante(j);
@@ -85,7 +85,7 @@ namespace Testes
         {
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config, 1500);
             m.AddParticipante(j);
@@ -114,7 +114,7 @@ namespace Testes
         {
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config, 1500);
             m.AddParticipante(j);
@@ -138,7 +138,7 @@ namespace Testes
         {
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config, 1500);
             m.AddParticipante(j);
@@ -162,7 +162,7 @@ namespace Testes
         {
             ConfiguracaoTHBonus config = Configuracao.configPadrao;
             Comum.Mesa m = new Comum.Mesa(config);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(config));
+            ICroupier dealer = new Croupier(m, new Banca(config));
 
             IJogador j = new DummyJogadorTHB(config, 1500);
             m.AddParticipante(j);

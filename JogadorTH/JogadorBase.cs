@@ -25,7 +25,7 @@ namespace JogadorTH
         
         public Carta[] Cartas { get => this.JogadorStack.Mao; } 
 
-        protected ConfiguracaoTHBonus config { get; set; }
+        public IConfiguracaoPoker ConfiguracaoPoker { get; set; }
 
         public IList<IAcoesDecisao> Mente { get; set; } = new List<IAcoesDecisao>();
 
@@ -33,7 +33,7 @@ namespace JogadorTH
 
         public void ResetaMao() => this.JogadorStack.ResetaMao();
 
-        public ICorrida Corrida { get; set; } = new Corrida();
+        public ICorrida Corrida { get; set; }
 
         private IList<IPartida> historico { get; set; } = new List<IPartida>();
 
@@ -50,12 +50,11 @@ namespace JogadorTH
         public void AddPartidaHistorico(IPartida p) 
         {
             this.historico.Add(p);
-            this?.Corrida.ListaPartidas.Add(p);
+            this.Corrida?.ListaPartidas.Add(p);
         }
 
-        public JogadorBase(ConfiguracaoTHBonus Config, uint valorStackInicial = 200)
+        public JogadorBase(uint valorStackInicial = 200)
         {
-            this.config = Config;
             this.Estatistica = new JogadorEstatisticas(this.historico);
             this.id = JogadorBase.getNovoId;
             this.seqProximaPartida = 0;
@@ -80,14 +79,13 @@ namespace JogadorTH
             return acao;
         }
         
-        public bool TenhoStackParaJogar() => this.Stack >= (this.config.Ant + this.config.Flop);
-        
+        public bool TenhoStackParaJogar() => this.Stack >= (this.ConfiguracaoPoker.Ant + this.ConfiguracaoPoker.Flop);
+
         public bool VouJogarMaisUmaPartida()
         {
-            bool haPartidaParaJogar = this.Corrida?.HaPartidaParaJogar() ?? false;
+            bool haPartidaParaJogarNaCorrida = this.Corrida?.HaPartidaParaJogar() ?? true;
 
-            if (!this.TenhoStackParaJogar() || haPartidaParaJogar) 
-                return false;
+            if (!this.TenhoStackParaJogar() || !haPartidaParaJogarNaCorrida) return false;
 
             return true;
         }

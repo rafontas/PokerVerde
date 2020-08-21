@@ -40,7 +40,7 @@ namespace Testes.Factories
             
             Comum.Mesa m = new Comum.Mesa(this.ConfiguracaoPadrao);
             IJogador banca = new Banca(this.ConfiguracaoPadrao);
-            IDealerMesa dealer = new DealerMesa(m, banca);
+            ICroupier dealer = new Croupier(m, banca);
             dealer.DealerPartida = new DealerPartidaMock(m, banca, Enuns.VencedorPartida.Jogador );
 
             IJogador jogador = j ?? new DummyJogadorTHB(this.ConfiguracaoPadrao, stackInicialJogador);
@@ -69,7 +69,7 @@ namespace Testes.Factories
         {
             uint stackInicialJogador = 20000;
             Comum.Mesa m = new Comum.Mesa(this.ConfiguracaoPadrao);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(this.ConfiguracaoPadrao));
+            ICroupier dealer = new Croupier(m, new Banca(this.ConfiguracaoPadrao));
             IJogador jogador = new DummyJogadorTHB(this.ConfiguracaoPadrao, stackInicialJogador);
             m.AddParticipante(jogador);
             dealer.ExecutarNovaPartidaCompleta();
@@ -94,7 +94,7 @@ namespace Testes.Factories
         {
             uint stackInicialJogador = 20000;
             Comum.Mesa m = new Comum.Mesa(this.ConfiguracaoPadrao);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(this.ConfiguracaoPadrao));
+            ICroupier dealer = new Croupier(m, new Banca(this.ConfiguracaoPadrao));
             IJogador jogador = new DummyJogadorTHB(this.ConfiguracaoPadrao, stackInicialJogador);
             m.AddParticipante(jogador);
             dealer.ExecutarNovaPartidaCompleta();

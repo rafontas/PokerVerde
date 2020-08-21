@@ -7,11 +7,12 @@ using System.Text;
 
 namespace Comum
 {
+    // todo: colocar essa mesa como classe interna do Dealer Mesa
     public class Mesa
     {
-        public ConfiguracaoTHBonus RegrasMesaAtual { get; private set; }
+        public IConfiguracaoPoker RegrasMesaAtual { get; private set; }
 
-        public Mesa (ConfiguracaoTHBonus RegrasMesaAtual)
+        public Mesa (IConfiguracaoPoker RegrasMesaAtual)
         {
             this.RegrasMesaAtual = RegrasMesaAtual;
         }

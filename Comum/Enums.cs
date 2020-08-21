@@ -6,13 +6,13 @@ using System.Text;
 namespace Enuns
 {
     public enum Naipe {
-        [Display(Name = "C")]
+        [Display(Name = "♥")]
         Copas = 1,
-        [Display(Name = "O")]
+        [Display(Name = "♦")]
         Ouros = 2,
-        [Display(Name = "E")]
+        [Display(Name = "♠")]
         Espadas = 3,
-        [Display(Name = "P")]
+        [Display(Name = "♣")]
         Paus = 4,
     }
 

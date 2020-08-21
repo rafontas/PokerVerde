@@ -11,9 +11,8 @@ namespace JogadorTH
 {
     public class DummyJogadorTHB : JogadorBase
     {
-        public DummyJogadorTHB(ConfiguracaoTHBonus Config, uint valorStackInicial = 200, IAcoesDecisao inteligencia = null) : base(Config, valorStackInicial)
+        public DummyJogadorTHB(IConfiguracaoPoker Config, uint valorStackInicial = 200, IAcoesDecisao inteligencia = null) : base(valorStackInicial)
         {
-            this.config = Config;
 
             if (inteligencia == null)
             {
@@ -23,6 +22,7 @@ namespace JogadorTH
             inteligencia.JogadorStack = this.JogadorStack;
             inteligencia.Corrida = this.Corrida;
             this.Mente.Add(inteligencia);
+            this.ConfiguracaoPoker = Config;
         }
     }
 }

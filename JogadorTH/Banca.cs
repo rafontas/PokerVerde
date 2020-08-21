@@ -9,11 +9,12 @@ namespace JogadorTH
 {
     public class Banca : JogadorBase
     {
-        public Banca(ConfiguracaoTHBonus Config, uint valorStackInicial = 500000) : base(Config, valorStackInicial)
+        public Banca(IConfiguracaoPoker Config, uint valorStackInicial = 500000) : base(valorStackInicial)
         {
             IAcoesDecisao inteligencia = new InteligenciaBanca();
             inteligencia.JogadorStack = this.JogadorStack;
             this.Mente.Add(inteligencia);
+            this.ConfiguracaoPoker = Config;
         }
 
     }

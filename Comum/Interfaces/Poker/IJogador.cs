@@ -18,6 +18,7 @@ namespace Modelo
         IJogadorEstatisticas Estatistica { get; }
         IJogadorStack JogadorStack { get; }
         IList<IImprimePartida> ImprimePartida { get; }
+        IConfiguracaoPoker ConfiguracaoPoker { get; set; }
 
         AcaoJogador ExecutaAcao(TipoRodada momento, uint valorPagar, Carta[] mesa);
         AcaoJogador PreJogo(uint valor);

@@ -40,7 +40,7 @@ namespace Comum.Classes
         }
 
         public bool HaPartidaParaJogar() 
-            => (this.QtdPartidasAhSimular == 0 ? true : (this.QtdPartidasAhSimular <= this.QtdPartidasJogadas));
+            => (this.QtdPartidasAhSimular == 0 ? false : (this.QtdPartidasAhSimular > this.QtdPartidasJogadas));
 
         public void AddPartida(IPartida p)
         {

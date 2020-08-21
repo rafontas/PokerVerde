@@ -1,15 +1,15 @@
 ﻿using JogadorTH;
-using Mesa;
 using Modelo;
 using System.Linq;
 using System;
-using System.Collections.Generic;
-using DealerTH;
-using PkTeste.Interfaces;
 using Comum.Classes;
 using JogadorTH.Inteligencia;
 using Comum.Interfaces;
 using System.IO;
+using PkTeste.Classes;
+using MaoTH.DAO;
+using MaoTH;
+using PokerDAO.Base;
 
 namespace PkTeste
 {
@@ -35,137 +35,57 @@ namespace PkTeste
             File.WriteAllText("D:\\Rafael\\Poker\\" + nome, conteudoArquivo);
         }
 
-        static void Main(string[] args)
+        static void ExecutaCorrida()
         {
-            IPokerComandos cmBasicos = new ComandosBasicos();
-            //Console.WriteLine(cmBasicos.getHelp());
-            
-            Comum.Mesa m = new Comum.Mesa(Program.configPadrao);
-            IDealerMesa dealer = new DealerMesa(m, new Banca(Program.configPadrao));
-            IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 2000, new InteligenciaProb());
-            //IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 1000, new DummyInteligencia());
-            jogador.Corrida = new Corrida(5000);
-            m.AddParticipante(jogador);
-            
-            dealer.ExecutaTodasCorridas();
+            IJogador jogador = new DummyJogadorTHB(Program.configPadrao, 1000, new DummyInteligencia());
+            jogador.Corrida = new Corrida(2);
+
+            ISitAndGo SitAndGo =
+                new BuilderSitAndGo(new ConfiguracaoTHBonus())
+                .addJogador(jogador)
+                .SetRestantePadrao()
+                .GetResult();
+
+            SitAndGo.Executa();
 
             IImprimePartida imp = jogador.ImprimePartida.First();
-
-            string content = imp.pequenoResumo(jogador.Historico) + Environment.NewLine + Environment.NewLine;
+            string content = imp.pequenoResumo(jogador.Historico) + Environment.NewLine;
             content += "Resumo das Partidas: " + Environment.NewLine;
             content += imp.pequenoResumoTodasPartidas(jogador.Historico);
             content += Environment.NewLine;
             Program.SalvaArquivo(content);
-
-            //dealer.ExecutarNovaPartidaCompleta();
-            //dealer.ExecutarNovaPartidaCompleta();
-            //dealer.ExecutarNovaPartidaCompleta();
-            //dealer.ExecutarNovaPartidaCompleta();
-            //dealer.ExecutarNovaPartidaCompleta();
-
-            //while (!saiPrograma)
-            //{
-            //    string entradas = Console.ReadLine(), input = "";
-            //    string [] inputCompleta = entradas.Split(" ");
-            //    int numRodadas = 1;
-
-            //    if (input.Count() > 2)
-            //    {
-            //        Console.WriteLine("Número de argumentos inválidos");
-            //        continue;
-            //    }
-            //    else if (inputCompleta.Count() > 1)
-            //    {
-            //        input = inputCompleta[0];
-            //        numRodadas = int.Parse(inputCompleta[1]);
-            //    }
-            //    else
-            //    {
-            //        input = inputCompleta[0];
-            //    }
-
-            //    switch (input)
-            //    {
-            //        case "-e": 
-            //            saiPrograma = true; break;
-            //        case "-tr":
-            //            input = Console.ReadLine();
-            //            //ExecutaPoker(mesa, numRodadas);
-            //            break;
-            //        case "-t":
-            //            Console.WriteLine("Modo teste, aperte -p para ir para próximo passo.");
-            //            //ExecutaPokerPausado(mesa);
-            //            break;
-            //        case "-cls": 
-            //            Console.Clear(); 
-            //            Console.WriteLine("Esperando comando..."); break;
-            //        case "s": break;
-            //        case "-i":
-            //            //ExecutaPoker(mesa, 1);
-            //            break;
-            //        default:
-            //            Console.WriteLine("Não entendi.");
-            //            Console.WriteLine(cmBasicos.getHelp());
-            //            break;
-            //    }
-            //}
         }
 
-        public static void ExecutaPokerPausado(MesaTexasHoldem mesa)
+        static void Main(string[] args)
         {
-            IList<string> ultimaJogada = new List<string>();
-            IPokerComandos comandosAnalise = new ComandosNaAnalise();
 
-            Console.Clear();
-            Console.WriteLine("Bem vindo ao poker pausado, as opções são:" + comandosAnalise.getHelp());
-            
-            bool saiPrograma = false;
+            TestaBanco();
 
-            while (!saiPrograma)
+            ProbabilidadeApenasDuasCartas prob = new ProbabilidadeApenasDuasCartas();
+            AnaliseProbabilidade analiseProbabilidade = new AnaliseProbabilidade()
             {
-                string input = "";
-                switch (input)
-                {
-                    case "i":
-                        Console.WriteLine(comandosAnalise.getHelp());
-                        break;
-                    case "e":
-                        saiPrograma = true;
-                        break;
-                    case "r":
-                        Console.WriteLine(ultimaJogada.Last());
-                        break;
-                    case "c": 
-                        Console.Clear(); 
-                        Console.WriteLine("Esperando comando..."); 
-                        break;
-                    case "m":
-                        Console.WriteLine("Digite o número da rodada: 1 - " + ultimaJogada.Count + 1);
-                        input = Console.ReadLine();
-                        int numeroRodada = 0;
+                NumeroCartasAleatorias = 10,
+                ValorMaximo = 100000
+            };
 
-                        if (int.TryParse(input, out numeroRodada))
-                        {
-                            Console.WriteLine(ultimaJogada[numeroRodada]);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Não entendi. As opções são:");
-                            Console.WriteLine(comandosAnalise.getHelp());
-                        }
-                        break;
-                    default:
-                        //ultimaJogada.Add(mesa.ExecutaJogada().ToString());
-                        //Console.WriteLine(Environment.NewLine + ultimaJogada.Last());
-                        //saiPrograma = (mesa.Momento.MomentoAtual == Enuns.TipoRodada.FimDeJogo);
-                        break;
-                }
-            }
+            analiseProbabilidade.AnaliseConvergenciaMaoQuantidadeJogos();
+
         }
 
-        public static void ExecutaPoker(MesaTexasHoldem mesa, int numeroRodadas)
+        static void TestaBanco()
         {
-            //for (int i = 0; i < numeroRodadas; i++)  mesa.ExecutaRodada();
+            DBConnect dBConnect = new DBConnect();
+            dBConnect.AbreConexao();
+
+            if (dBConnect.EstouConectado())
+            {
+                Console.WriteLine("Estou funcionando!");
+            }
+            else
+            {
+                Console.WriteLine("Não estou funcionando");
+            }
+            dBConnect.FecharConexao();
         }
     }
 }

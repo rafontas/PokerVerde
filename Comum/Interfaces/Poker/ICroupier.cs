@@ -3,7 +3,7 @@ using Comum.Interfaces;
 
 namespace Modelo
 {
-    public interface IDealerMesa
+    public interface ICroupier
     {
         Mesa Mesa { get; }
 

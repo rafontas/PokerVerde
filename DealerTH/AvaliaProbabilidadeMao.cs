@@ -159,7 +159,7 @@ namespace DealerTH.Probabilidade
         /// <param name="mao">Cartas da mão a ser avaliada. Podem ser passadas 1 ou 2 cartas.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetPorcentagemVitoria(Carta[] mao, uint numeroRodadas = 200000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, null, null, numeroRodadas);
+        public static float GetPorcentagemVitoria(Carta[] mao, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, null, null, numeroRodadas);
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.
@@ -168,7 +168,7 @@ namespace DealerTH.Probabilidade
         /// <param name="mesa">Cartas que já estão na mesa. De 0 a 5 cartas.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetPorcentagemVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 200000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, mesa, null, numeroRodadas);
+        public static float GetPorcentagemVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, mesa, null, numeroRodadas);
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.
