@@ -19,7 +19,7 @@ namespace Testes.ComumTeste
             stringBuilder.Append(Environment.NewLine);
             stringBuilder.AppendFormat("\t\"Numero\":\"9\"");
             stringBuilder.Append("," + Environment.NewLine);
-            stringBuilder.AppendFormat("\t\"Naipe\":\"C\"");
+            stringBuilder.AppendFormat("\t\"Naipe\":\"♥\"");
             stringBuilder.Append(Environment.NewLine);
             stringBuilder.Append("}");
 
@@ -32,7 +32,7 @@ namespace Testes.ComumTeste
             stringBuilder2.Append(Environment.NewLine);
             stringBuilder2.AppendFormat("\t\"Numero\":\"11\"");
             stringBuilder2.Append("," + Environment.NewLine);
-            stringBuilder2.AppendFormat("\t\"Naipe\":\"O\"");
+            stringBuilder2.AppendFormat("\t\"Naipe\":\"♦\"");
             stringBuilder2.Append(Environment.NewLine);
             stringBuilder2.Append("}");
 

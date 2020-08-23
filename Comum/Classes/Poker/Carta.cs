@@ -34,8 +34,34 @@ namespace Modelo
             return 1;
         }
 
-        public override string ToString() =>
-            Numero + "_" + Uteis.GetFirstDisplayNameEnum(Naipe);
+        public override string ToString()
+        {
+            string carta = "";
+            if (this.Numero > 10) 
+            {
+                switch(this.Numero)
+                {
+                    case 11: 
+                        carta = "J"; break;
+                    case 12: 
+                        carta = "Q"; break;
+                    case 13: 
+                        carta = "K"; break;
+                    case 14:
+                    case 1:
+                        carta = "A"; break;
+                    default: 
+                        throw new Exception("Numero não identificado na conversão;");
+                }
+            }
+            else
+            {
+                carta = this.Numero.ToString();
+            }
+                 
+            carta += Uteis.GetFirstDisplayNameEnum(Naipe);
+            return carta;
+        }
 
         public Carta Clone() => new Carta(this.Numero, this.Naipe);
 
@@ -74,6 +100,21 @@ namespace Modelo
             stringBuilder.Append("}");
 
             return stringBuilder.ToString();
+        }
+
+        public static Enuns.Naipe GetNaipeAleatorio()
+        {
+            Random rnd = new Random();
+            int NumUm = rnd.Next(0, 3);
+
+            switch(NumUm)
+            {
+                case 0: return Naipe.Copas;
+                case 1: return Naipe.Ouros;
+                case 2: return Naipe.Paus;
+                case 3: return Naipe.Espadas;
+                default: throw new Exception("Naipe não existe!");
+            }
         }
 
         public static Carta FromJson(string Json)

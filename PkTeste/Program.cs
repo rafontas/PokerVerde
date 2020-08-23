@@ -58,26 +58,30 @@ namespace PkTeste
 
         static void Main(string[] args)
         {
-
-            TestaBanco();
-
-            ProbabilidadeApenasDuasCartas prob = new ProbabilidadeApenasDuasCartas();
-            AnaliseProbabilidade analiseProbabilidade = new AnaliseProbabilidade()
+            try
             {
-                NumeroCartasAleatorias = 10,
-                ValorMaximo = 100000
-            };
+                //ProbabilidadeApenasDuasCartas prob = new ProbabilidadeApenasDuasCartas();
+                AnaliseProbabilidade analiseProbabilidade = new AnaliseProbabilidade()
+                {
+                    NumeroCartasAleatorias = 5,
+                    LimiteMaximoJogosSimulados = 1400000,
+                    QuantidadeInicialJogosSimulados = 100000,
+                    PassoSimulacoes = 200000
+                };
 
-            analiseProbabilidade.AnaliseConvergenciaMaoQuantidadeJogos();
-
+                analiseProbabilidade.AnaliseConvergenciaMaoQuantidadeJogos();
+            }
+            finally
+            {
+                if (DBConnect.EstouConectado()) DBConnect.FecharConexao();
+            }
         }
 
         static void TestaBanco()
         {
-            DBConnect dBConnect = new DBConnect();
-            dBConnect.AbreConexao();
+            DBConnect.AbreConexao();
 
-            if (dBConnect.EstouConectado())
+            if (DBConnect.EstouConectado())
             {
                 Console.WriteLine("Estou funcionando!");
             }
@@ -85,7 +89,7 @@ namespace PkTeste
             {
                 Console.WriteLine("Não estou funcionando");
             }
-            dBConnect.FecharConexao();
+            DBConnect.FecharConexao();
         }
     }
 }

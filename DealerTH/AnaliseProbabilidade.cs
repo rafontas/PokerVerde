@@ -1,5 +1,6 @@
 ﻿using DealerTH.Probabilidade;
 using Modelo;
+using PokerDAO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,13 +11,13 @@ namespace MaoTH
 {
     public class AnaliseProbabilidade
     {
-        const string NOME_ARQUIVO_CONVERGENCIA = "CONVERGENCIA_QUANT_JOGOS.txt";
         public int NumeroCartasAleatorias { get; set; }
-        public int ValorMaximo { get; set; }
-
+        public int LimiteMaximoJogosSimulados { get; set; }
+        public int PassoSimulacoes { get; set; }
+        public int QuantidadeInicialJogosSimulados { get; set; }
         private Random random { get; set; } = new Random();
 
-        private IDictionary<string, IList<float>> MaosAleatoriasGeradas { get; set; } = new Dictionary<string, IList<float>>();
+        private HashSet<string> MaosAleatoriasGeradas { get; set; } = new HashSet<string>();
 
         private Carta [] GetNovaMaoIneditaSuited()
             => this.GetNovaMaoInedita(Enuns.Naipe.Espadas, Enuns.Naipe.Espadas);
@@ -24,119 +25,82 @@ namespace MaoTH
         private Carta[] GetNovaMaoIneditaOff()
             => this.GetNovaMaoInedita(Enuns.Naipe.Copas, Enuns.Naipe.Espadas);
 
-        private Carta [] GetNovaMaoInedita(Enuns.Naipe carta_1, Enuns.Naipe carta_2)
+        private Carta GetCartaAleatoria(Enuns.Naipe naipe = Enuns.Naipe.Copas, Carta DiferenteDe = null)
         {
-
             int NumUm = this.random.Next(2, 14);
-            int NumDois = this.random.Next(2, 14);
-            Carta carta1, carta2;
-            string novaMao;
+
+            if (DiferenteDe == null)
+                return new Carta((uint)NumUm, naipe);
 
             //evita carta de mesmo naipe e número
-            while (carta_1 == carta_2 && NumUm == NumDois)
+            while (naipe == DiferenteDe.Naipe && NumUm == DiferenteDe.Numero)
             {
                 NumUm = this.random.Next(2, 14);
-                NumDois = this.random.Next(2, 14);
-
+                naipe = Carta.GetNaipeAleatorio();
             }
 
-            if (NumUm > NumDois)
+            return new Carta((uint)NumUm, naipe);
+        }
+
+        private Carta [] GetNovaMaoInedita(Enuns.Naipe naipeCarta1, Enuns.Naipe naipeCarta2)
+        {
+            if (this.MaosAleatoriasGeradas.Count >= 500) throw new Exception("Limite de mãos atingido");
+
+            Carta carta1, carta2;
+
+            string novaMao = "";
+
+            do
             {
-                novaMao = NumDois.ToString() + NumUm.ToString();
-            }
-            else
-            {
-                novaMao = NumUm.ToString() + NumDois.ToString();
-            }
+                carta1 = GetCartaAleatoria(naipeCarta1);
+                carta2 = GetCartaAleatoria(naipeCarta2, carta1);
 
-            carta1 = new Carta((uint)NumUm, carta_1);
-            carta2 = new Carta((uint)NumDois, carta_2);
-            novaMao = carta1.ToString() + " " + carta2.ToString();
-
-            while (MaosAleatoriasGeradas.ContainsKey(novaMao))
-            {
-                NumUm = this.random.Next(2, 14);
-                NumDois = this.random.Next(2, 14);
-
-                if (carta_1 == carta_2 && NumUm == NumDois) 
-                    continue;
-
-                if (NumUm < NumDois)
+                if (carta1.Numero < carta2.Numero)
                 {
-                    int aux = NumUm;
-                    NumUm = NumDois;
-                    NumDois = aux;
+                    Carta carta3 = carta1;
+                    carta1 = carta2;
+                    carta2 = carta3;
                 }
 
-                carta1 = new Carta((uint)NumUm, carta_1);
-                carta2 = new Carta((uint)NumDois, carta_2);
                 novaMao = carta1.ToString() + " " + carta2.ToString();
-            }
 
-            return new Carta[] { new Carta((uint)NumUm, carta_1), new Carta((uint)NumDois, carta_2) };
+            } while (MaosAleatoriasGeradas.Contains(novaMao));
+
+            this.MaosAleatoriasGeradas.Add(novaMao);
+
+            return new Carta[] { carta1, carta2 };
         }
         
         public void AnaliseConvergenciaMaoQuantidadeJogos()
         {
-            string fileContent = "Passo: 100.000, Valor Máximo: " + this.ValorMaximo + Environment.NewLine;
-            string valoresAnalise = "";
-            string valorfinal = "";
+            IList<AnaliseConvergencia> analises = new List<AnaliseConvergencia>();
 
-            File.AppendAllText(NOME_ARQUIVO_CONVERGENCIA, fileContent);
-            Console.WriteLine("Analise de convergência");
-            Console.WriteLine("" + fileContent + Environment.NewLine);
-
-            for (int i = 0; i < this.NumeroCartasAleatorias; i++)
+            for (int numCartasAleatorias = 0; numCartasAleatorias < this.NumeroCartasAleatorias; numCartasAleatorias++)
             {
                 Carta[] maoOff = this.GetNovaMaoIneditaOff();
-                string maoAleatoria = maoOff[0].ToString() + " " + maoOff[1].ToString();
 
-                this.MaosAleatoriasGeradas.Add(maoAleatoria, new List<float>());
-
-                fileContent = Environment.NewLine + maoAleatoria + Environment.NewLine;
-
-                Console.WriteLine(fileContent);
-                File.AppendAllText(NOME_ARQUIVO_CONVERGENCIA, fileContent);
-                valoresAnalise = "";
-
-                for (int k = 1; k < 3; k++)
+                for (int numJogosJogados = this.QuantidadeInicialJogosSimulados; numJogosJogados <= this.LimiteMaximoJogosSimulados; numJogosJogados += this.PassoSimulacoes)
                 {
-                    int j = 10000;
-                    this.ValorMaximo = 100000;
-                    
-                    if (k == 2)
+                    AnaliseConvergencia analise = new AnaliseConvergencia()
                     {
-                        this.ValorMaximo = 1000000;
-                        j = 100000;
-                    }
-                    
-                    while (j <= this.ValorMaximo)
-                    {
-                        valoresAnalise += j + "\t";
-                        float probabilidadeOff = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoOff, (uint) j);
-                        this.MaosAleatoriasGeradas[maoAleatoria].Add(probabilidadeOff);
+                        NumeroDeCartas = maoOff.Length,
+                        Cartas = maoOff
+                    };
 
-                        valorfinal += (maoAleatoria + ";" + j + ";" + probabilidadeOff.ToString() + Environment.NewLine);
-                        
-                        if (k == 2) j += 100000;
-                        else j += 10000;
-                    }
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    
+                    analise.QuantidadeDeJogosExecutados = numJogosJogados;
+                    analise.Probabilidade = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoOff, (uint)numJogosJogados);
+
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    analise.TempoDeExecucao = new TimeSpan(elapsedMs * TimeSpan.TicksPerMillisecond);
+                    analises.Add(analise);
                 }
-
-                fileContent = "\t" + valoresAnalise + Environment.NewLine + "\t";
-                foreach (var item in this.MaosAleatoriasGeradas[maoAleatoria])
-                    fileContent += item.ToString("0.0000") + "\t";
-
-                fileContent += Environment.NewLine;
-                
-                Console.WriteLine(fileContent);
-                File.AppendAllText(NOME_ARQUIVO_CONVERGENCIA, fileContent);
-
-                Thread.Sleep(100);
             }
 
-            File.AppendAllText("Grafico.txt", valorfinal);
-
+            // Persiste a analise de convergência
+            AnaliseConvergencia.Persiste(analises);
         }
     }
 }

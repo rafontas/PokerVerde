@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace Comum
@@ -18,6 +19,14 @@ namespace Comum
             if (descriptionAttributes == null) return string.Empty;
             return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Name : value.ToString();
         }
+
+        public static T GetAttributeFrom<T>(string propertyName) where T : Attribute
+        {
+            var attrType = typeof(T);
+            var property = typeof(T).GetType().GetProperty(propertyName);
+            return (T)property.GetCustomAttributes(attrType, false).FirstOrDefault();
+        }
+
 
     }
 }
