@@ -45,7 +45,7 @@ namespace PokerDAO.Base
             return (DBConnect.Connection.State != ConnectionState.Closed);
         }
 
-        public static void AbreConexao()
+        public static void AbreConexaoSeNaoEstiverAberta()
         {
             if (DBConnect.EstouConectado()) return;
             

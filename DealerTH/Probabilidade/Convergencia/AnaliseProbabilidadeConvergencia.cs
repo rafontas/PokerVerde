@@ -3,13 +3,10 @@ using Modelo;
 using PokerDAO;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
 
 namespace MaoTH
 {
-    public class AnaliseProbabilidade
+    public class AnaliseConvergenciaProbabilidadePorJogosSimulados
     {
         public int NumeroCartasAleatorias { get; set; }
         public int LimiteMaximoJogosSimulados { get; set; }

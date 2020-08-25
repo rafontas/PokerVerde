@@ -60,16 +60,20 @@ namespace PkTeste
         {
             try
             {
-                //ProbabilidadeApenasDuasCartas prob = new ProbabilidadeApenasDuasCartas();
-                AnaliseProbabilidade analiseProbabilidade = new AnaliseProbabilidade()
-                {
-                    NumeroCartasAleatorias = 5,
-                    LimiteMaximoJogosSimulados = 1400000,
-                    QuantidadeInicialJogosSimulados = 100000,
-                    PassoSimulacoes = 200000
-                };
+                //CalculadoraProbabilidadeMaosInicial CalcInicial = new CalculadoraProbabilidadeMaosInicial(1000);
+                CalculadoraProbabilidadeMaosInicial CalcInicial = new CalculadoraProbabilidadeMaosInicial(500000);
+                CalcInicial.Gerar();
+                CalcInicial.Salvar();
 
-                analiseProbabilidade.AnaliseConvergenciaMaoQuantidadeJogos();
+                //AnaliseConvergenciaProbabilidadePorJogosSimulados analiseProbabilidade = new AnaliseConvergenciaProbabilidadePorJogosSimulados()
+                //{
+                //    NumeroCartasAleatorias = 5,
+                //    LimiteMaximoJogosSimulados = 1400000,
+                //    QuantidadeInicialJogosSimulados = 100000,
+                //    PassoSimulacoes = 200000
+                //};
+
+                //analiseProbabilidade.AnaliseConvergenciaMaoQuantidadeJogos();
             }
             finally
             {
@@ -79,7 +83,7 @@ namespace PkTeste
 
         static void TestaBanco()
         {
-            DBConnect.AbreConexao();
+            DBConnect.AbreConexaoSeNaoEstiverAberta();
 
             if (DBConnect.EstouConectado())
             {

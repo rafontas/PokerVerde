@@ -91,7 +91,7 @@ namespace PokerDAO
         {
             try
             {
-                DBConnect.AbreConexao();
+                DBConnect.AbreConexaoSeNaoEstiverAberta();
 
                 IDbCommand command = DBConnect.Connection.CreateCommand();
 
