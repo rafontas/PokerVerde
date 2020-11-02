@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PokerDAO.Interface
 {
-    public interface ISimpleContext<T>
+    public interface ISimpleContext<T> : IQueryable<T>
     {
-        string ToInsertQuery(T item);
+        void insertQuery(T item);
 
-        string ToInsertQuery(IList<T> itens);
+        void insertQuery(IList<T> itens);
+
+        T GetById();
+
     }
 }

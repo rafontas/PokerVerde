@@ -10,6 +10,8 @@ using PkTeste.Classes;
 using MaoTH.DAO;
 using MaoTH;
 using PokerDAO.Base;
+using PokerDAO.Contextos;
+using System.Collections.Generic;
 
 namespace PkTeste
 {
@@ -60,10 +62,19 @@ namespace PkTeste
         {
             try
             {
+                ProbabilidadeMaoInicial.ListaProbabilidade = ProbabilidadeMaoInicialContext.GetMaosProbabilidadesIniciais().ToHashSet();
+
+                float minhaProb = ProbabilidadeMaoInicial.GetProbabilidadeVitoria(
+                    new[] { new Carta(14, Enuns.Naipe.Copas), new Carta(14, Enuns.Naipe.Espadas) }
+                );
+
+
+                //ProbabilidadeApenasDuasCartasContext.AtualizaPorNumerosOffOuSuitedQtdJogosSimulados(list);
+
                 //CalculadoraProbabilidadeMaosInicial CalcInicial = new CalculadoraProbabilidadeMaosInicial(1000);
-                CalculadoraProbabilidadeMaosInicial CalcInicial = new CalculadoraProbabilidadeMaosInicial(500000);
-                CalcInicial.Gerar();
-                CalcInicial.Salvar();
+                //CalculadoraProbabilidadeMaosInicial CalcInicial = new CalculadoraProbabilidadeMaosInicial(500000);
+                //CalcInicial.Gerar();
+                //CalcInicial.Salvar();
 
                 //AnaliseConvergenciaProbabilidadePorJogosSimulados analiseProbabilidade = new AnaliseConvergenciaProbabilidadePorJogosSimulados()
                 //{

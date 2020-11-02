@@ -1,11 +1,9 @@
-﻿using DealerTH.Probabilidade;
-using MaoTH.Probabilidade.ProbMaoInicial;
+﻿using Comum.Classes;
+using Comum.Interfaces;
+using DealerTH.Probabilidade;
 using Modelo;
 using PokerDAO.Contextos;
-using PokerDAO.Interface;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace MaoTH.DAO
 {
@@ -18,8 +16,9 @@ namespace MaoTH.DAO
         public bool HaProbabilidadeSalva() {
             throw new System.NotImplementedException("");
         }
-        
-        public void Carregar() { }
+
+        public IList<IProbabilidadeMaoInicial> Carregar() => 
+            ProbabilidadeMaoInicialContext.GetMaosProbabilidadesIniciais((int)this.QuantidadeJogosPorSimulacao);
 
         public void Gerar() 
         {
@@ -30,7 +29,7 @@ namespace MaoTH.DAO
         
         public void Salvar() 
         {
-            ProbabilidadeApenasDuasCartasContext.Persiste(this.ProbabilidadesMaos);
+            ProbabilidadeMaoInicialContext.Persiste(this.ProbabilidadesMaos);
         }
 
         private void GerarMaosOff() 
@@ -48,16 +47,16 @@ namespace MaoTH.DAO
                         QuantidadesJogosSimulados = this.QuantidadeJogosPorSimulacao
                     };
 
-                    if (ProbabilidadeApenasDuasCartasContext.JaExisteProbabilidadeCadastrada(probMao)) continue;
+                    if (ProbabilidadeMaoInicialContext.JaExisteProbabilidadeCadastrada(probMao)) continue;
 
                     Carta[] maoOff = new Carta[] {
                         new Carta(i, Enuns.Naipe.Copas),
                         new Carta(j, Enuns.Naipe.Espadas)
                     };
 
-                    probMao.Probabilidade = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoOff, this.QuantidadeJogosPorSimulacao);
+                    probMao.ProbabilidadeVitoria = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoOff, this.QuantidadeJogosPorSimulacao);
 
-                    ProbabilidadeApenasDuasCartasContext.Persiste(probMao);
+                    ProbabilidadeMaoInicialContext.Persiste(probMao);
                 }
             }
         }
@@ -77,7 +76,7 @@ namespace MaoTH.DAO
                         QuantidadesJogosSimulados = this.QuantidadeJogosPorSimulacao
                     };
 
-                    if (ProbabilidadeApenasDuasCartasContext.JaExisteProbabilidadeCadastrada(probMao)) continue;
+                    if (ProbabilidadeMaoInicialContext.JaExisteProbabilidadeCadastrada(probMao)) continue;
 
                     Carta[] maoSuited = new Carta[] {
                         new Carta(i, Enuns.Naipe.Copas),
@@ -86,9 +85,9 @@ namespace MaoTH.DAO
 
                     string chaveMaoSuited = maoSuited[0].ToString() + " " + maoSuited[1].ToString();
 
-                    probMao.Probabilidade = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoSuited, this.QuantidadeJogosPorSimulacao);
+                    probMao.ProbabilidadeVitoria = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoSuited, this.QuantidadeJogosPorSimulacao);
 
-                    ProbabilidadeApenasDuasCartasContext.Persiste(probMao);
+                    ProbabilidadeMaoInicialContext.Persiste(probMao);
                 }
             }
         }

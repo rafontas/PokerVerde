@@ -11,15 +11,6 @@ namespace Testes.DAO
     [TestClass]
     public class BDConnectionTest
     {
-        private DBConnect DBConnect { get; set; }
-
-        [TestInitialize]
-        public void TestInitialize() 
-        {
-            this.DBConnect = new DBConnect();
-            this.DBConnect.AbreConexao();
-        }
-        
         [TestMethod]
         public void BdIsRunningTest()
         {
@@ -32,7 +23,7 @@ namespace Testes.DAO
         {
             try
             {
-                this.DBConnect.FecharConexao();
+                DBConnect.FecharConexao();
             }
             catch (Exception e)
             {
