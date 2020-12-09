@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Text;
 using Comum.Classes;
 using Comum.Interfaces;
+using Comum.Classes.Poker;
+using System.Linq;
 
 namespace Testes
 {
@@ -43,6 +45,35 @@ namespace Testes
 
         }
 
+        [TestMethod]
+        public void CartasMandatorias_1()
+        {
+            IJogador jogador = new DummyJogadorTHB(DealerPartidaTest.configPadrao);
 
+            Carta[] cartasJogador = new Carta[] {
+                    new Carta(10, Enuns.Naipe.Copas),
+                    new Carta(10, Enuns.Naipe.Paus)
+            };
+
+            IJogador banca = new Banca(DealerPartidaTest.configPadrao);
+            Comum.Mesa m = new Comum.Mesa(DealerPartidaTest.configPadrao);
+            int quantidadeJogos = 5;
+            
+            CroupierConstructParam param = new CroupierConstructParam() {
+                CartasJogador = cartasJogador, 
+                Jogador = jogador,
+                Banca = banca,
+                ConfiguracaoPoker = DealerPartidaTest.configPadrao
+            };
+            ICroupier croupier = new Croupier(param);
+
+
+            for (int i = 0; i < quantidadeJogos; i++)
+            {
+                croupier.ExecutarNovaPartidaCompleta();
+                IPartida p = jogador.Historico.Last();
+                Assert.IsTrue(p.Jogador.Cartas.Contains(cartasJogador[0]) && p.Jogador.Cartas.Contains(cartasJogador[1]));
+            }
+        }
     }
 }

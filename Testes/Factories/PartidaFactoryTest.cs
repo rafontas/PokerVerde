@@ -70,7 +70,7 @@ namespace Testes.Factories
         public void BancaGanhouTest() 
         {
             int qtdItensDeRetornoUnico = 800;
-            int qtdItensNaLista = 137;
+            int qtdItensNaLista = 15;
             PartidaFactory partidaFactory = new PartidaFactory();
 
             // TESTE - retorno unitario partida

@@ -1,4 +1,5 @@
-﻿using Comum.Excecoes;
+﻿using Comum.Classes.Poker;
+using Comum.Excecoes;
 using Comum.Interfaces;
 using Enuns;
 using Modelo;
@@ -28,14 +29,16 @@ namespace Comum.Classes
             this.Mesa = mesa;
             this.DealerPartida = new DealerPartida(this.Mesa, banca);
         }
-        
-        public Croupier(IConfiguracaoPoker config, IJogador banca, IList<IJogador> jogador)
-        {
-            this.Mesa = new Mesa(config);
-            this.DealerPartida = new DealerPartida(this.Mesa, banca);
-            foreach (var j in jogador) this.Mesa.AddParticipante(j);
-        }
 
+        public Croupier(CroupierConstructParam param)
+        {
+            if (param.ConfiguracaoPoker == null) throw new DealerException("Construção de Croupier com parâmetro sem configuração.");
+
+            this.Mesa = new Mesa(param.ConfiguracaoPoker);
+            if (param.Jogador != null) this.Mesa.AddParticipante(param.Jogador);
+            this.DealerPartida = new DealerPartida(this.Mesa, param.Banca, param.CartasBanca, param.CartasJogador);
+        }
+        
         private TipoRodada UltimaRodada { get => this.Mesa.PartidasAtuais.First().Value.Rodadas.Last().TipoRodada; }
 
         public void ExecutarCorrida(IJogador jogador)

@@ -105,7 +105,7 @@ namespace JogadorTH
         public AcaoJogador PreFlop(uint valor)
         {
             if (!this.TenhoStackParaJogar()) 
-                return new AcaoJogador(AcoesDecisaoJogador.Stop, 0, null, 0);
+                return new AcaoJogador(AcoesDecisaoJogador.Fold, 0, null, 0);
          
             return this.Mente.First().PreFlop(valor); 
         }

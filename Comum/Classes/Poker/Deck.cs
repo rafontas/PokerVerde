@@ -16,7 +16,7 @@ namespace Modelo
         /// </summary>
         public void CriaDeckPadrao()
         {
-            Baralho = new List<T>();
+            this.Baralho = new List<T>();
             for (uint i = 2; i <= 14; i++)
             {
                 Baralho.Add((T)new Carta(i, Naipe.Copas));
@@ -27,6 +27,19 @@ namespace Modelo
 
             Shuffle();
         }
+
+        /// <summary>
+        /// Cria um deck já embaralhado menos as cartas passadas
+        /// </summary>
+        public void CriaDeckPadraoRetirandoCartas(IList<T> CartasAhRetirar)
+        {
+            this.CriaDeckPadrao();
+
+            foreach (T c in CartasAhRetirar) Baralho.Remove(c);
+
+            Shuffle();
+        }
+
 
         /// <summary>
         /// Zera o estado do baralho e faz outro completo e já embaralhado.
@@ -45,7 +58,7 @@ namespace Modelo
 
             for (int i = 0; i < Baralho.Count; i++)
             {
-                int novaPosicao = rand.Next(14);
+                int novaPosicao = rand.Next(Baralho.Count);
                 aux = Baralho[i];
                 Baralho[i] = Baralho[novaPosicao];
                 Baralho[novaPosicao] = aux;
@@ -98,10 +111,7 @@ namespace Modelo
         /// Retorna uma carta randomica
         /// </summary>
         public T CartaRandom {
-            get {
-                int indice = rand.Next(Baralho.Count);
-                return Baralho[indice];
-            }
+            get => Baralho[rand.Next(Baralho.Count)];
         }
 
     }

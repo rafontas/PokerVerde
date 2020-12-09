@@ -20,5 +20,7 @@ namespace Modelo
                 default: return 0;
             }
         }
+
+        public static IConfiguracaoPoker getConfiguracaoPadrao() => new ConfiguracaoTHBonus();
     }
 }

@@ -54,7 +54,7 @@ namespace MaoTH.DAO
                         new Carta(j, Enuns.Naipe.Espadas)
                     };
 
-                    probMao.ProbabilidadeVitoria = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoOff, this.QuantidadeJogosPorSimulacao);
+                    probMao.ProbabilidadeVitoria = AvaliaProbabilidadeMao.GetRecalculaVitoria(maoOff, this.QuantidadeJogosPorSimulacao);
 
                     ProbabilidadeMaoInicialContext.Persiste(probMao);
                 }
@@ -85,7 +85,7 @@ namespace MaoTH.DAO
 
                     string chaveMaoSuited = maoSuited[0].ToString() + " " + maoSuited[1].ToString();
 
-                    probMao.ProbabilidadeVitoria = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoSuited, this.QuantidadeJogosPorSimulacao);
+                    probMao.ProbabilidadeVitoria = AvaliaProbabilidadeMao.GetRecalculaVitoria(maoSuited, this.QuantidadeJogosPorSimulacao);
 
                     ProbabilidadeMaoInicialContext.Persiste(probMao);
                 }

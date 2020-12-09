@@ -4,10 +4,10 @@ using System.Text;
 
 namespace JogadorTH.Inteligencia.Probabilidade
 {
-    internal class AcaoProbabilidade
+    public class AcaoProbabilidade
     {
-        internal float probMinimaChamarFlop { get; } = 50;
-        internal float probMinAumentaNoFlop { get; } = 51;
-        internal float probMinAumentaNoTurn { get; } = 51;
+        public float probMinimaChamarFlop { get; } = 50;
+        public float probMinAumentaNoFlop { get; } = 51;
+        public float probMinAumentaNoTurn { get; } = 51;
     }
 }

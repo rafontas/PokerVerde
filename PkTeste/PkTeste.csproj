@@ -7,8 +7,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Comum\Comum.csproj" />
+    <ProjectReference Include="..\DealerTH\MaoTH.csproj" />
     <ProjectReference Include="..\JogadorTH\JogadorTH.csproj" />
     <ProjectReference Include="..\PokerDAO\PokerDAO.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Classes\" />
   </ItemGroup>
 
 </Project>

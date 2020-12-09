@@ -1,7 +1,6 @@
-﻿using Modelo;
-using System;
+﻿using Comum.HoldemHand;
+using Modelo;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DealerTH.Probabilidade
 {
@@ -96,61 +95,54 @@ namespace DealerTH.Probabilidade
 
             limite = limite > (LIMITE_MAO_S - NumCartasMaoSec) ? limite : (LIMITE_MAO_S - NumCartasMaoSec);
 
-            for (uint i = 1; i <= NumeroRodadas; i++)
+            for (int i = 1; i <= NumeroRodadas; i++)
             {
-                // Preenche as cartas faltantesk
-                for (int j = NumCartasMesa, k = NumCartasMao, l = NumCartasMaoSec; j < limite; j++, k++, l++)
-                {
-                    CartaA aux;
-                    // Preenhce a mao
-                    if (k < LIMITE_MAO_P)
-                    {
-                        aux = Deck.CartaRandom;
-                        while (aux.RodadaNum == i) aux = Deck.CartaRandom;
-                        MaoPrincipal[k] = aux;
-                        aux.RodadaNum = i;
-                    }
 
-                    // Preenche mão secundária
-                    if (l < LIMITE_MAO_S)
-                    {
-                        aux = Deck.CartaRandom;
-                        while (aux.RodadaNum == i) aux = Deck.CartaRandom;
-                        MaoSecundaria[l] = aux;
-                        aux.RodadaNum = i;
-                    }
+                int j = NumCartasMesa, k = NumCartasMao, l = NumCartasMaoSec;
 
-                    // Preenhce a mesa
-                    if (j < LIMITE_MESA)
-                    {
-                        aux = Deck.CartaRandom;
-                        while (aux.RodadaNum == i) aux = Deck.CartaRandom;
-                        Mesa[j] = aux;
-                        aux.RodadaNum = i;
-                    }
-                }
+                // Preenhce a mao
+                while (k < LIMITE_MAO_P) MaoPrincipal[k++] = GetCartaIneditaRodada(i);
+                    
+                // Preenche mão secundária
+                while (l < LIMITE_MAO_S) MaoSecundaria[l++] = GetCartaIneditaRodada(i);
 
-                MelhorMao principal = new MelhorMao();
-                MelhorMao secundaria = new MelhorMao();
+                // Preenhce a mesa
+                while (j < LIMITE_MESA) Mesa[j++] = GetCartaIneditaRodada(i);
 
-                // Avalia
-                MaoTexasHoldem mp = principal.AvaliaMao(new List<Carta>() {
-                    MaoPrincipal[0], MaoPrincipal[1],
-                    Mesa[0], Mesa[1], Mesa[2],
-                    Mesa[3], Mesa[4],
-                });
-                MaoTexasHoldem ms = secundaria.AvaliaMao(new List<Carta>() {
-                    MaoSecundaria[0], MaoSecundaria[1],
-                    Mesa[0], Mesa[1], Mesa[2],
-                    Mesa[3], Mesa[4],
-                });
-
-                int resultado = mp.Compara(ms);
+                //int resultado = mp.Compara(ms);
+                int resultado = this.AvaliaMelhorMao(MaoPrincipal, MaoSecundaria, Mesa);
 
                 if (resultado == 1) vitorias++;
                 else if (resultado == -1) derrotas++;
                 else empate++;
             }
+        }
+
+        private CartaA GetCartaIneditaRodada(int numRodada)
+        {
+            CartaA aux = Deck.CartaRandom;
+            while (aux.RodadaNum == numRodada) aux = Deck.CartaRandom;
+            aux.RodadaNum = (uint)numRodada;
+
+            return aux;
+        }
+
+        private int AvaliaMelhorMao(Carta [] jogador1, Carta[] jogador2, Carta [] mesa) 
+        {
+            string m = mesa[0].ToFastCard() + " " + mesa[1].ToFastCard() + " " + mesa[2].ToFastCard() + " " + mesa[3].ToFastCard() + " " + mesa[4].ToFastCard() + " ",
+                jog1 = jogador1[0].ToFastCard() + " " + jogador1[1].ToFastCard(),
+                jog2 = jogador2[0].ToFastCard() + " " + jogador2[1].ToFastCard();
+            
+            int resultado;
+
+            Hand maoJog1 = new Hand(jog1, m);
+            Hand maoJog2 = new Hand(jog2, m);
+
+            if (maoJog1 > maoJog2) resultado = 1;
+            else if (maoJog1 < maoJog2) resultado = -1;
+            else resultado = 0;
+
+            return resultado;
         }
 
         /// <summary>
@@ -159,7 +151,7 @@ namespace DealerTH.Probabilidade
         /// <param name="mao">Cartas da mão a ser avaliada. Podem ser passadas 1 ou 2 cartas.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetPorcentagemVitoria(Carta[] mao, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, null, null, numeroRodadas);
+        public static float GetRecalculaVitoria(Carta[] mao, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetRecalculaVitoria(mao, null, null, numeroRodadas);
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.
@@ -168,7 +160,7 @@ namespace DealerTH.Probabilidade
         /// <param name="mesa">Cartas que já estão na mesa. De 0 a 5 cartas.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetPorcentagemVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetPorcentagemVitoria(mao, mesa, null, numeroRodadas);
+        public static float GetRecalculaVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetRecalculaVitoria(mao, mesa, null, numeroRodadas);
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.
@@ -178,7 +170,7 @@ namespace DealerTH.Probabilidade
         /// <param name="maoAdversaria">Cartas da mão adversária. Pode ser 0, 1 ou 2.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetPorcentagemVitoria(Carta [] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000)
+        public static float GetRecalculaVitoria(Carta [] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000)
         {
             uint vitorias = 0, derrotas = 0, empate = 0;
 
@@ -191,5 +183,6 @@ namespace DealerTH.Probabilidade
             return probabilidadeFinal;
 
         }
+
     }
 }

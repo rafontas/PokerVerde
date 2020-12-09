@@ -56,14 +56,26 @@ namespace Comum.Classes
             get => new Carta[] { Flop[0], Flop[1], Flop[2], Turn, River };
         }
 
-        public Partida(uint seq, IJogador jogador, IJogador banca)
+        public Partida(uint seq, IJogador jogador, IJogador banca, IList<Carta> CartasAhRetirar = null)
         {
             SequencialPartida = seq;
             this.AddRodada(new RodadaTHB(Enuns.TipoRodada.PreJogo, 0, null));
             this.Jogador = jogador;
             this.Banca = banca;
             this.PoteAgora = 0;
-            this.Deck.CriaDeckPadrao();
+            this.CriaDeck(CartasAhRetirar);
+        }
+
+        private void CriaDeck(IList<Carta> CartasRetirarDeck = null)
+        {
+            if (CartasRetirarDeck != null && CartasRetirarDeck.Count > 0)
+            {
+                this.Deck.CriaDeckPadraoRetirandoCartas(CartasRetirarDeck);
+            }
+            else
+            {
+                this.Deck.CriaDeckPadrao();
+            }
         }
 
         public override IPartida Clone()

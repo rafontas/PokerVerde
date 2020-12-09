@@ -6,11 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Comum\Comum.csproj" />
+    <ProjectReference Include="..\JogadorTH\JogadorTH.csproj" />
     <ProjectReference Include="..\PokerDAO\PokerDAO.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>

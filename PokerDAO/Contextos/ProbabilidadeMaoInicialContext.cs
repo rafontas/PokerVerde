@@ -1,5 +1,6 @@
 ﻿using Comum.Classes;
 using Comum.Interfaces;
+using Comum.Interfaces.AnaliseProbabilidade;
 using PokerDAO.Base;
 using PokerDAO.Interface;
 using System;
@@ -180,6 +181,8 @@ namespace PokerDAO.Contextos
         {
             int index = 0;
 
+            if (!dataReader.Read()) throw new Exception("Não há itens a serem lidos.");
+
             IProbabilidadeMaoInicial item = new ProbabilidadeMaoInicial(dataReader.GetInt32(index++));
 
             item.NumCarta1 = (uint)dataReader.GetInt32(index++);
@@ -199,6 +202,36 @@ namespace PokerDAO.Contextos
             }
 
             return item;
+        }
+
+        public static IProbabilidadeMaoInicial GetItem(IMaoBasica mao, int qtdJogosSimulacao = 500000)
+        {
+            IProbabilidadeMaoInicial probMaoInicial;
+            StringBuilder strSelect = ProbabilidadeMaoInicialContext.GetSelectQuery();
+
+            strSelect.AppendFormat(" WHERE " + Environment.NewLine +
+                    "(" + Environment.NewLine +
+                    "   (m.numero_carta_1 = {0} AND m.numero_carta_2 = {1}) OR" + Environment.NewLine +
+                    "   (m.numero_carta_2 = {2} AND m.numero_carta_1 = {3})" + Environment.NewLine +
+                    ") AND " + Environment.NewLine +
+                    "m.offorsuited like \'{4}\' " + Environment.NewLine,
+                    mao.NumCarta1,
+                    mao.NumCarta2,
+                    mao.NumCarta1,
+                    mao.NumCarta2,
+                    mao.OffOrSuited
+            );
+
+            DBConnect.AbreConexaoSeNaoEstiverAberta();
+            IDbCommand command = DBConnect.Connection.CreateCommand();
+            command.CommandText = strSelect.ToString();
+
+            using (IDataReader dataReader = command.ExecuteReader())
+            {
+                probMaoInicial = ProbabilidadeMaoInicialContext.GetItem(dataReader);
+            }
+
+            return probMaoInicial;
         }
 
         private static string ToInsertQuery(IProbabilidadeMaoInicial probabilidadeMaoInicial) 

@@ -13,6 +13,7 @@ namespace Comum.Classes
         public IList<IJogador> Jogadores { get; set; }
 
         private ICroupier Croupier { get; set; }
+
         private Mesa Mesa { get; set; }
         
         /// <summary>

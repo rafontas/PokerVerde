@@ -1,17 +1,16 @@
-﻿using JogadorTH;
-using Modelo;
-using System.Linq;
+﻿using System.Linq;
 using System;
-using Comum.Classes;
-using JogadorTH.Inteligencia;
-using Comum.Interfaces;
 using System.IO;
-using PkTeste.Classes;
-using MaoTH.DAO;
-using MaoTH;
+using JogadorTH;
+using Modelo;
+using Comum.Classes;
+using Comum.Interfaces;
+using Comum.Classes.Poker;
+using JogadorTH.Inteligencia;
 using PokerDAO.Base;
 using PokerDAO.Contextos;
-using System.Collections.Generic;
+using MaoTH.Probabilidade.ProbMaoInicial;
+using Comum.HoldemHand;
 
 namespace PkTeste
 {
@@ -45,8 +44,7 @@ namespace PkTeste
             ISitAndGo SitAndGo =
                 new BuilderSitAndGo(new ConfiguracaoTHBonus())
                 .addJogador(jogador)
-                .SetRestantePadrao()
-                .GetResult();
+                .ToSitAndGo();
 
             SitAndGo.Executa();
 
@@ -58,16 +56,40 @@ namespace PkTeste
             Program.SalvaArquivo(content);
         }
 
+        static void PreencheCallPreFlop()
+        {
+            SimulacaoCallPreFlopPorMaoPossivel simulacao = new SimulacaoCallPreFlopPorMaoPossivel(5000);
+
+            simulacao.GeraListaCallPreFlopLimiteProbabilidade();
+        }
+
+        static void TestHandOdds()
+        {
+            string board = "2d kh qh 3h qc";
+            Hand h1 = new Hand("ad jd", board);
+            Hand h2 = new Hand("2h 3d", board);
+
+            if (h1 > h2)
+            {
+                Console.WriteLine("Yeap");
+            }
+            else if (h1 < h2)
+            {
+                Console.WriteLine("Nope");
+            }
+            else
+            {
+                Console.WriteLine("Draw");
+            }
+            Console.ReadKey();
+        }
+
         static void Main(string[] args)
         {
             try
             {
-                ProbabilidadeMaoInicial.ListaProbabilidade = ProbabilidadeMaoInicialContext.GetMaosProbabilidadesIniciais().ToHashSet();
-
-                float minhaProb = ProbabilidadeMaoInicial.GetProbabilidadeVitoria(
-                    new[] { new Carta(14, Enuns.Naipe.Copas), new Carta(14, Enuns.Naipe.Espadas) }
-                );
-
+                Program.PreencheCallPreFlop();
+                //Program.PreencheCallPreFlop();
 
                 //ProbabilidadeApenasDuasCartasContext.AtualizaPorNumerosOffOuSuitedQtdJogosSimulados(list);
 

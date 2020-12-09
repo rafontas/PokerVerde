@@ -151,5 +151,6 @@ namespace Modelo
                 hash ^= MelhorJogo[i].GetHashCode();
             return hash;
         }
+    
     }
 }

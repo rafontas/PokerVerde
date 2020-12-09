@@ -1,4 +1,5 @@
 ﻿using Comum.Excecoes;
+using Comum.HoldemHand;
 using Comum.Interfaces;
 using Enuns;
 using Modelo;
@@ -15,11 +16,53 @@ namespace Comum.Classes
 
         public Mesa Mesa { get; }
 
+        public Carta[] MaoMandatoriaBanca { get; private set; } = null;
+        public Carta[] MaoMandatoriaJogador { get; private set; } = null;
+
+        private IList<Carta> CartasAhRetirarDeck()
+        {
+            IList<Carta> cartasAhRetirar = new List<Carta>();
+
+            if (this.MaoMandatoriaJogador != null)
+            {
+                foreach(var c in this.MaoMandatoriaJogador) 
+                    cartasAhRetirar.Add(c);
+            }
+
+            if (this.MaoMandatoriaBanca != null)
+            {
+                foreach(var c in MaoMandatoriaBanca) 
+                    cartasAhRetirar.Add(c);
+            }
+
+            return (cartasAhRetirar.Count == 0 ? null : cartasAhRetirar);
+        }
+
         //todo: retirar banca e instanciar como padrão
-        public DealerPartida(Mesa mesa, IJogador banca)
+        public DealerPartida(Mesa mesa, IJogador Banca, Carta [] MaoBanca = null, Carta[] MaoJogador = null)
         { 
             this.Mesa = mesa;
-            this.banca = banca;
+            this.banca = Banca;
+            this.SetMaosPreferenciais(MaoBanca, MaoJogador);
+        }
+
+        private void SetMaosPreferenciais(Carta[] MaoBanca = null, Carta[] MaoJogador = null)
+        {
+            if (MaoBanca != null)
+            {
+                this.MaoMandatoriaBanca = new Carta[] { null, null };
+
+                if (MaoBanca.Length >= 1) this.MaoMandatoriaBanca[0] = MaoBanca[0];
+                if (MaoBanca.Length >= 2) this.MaoMandatoriaBanca[1] = MaoBanca[1];
+            }
+
+            if (MaoJogador != null)
+            {
+                this.MaoMandatoriaJogador = new Carta[] { null, null };
+
+                if (MaoJogador.Length >= 1) this.MaoMandatoriaJogador[0] = MaoJogador[0];
+                if (MaoJogador.Length >= 2) this.MaoMandatoriaJogador[1] = MaoJogador[1];
+            }
         }
 
         public IJogador GetBancaPadrao() => this.banca;
@@ -39,7 +82,7 @@ namespace Comum.Classes
                 switch(a.Acao)
                 {
                     case AcoesDecisaoJogador.Play:
-                        this.Mesa.PartidasAtuais.Add(j, new Partida(j.SeqProximaPartida, j, this.banca));
+                        this.Mesa.PartidasAtuais.Add(j, new Partida(j.SeqProximaPartida, j, this.banca, CartasAhRetirarDeck()));
                         break;
 
                     case AcoesDecisaoJogador.Stop:
@@ -114,7 +157,6 @@ namespace Comum.Classes
         } 
 
         //todo: tirar isso de public
-        public void DistribuirCartasJogadores(IPartida p) => p.Jogador.ReceberCarta(p.PopDeck(), p.PopDeck());
 
         public void RevelarFlop() {
             foreach (var partida in this.Mesa.PartidasAtuais)
@@ -156,7 +198,8 @@ namespace Comum.Classes
                         proximaRodada = new RodadaTHB(TipoRodada.FimDeJogo, partida.PoteAgora, partida.CartasMesa);
                         break;
 
-                    default: throw new Exception("Ação não esperada.");
+                    default: 
+                        throw new Exception("Ação não esperada.");
                 }
 
                 partida.AddRodada(proximaRodada);
@@ -234,7 +277,28 @@ namespace Comum.Classes
             this.EncerrarPartidasTerminadas();
         }
 
-        protected void DistribuirCartasBanca(IPartida p) => p.Banca.ReceberCarta(p.PopDeck(), p.PopDeck());
+        protected void DistribuirCartasBanca(IPartida p) => this.DistribuiCartas(p.Banca, this.MaoMandatoriaBanca, p);
+
+        public void DistribuirCartasJogadores(IPartida p) => this.DistribuiCartas(p.Jogador, this.MaoMandatoriaJogador, p);
+
+        private void DistribuiCartas(IJogador jogador, Carta[] CartasMandatorias, IPartida p)
+        {
+            if (CartasMandatorias != null && CartasMandatorias.Length > 0)
+            {
+                if (CartasMandatorias.Length == 1)
+                {
+                    jogador.ReceberCarta(CartasMandatorias[0].Clone(), p.PopDeck());
+                }
+                else
+                {
+                    jogador.ReceberCarta(CartasMandatorias[0].Clone(), CartasMandatorias[1].Clone());
+                }
+            }
+            else
+            {
+                jogador.ReceberCarta(p.PopDeck(), p.PopDeck());
+            }
+        }
 
         //TODO: verificar se melhor maneira de contornar o virtual
         public virtual void VerificarGanhadorPartida(IPartida p)
@@ -277,7 +341,7 @@ namespace Comum.Classes
             }
         }
         
-        private int RetornaMelhorMaoPartidaFinalizada(IPartida p) 
+        private int RetornaMelhorMaoPartidaFinalizada_antiga(IPartida p) 
         {
             if (p.Rodadas.Last().TipoRodada != TipoRodada.River)
                 throw new DealerException("Rodada inválida para avaliação de mãos.");
@@ -300,6 +364,29 @@ namespace Comum.Classes
             MaoTexasHoldem melhorMaoBanca = construtorMao.GetMelhorMao(CartasMesa.Union(CartasBanca).ToList());
 
             return melhorMaoJogador.Compara(melhorMaoBanca);
+        }
+
+        private int RetornaMelhorMaoPartidaFinalizada(IPartida p)
+        {
+            if (p.Rodadas.Last().TipoRodada != TipoRodada.River)
+                throw new DealerException("Rodada inválida para avaliação de mãos.");
+
+            string cartasJogador = String.Empty, cartasBanca = String.Empty, mesa = String.Empty;
+
+            foreach (var c in p.CartasMesa)
+                mesa = c.ToFastCard() + " ";
+
+            cartasBanca = p.Banca.Cartas[0].ToFastCard() + " " + p.Banca.Cartas[1].ToFastCard();
+            cartasJogador = p.Jogador.Cartas[0].ToFastCard() + " " + p.Jogador.Cartas[1].ToFastCard();
+
+            string board = "2d kh qh 3h qc";
+            Hand jogador = new Hand(cartasJogador, mesa);
+            Hand banca = new Hand(cartasBanca, mesa);
+
+            return (jogador > banca ? 1 : // jogador vencedor
+                        (banca > jogador ?  
+                            -1 : // banca vencedora
+                            0)); // empate
         }
 
         /// <summary>

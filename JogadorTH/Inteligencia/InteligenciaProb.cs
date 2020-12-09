@@ -1,7 +1,5 @@
-﻿using Comum.Interfaces;
-using DealerTH.Probabilidade;
+﻿using Comum.Interfaces.AnaliseProbabilidade;
 using Enuns;
-using JogadorTH.Inteligencia.Probabilidade;
 using Modelo;
 using System;
 
@@ -13,12 +11,15 @@ namespace JogadorTH.Inteligencia
         public override string IdMente { get => this.idMente; }
         private int versaoIdMente { get; set; }
         public override int VersaoIdMente { get => this.versaoIdMente; }
+        
+        public IRetornaProbabilidade RetornaProbabilidade { get; set; }
 
-        private AcaoProbabilidade AcaoProbabilidade { get; set; }
+        internal IAcaoProbabilidade AcaoProbabilidade { get; set; }
 
-        public InteligenciaProb() : base()
+        public InteligenciaProb(IAcaoProbabilidade AcaoProbabilidade, IRetornaProbabilidade RetornaProbabilidade) : base()
         {
-            this.AcaoProbabilidade = new AcaoProbabilidade();
+            this.RetornaProbabilidade = RetornaProbabilidade;
+            this.AcaoProbabilidade = AcaoProbabilidade;
         }
 
         public override AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa)
@@ -72,7 +73,7 @@ namespace JogadorTH.Inteligencia
         {
             AcaoJogador acao;
 
-            if (this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoFlop)
+            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoFlop) && this.PossoPagarValor(this.Config.Turn))
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.Turn, this);
             }
@@ -88,7 +89,7 @@ namespace JogadorTH.Inteligencia
         {
             AcaoJogador acao;
 
-            if (this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoTurn)
+            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoTurn) && this.PossoPagarValor(this.Config.River))
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.River, this);
             }
@@ -112,9 +113,7 @@ namespace JogadorTH.Inteligencia
         /// <returns></returns>
         private float getMinhaProbalidadeAgora(Carta[] minhasCartas, Carta[] cartasMesa = null) 
         {
-            return (cartasMesa == null ?
-                AvaliaProbabilidadeMao.GetPorcentagemVitoria(minhasCartas) :
-                AvaliaProbabilidadeMao.GetPorcentagemVitoria(minhasCartas, cartasMesa));
+            return this.RetornaProbabilidade.GetProbabilidadeVitoria(minhasCartas, cartasMesa);
         }
     }
 }

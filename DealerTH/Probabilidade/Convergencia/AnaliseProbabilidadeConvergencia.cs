@@ -87,7 +87,7 @@ namespace MaoTH
                     var watch = System.Diagnostics.Stopwatch.StartNew();
                     
                     analise.QuantidadeDeJogosExecutados = numJogosJogados;
-                    analise.Probabilidade = AvaliaProbabilidadeMao.GetPorcentagemVitoria(maoOff, (uint)numJogosJogados);
+                    analise.Probabilidade = AvaliaProbabilidadeMao.GetRecalculaVitoria(maoOff, (uint)numJogosJogados);
 
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;

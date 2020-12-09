@@ -1,5 +1,6 @@
 ﻿using Comum;
 using Comum.Interfaces;
+using Comum.Interfaces.PokerBase;
 using Enuns;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace Modelo
 {
-    public class Carta : IEqualityComparer<Carta>, IToJson
+    public class Carta : IEqualityComparer<Carta>, IToJson, IToFastCard
     {
 
         [Display(Name = "Numero")]
@@ -182,6 +183,41 @@ namespace Modelo
             }
 
             return new Carta(meuNumero, meuNaipe);
+        }
+
+        public string ToFastCard()
+        {
+            string card = "";
+            
+            switch(this.Numero)
+            {
+                case 0: card = "a"; break;
+                case 2: card = "2"; break;
+                case 3: card = "3"; break;
+                case 4: card = "4"; break;
+                case 5: card = "5"; break;
+                case 6: card = "6"; break;
+                case 7: card = "7"; break;
+                case 8: card = "8"; break;
+                case 9: card = "9"; break;
+                case 10: card = "t"; break;
+                case 11: card = "j"; break;
+                case 12: card = "q"; break;
+                case 13: card = "k"; break;
+                case 14: card = "a"; break;
+                default: throw new Exception("Numero da carta não encontrado");
+            }
+
+            switch(this.Naipe)
+            {
+                case Naipe.Copas: card = card + "h"; break;
+                case Naipe.Espadas: card = card + "s"; break;
+                case Naipe.Ouros: card = card + "d"; break;
+                case Naipe.Paus: card = card + "c"; break;
+                default: throw new Exception();
+            }
+
+            return card;
         }
     }
 }
