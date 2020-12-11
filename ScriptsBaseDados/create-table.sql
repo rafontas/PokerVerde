@@ -82,11 +82,44 @@ CREATE TABLE probabilidade.simulacao_call_pre_flop (
     val_stack_inicial int NOT NULL,
     val_stack_final int NOT NULL,
     id_mao_duas_cartas int NOT NULL REFERENCES probabilidade.mao_duas_cartas (id),
+    id_acao_probabilidade int4,
     constraint tb_execucao_simulacao_call_pre_flot PRIMARY KEY (id)
 );
 
+-- Configuração Poker
+CREATE TABLE comum.config_poker (
+	id serial NOT NULL,
+	val_ant int4 NOT NULL,
+	val_see_flop int4 NOT NULL,	
+	val_raise_pre_turn int4 NOT NULL,	
+	val_raise_pre_river int4 NOT null,
+	CONSTRAINT config_poker_pkey PRIMARY KEY (id)
+);
 
-CREATE SEQUENCE seq_simulacao_pre_flop_id_grupo 
-	increment by 1
-	minvalue 0
-	start with 0;
+INSERT INTO comum.config_poker (val_ant, val_see_flop, val_raise_pre_turn, val_raise_pre_river) VALUES(5, 10, 5, 5);
+INSERT INTO comum.config_poker (val_ant, val_see_flop, val_raise_pre_turn, val_raise_pre_river) VALUES(50, 100, 50, 50);
+
+
+-- Resumo de uma estratégia
+CREATE TABLE probabilidade.tb_simulacao_jogos_resumo (
+	id serial NOT NULL,
+	val_stack_inicial int4 NOT NULL,
+	val_stack_final int4 NOT NULL,
+	qtd_jogos_simulados int4 NOT NULL,	
+	qtd_jogos_ganhos int4 NOT NULL,
+	qtd_jogos_perdidos int4 NOT NULL,
+	qtd_jogos_empatados int4 NOT NULL,
+	ds_inteligencia varchar(4000) NOT NULL,	
+	CONSTRAINT constr_simulacao_jogos_resumo_key PRIMARY KEY (id)
+);
+
+CREATE TABLE probabilidade.acao_probabilidade (
+	id serial NOT NULL,
+	val_call_pre_flop numeric NOT null,
+	val_raise_pre_turn numeric NOT null,
+	val_raise_pre_river numeric NOT null,	
+	CONSTRAINT acao_probabilidade_key PRIMARY KEY (id)
+);
+
+
+alter table probabilidade.tb_simulacao_jogos_resumo add constraint fk_acao_probabilidade foreign key (id_acao_probabilidade) references  probabilidade.acao_probabilidade(id);

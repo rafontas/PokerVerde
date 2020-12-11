@@ -10,29 +10,35 @@ using System.Text;
 
 namespace MaoTH
 {
-    public class CarregaProbabilidade : IRetornaProbabilidade
+    public class RecuperaProbabilidade : IRetornaProbabilidade
     {
+        private AvaliaProbabilidadeMao AvaliaProbabilidadeMao;
 
         public uint NumeroRodadas { get; set; }
 
-        private static Dictionary<IProbabilidadeMaoInicial, float> ProbabilidadeMaoInicial = new Dictionary<IProbabilidadeMaoInicial, float>();
-        private KeyValuePair<IProbabilidadeMaoInicial, float> UltimaProbabilidadeProcurada;
-        private bool SearchCache(IMaoBasica maoBasicaProcurada, out float minhaProbabilidade)
+        private Dictionary<IMaoBasica, float> ProbabilidadeMaoInicial = new Dictionary<IMaoBasica, float>();
+
+        public RecuperaProbabilidade()
         {
-            minhaProbabilidade = 0.0f;
+            this.CarregaProbabilidadeMaosIniciais();
+            //this.AvaliaProbabilidadeMao = new AvaliaProbabilidadeMao();
+        }
 
-            if (!this.UltimaProbabilidadeProcurada.Equals(new KeyValuePair<IProbabilidadeMaoInicial, float>()))
+        private void CarregaProbabilidadeMaosIniciais ()
+        {
+            IMaoBasica mao;
+
+            foreach (var p in ProbabilidadeMaoInicialContext.GetMaosProbabilidadesIniciais()) 
             {
-                if (this.UltimaProbabilidadeProcurada.Key.NumCarta1 == maoBasicaProcurada.NumCarta1
-                    && this.UltimaProbabilidadeProcurada.Key.NumCarta2 == maoBasicaProcurada.NumCarta2
-                    && this.UltimaProbabilidadeProcurada.Key.OffOrSuited == maoBasicaProcurada.OffOrSuited)
+                mao = new MaoBasica()
                 {
-                    minhaProbabilidade = this.UltimaProbabilidadeProcurada.Value;
-                    return true;
-                }
-            }
+                    NumCarta1 = p.NumCarta1,
+                    NumCarta2 = p.NumCarta2,
+                    OffOrSuited = p.OffOrSuited
+                };
 
-            return false;
+                this.ProbabilidadeMaoInicial.Add(mao, p.ProbabilidadeVitoria);
+            }
         }
 
         /// <summary>
@@ -45,14 +51,29 @@ namespace MaoTH
             IMaoBasica maoBasicaProcurada = MaoBasica.ToMao(mao[0], mao[1]);
             float minhaProbabilidade = 0.0f;
 
-            if (this.SearchCache(maoBasicaProcurada, out minhaProbabilidade)) return minhaProbabilidade;
+            if (this.ProbabilidadeMaoInicial.TryGetValue(maoBasicaProcurada, out minhaProbabilidade)) 
+                return minhaProbabilidade;
 
             IProbabilidadeMaoInicial prob = ProbabilidadeMaoInicialContext.GetItem(maoBasicaProcurada);
-            this.UltimaProbabilidadeProcurada = new KeyValuePair<IProbabilidadeMaoInicial, float>(prob, prob.ProbabilidadeVitoria);
+            this.ProbabilidadeMaoInicial.Add(maoBasicaProcurada, prob.ProbabilidadeVitoria);
 
-            return this.UltimaProbabilidadeProcurada.Value;
+            return prob.ProbabilidadeVitoria;
         }
 
-        public float GetProbabilidadeVitoria(Carta[] mao, Carta[] mesa) => AvaliaProbabilidadeMao.GetRecalculaVitoria(mao, mesa, 200000);
+        public float GetProbabilidadeVitoria(Carta[] mao, Carta[] mesa)
+        {
+            float probGanhar = 0.0f;
+
+            if (mesa == null || mesa.Length <= 0)
+            {
+                probGanhar = this.GetProbabilidadeVitoria(mao);
+            }
+            else
+            {
+                probGanhar = AvaliaProbabilidadeMao.GetRecalculaVitoria(mao, mesa, 100000);
+            }
+
+            return probGanhar;
+        }
     }
 }

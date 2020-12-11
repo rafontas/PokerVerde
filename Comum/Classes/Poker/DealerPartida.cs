@@ -374,12 +374,14 @@ namespace Comum.Classes
             string cartasJogador = String.Empty, cartasBanca = String.Empty, mesa = String.Empty;
 
             foreach (var c in p.CartasMesa)
-                mesa = c.ToFastCard() + " ";
+            {
+                mesa += c.ToFastCard() + " ";
+            }
 
             cartasBanca = p.Banca.Cartas[0].ToFastCard() + " " + p.Banca.Cartas[1].ToFastCard();
             cartasJogador = p.Jogador.Cartas[0].ToFastCard() + " " + p.Jogador.Cartas[1].ToFastCard();
 
-            string board = "2d kh qh 3h qc";
+
             Hand jogador = new Hand(cartasJogador, mesa);
             Hand banca = new Hand(cartasBanca, mesa);
 

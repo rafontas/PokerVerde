@@ -74,7 +74,25 @@ namespace Comum.Classes.Poker.AnaliseProbabilidade
 
             return mao;
         }
-    
+
+        public override int GetHashCode()
+        {
+            string hash = string.Empty;
+
+            if (this.NumCarta1 < NumCarta2)
+            {
+                hash = NumCarta1 + " " + NumCarta2;
+            }
+            else
+            {
+                hash = NumCarta2 + " " + NumCarta1;
+            }
+
+            hash = hash + " " + OffOrSuited;
+
+            return hash.GetHashCode();
+        }
+
     }
     
 }

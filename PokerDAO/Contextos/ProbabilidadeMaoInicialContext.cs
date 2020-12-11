@@ -181,8 +181,6 @@ namespace PokerDAO.Contextos
         {
             int index = 0;
 
-            if (!dataReader.Read()) throw new Exception("Não há itens a serem lidos.");
-
             IProbabilidadeMaoInicial item = new ProbabilidadeMaoInicial(dataReader.GetInt32(index++));
 
             item.NumCarta1 = (uint)dataReader.GetInt32(index++);
@@ -206,7 +204,7 @@ namespace PokerDAO.Contextos
 
         public static IProbabilidadeMaoInicial GetItem(IMaoBasica mao, int qtdJogosSimulacao = 500000)
         {
-            IProbabilidadeMaoInicial probMaoInicial;
+            IProbabilidadeMaoInicial probMaoInicial = null;
             StringBuilder strSelect = ProbabilidadeMaoInicialContext.GetSelectQuery();
 
             strSelect.AppendFormat(" WHERE " + Environment.NewLine +
@@ -228,7 +226,8 @@ namespace PokerDAO.Contextos
 
             using (IDataReader dataReader = command.ExecuteReader())
             {
-                probMaoInicial = ProbabilidadeMaoInicialContext.GetItem(dataReader);
+                if (dataReader.Read())
+                    probMaoInicial = ProbabilidadeMaoInicialContext.GetItem(dataReader);
             }
 
             return probMaoInicial;

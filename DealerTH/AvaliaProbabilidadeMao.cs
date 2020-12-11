@@ -1,6 +1,8 @@
 ﻿using Comum.HoldemHand;
 using Modelo;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace DealerTH.Probabilidade
 {
@@ -36,6 +38,10 @@ namespace DealerTH.Probabilidade
         const int LIMITE_MAO_P = 2;
         const int LIMITE_MAO_S = 2;
 
+        public uint Vitorias { get; private set; }
+        public uint Derrotas { get; private set; }
+        public uint Empates { get; private set; }
+
         private uint NumeroRodadas { get; set; } 
 
         private DeckA Deck { get; set; }
@@ -53,9 +59,12 @@ namespace DealerTH.Probabilidade
         {
             if (C == null) return;
 
-            int indice = 0;
-            foreach(var c in C)
-                array[indice++] = new CartaA() { Numero = c.Numero, Naipe = c.Naipe, RodadaNum = 0 };
+            for (int i = 0; i < C.Count; i++)
+            {
+                if (C[i] == null) break;
+
+                array[i] = new CartaA() { Numero = C[i].Numero, Naipe = C[i].Naipe, RodadaNum = 0 };
+            }
         }
 
         public AvaliaProbabilidadeMao(IList<Carta> mao, IList<Carta> maoSecundaria, IList<Carta> mesa, uint numeroRodadas = 100000)
@@ -71,18 +80,18 @@ namespace DealerTH.Probabilidade
             ToCartaA(maoSecundaria, MaoSecundaria);
             ToCartaA(mesa, Mesa);
             
-            NumCartasMao = mao?.Count ?? 0;
-            NumCartasMaoSec = maoSecundaria?.Count ?? 0;
-            NumCartasMesa = mesa?.Count ?? 0;
+            NumCartasMao = mao?.Count(p => p != null) ?? 0;
+            NumCartasMaoSec = maoSecundaria?.Count(p => p != null) ?? 0;
+            NumCartasMesa = mesa?.Count(p => p != null) ?? 0;
 
             NumeroRodadas = numeroRodadas;
         }
 
-        internal void Avalia(out uint vitorias, out uint derrotas, out uint empate)
+        public void Avalia()
         {
-            vitorias = 0;
-            derrotas = 0;
-            empate = 0;
+            this.Vitorias = 0;
+            this.Derrotas = 0;
+            this.Empates = 0;
 
             // Remove as cartas da mão e mesa, já que não está sendo utilizadas
             foreach (var c in MaoSecundaria) Deck.Remove(c);
@@ -112,12 +121,17 @@ namespace DealerTH.Probabilidade
                 //int resultado = mp.Compara(ms);
                 int resultado = this.AvaliaMelhorMao(MaoPrincipal, MaoSecundaria, Mesa);
 
-                if (resultado == 1) vitorias++;
-                else if (resultado == -1) derrotas++;
-                else empate++;
+                if (resultado == 1) this.Vitorias++;
+                else if (resultado == -1) this.Derrotas++;
+                else this.Empates++;
             }
         }
 
+        public float RetornaProbabilidade(int numeroRodadas, int vitorias) {
+            float probabilidade = ((this.Vitorias * 100) / numeroRodadas);
+            return probabilidade;
+        }
+        
         private CartaA GetCartaIneditaRodada(int numRodada)
         {
             CartaA aux = Deck.CartaRandom;
@@ -151,7 +165,7 @@ namespace DealerTH.Probabilidade
         /// <param name="mao">Cartas da mão a ser avaliada. Podem ser passadas 1 ou 2 cartas.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetRecalculaVitoria(Carta[] mao, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetRecalculaVitoria(mao, null, null, numeroRodadas);
+        public static float GetRecalculaVitoria(Carta[] mao, uint numeroRodadas = 100000) => AvaliaProbabilidadeMao.GetRecalculaVitoriaParalelo(mao, null, null, numeroRodadas);
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.
@@ -160,7 +174,7 @@ namespace DealerTH.Probabilidade
         /// <param name="mesa">Cartas que já estão na mesa. De 0 a 5 cartas.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetRecalculaVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 150000) => AvaliaProbabilidadeMao.GetRecalculaVitoria(mao, mesa, null, numeroRodadas);
+        public static float GetRecalculaVitoria(Carta [] mao, Carta[] mesa, uint numeroRodadas = 100000) => AvaliaProbabilidadeMao.GetRecalculaVitoriaParalelo(mao, mesa, null, numeroRodadas);
 
         /// <summary>
         /// Calcula a probabilidade de uma mão vencer.
@@ -170,18 +184,46 @@ namespace DealerTH.Probabilidade
         /// <param name="maoAdversaria">Cartas da mão adversária. Pode ser 0, 1 ou 2.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetRecalculaVitoria(Carta [] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000)
+        public static float GetRecalculaVitoriaParalelo(Carta[] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000, int numeroThreads = 7)
         {
-            uint vitorias = 0, derrotas = 0, empate = 0;
+            int numeroDeThreads = numeroThreads;
+            bool haThreadExecutando = false;
+            uint numFinalVitorias = 0, numFinalDerrotas = 0, numFinalEmpates = 0;
+            Thread[] Threads = new Thread[numeroDeThreads];
 
-            AvaliaProbabilidadeMao avalia = new AvaliaProbabilidadeMao(maoAvaliada, maoAdversaria, mesa, numeroRodadas);
-            avalia.Avalia(out vitorias, out derrotas, out empate);
+            uint numeroRodadasPorThread = ((uint) (numeroRodadas / numeroDeThreads)) + 1;
 
-            float _vitorias = vitorias, _derrotas = derrotas, _empates = empate, _numRod = numeroRodadas; 
-            float probabilidadeFinal = ((_vitorias * 100) / _numRod);
-            
+            AvaliaProbabilidadeMao[] avaliaArray = new AvaliaProbabilidadeMao[numeroDeThreads];
+
+            for (int i = 0; i < numeroDeThreads; i++)
+            {
+                avaliaArray[i] = new AvaliaProbabilidadeMao(maoAvaliada, maoAdversaria, mesa, numeroRodadasPorThread);
+                Threads[i] = new Thread(new ThreadStart(avaliaArray[i].Avalia));
+                Threads[i].Start();
+                haThreadExecutando = true;
+            }
+
+            while (haThreadExecutando)
+            {
+                Thread.Sleep(300);
+                haThreadExecutando = false;
+
+                for (int i = 0; i < numeroDeThreads; i++)
+                {
+                    if (Threads[i].IsAlive) haThreadExecutando = true;
+                }
+            }
+
+            for (int i = 0; i < numeroDeThreads; i++)
+            {
+                numFinalVitorias += avaliaArray[i].Vitorias;
+                numFinalDerrotas += avaliaArray[i].Derrotas;
+                numFinalEmpates += avaliaArray[i].Empates;
+            }
+
+            float probabilidadeFinal = ((numFinalVitorias * 100) / numeroRodadas);
+
             return probabilidadeFinal;
-
         }
 
     }

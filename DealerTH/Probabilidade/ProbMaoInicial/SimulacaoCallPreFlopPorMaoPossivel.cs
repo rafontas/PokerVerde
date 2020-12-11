@@ -60,9 +60,9 @@ namespace MaoTH.Probabilidade.ProbMaoInicial
         {
             return new AcaoProbabilidade()
             {
-                probMinimaChamarFlop = prob.ProbabilidadeVitoria,
-                probMinAumentaNoFlop = 50f,
-                probMinAumentaNoTurn = 50f,
+                probabilidadeMinicaSeeFlop = prob.ProbabilidadeVitoria,
+                probabilidadeMinimaRaisePreTurn = 50f,
+                probabilidadeMinimaRaisePreRiver = 50f,
             };
         }
 
@@ -82,7 +82,7 @@ namespace MaoTH.Probabilidade.ProbMaoInicial
             IList<IMaoBasica> listaMao = MaoBasica.GetTodasMaosPossiveis();
             IList<ISimulacaoCallPreFlop> listaSimulacao = new List<ISimulacaoCallPreFlop>();
             IJogador banca = new Banca(this.Config);
-            IRetornaProbabilidade retornaProbabilidade = new CarregaProbabilidade();
+            IRetornaProbabilidade retornaProbabilidade = new RecuperaProbabilidade();
             Comum.Mesa m = new Comum.Mesa(this.Config);
             IList<IMaoBasica> novaMao = new List<IMaoBasica>();
 

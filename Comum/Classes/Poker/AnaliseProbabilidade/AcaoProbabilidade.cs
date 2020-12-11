@@ -7,8 +7,10 @@ namespace Comum.Classes.Poker.AnaliseProbabilidade
 {
     public class AcaoProbabilidade : IAcaoProbabilidade
     {
-        public float probMinimaChamarFlop { get; set; }
-        public float probMinAumentaNoFlop { get; set; }
-        public float probMinAumentaNoTurn { get; set; }
+        public int id { get; set; }
+        public float probabilidadeMinicaSeeFlop { get; set; }
+        public float probabilidadeMinimaRaisePreTurn { get; set; }
+        public float probabilidadeMinimaRaisePreRiver { get; set; }
+
     }
 }

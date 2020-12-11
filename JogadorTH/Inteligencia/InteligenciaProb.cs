@@ -57,7 +57,7 @@ namespace JogadorTH.Inteligencia
             AcaoJogador acao;
             float minhaProbAgora = this.getMinhaProbalidadeAgora(this.JogadorStack.Mao);
 
-            if (minhaProbAgora >= this.AcaoProbabilidade.probMinimaChamarFlop)
+            if (minhaProbAgora >= this.AcaoProbabilidade.probabilidadeMinicaSeeFlop)
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.PayFlop, this.Config.Flop, this);
             }
@@ -73,7 +73,7 @@ namespace JogadorTH.Inteligencia
         {
             AcaoJogador acao;
 
-            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoFlop) && this.PossoPagarValor(this.Config.Turn))
+            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao, cartasMesa) >= this.AcaoProbabilidade.probabilidadeMinimaRaisePreTurn) && this.PossoPagarValor(this.Config.Turn))
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.Turn, this);
             }
@@ -89,7 +89,7 @@ namespace JogadorTH.Inteligencia
         {
             AcaoJogador acao;
 
-            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao) >= this.AcaoProbabilidade.probMinAumentaNoTurn) && this.PossoPagarValor(this.Config.River))
+            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao, cartasMesa) >= this.AcaoProbabilidade.probabilidadeMinimaRaisePreRiver) && this.PossoPagarValor(this.Config.River))
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.River, this);
             }

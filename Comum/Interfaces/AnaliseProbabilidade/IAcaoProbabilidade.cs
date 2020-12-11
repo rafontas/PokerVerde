@@ -6,8 +6,9 @@ namespace Comum.Interfaces.AnaliseProbabilidade
 {
     public interface IAcaoProbabilidade
     {
-        float probMinimaChamarFlop { get; set; }
-        float probMinAumentaNoFlop { get; set; }
-        float probMinAumentaNoTurn { get; set; }
+        int id { get; set; }
+        float probabilidadeMinicaSeeFlop { get; set; }
+        float probabilidadeMinimaRaisePreTurn { get; set; }
+        float probabilidadeMinimaRaisePreRiver { get; set; }
     }
 }

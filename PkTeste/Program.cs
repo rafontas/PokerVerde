@@ -11,6 +11,10 @@ using PokerDAO.Base;
 using PokerDAO.Contextos;
 using MaoTH.Probabilidade.ProbMaoInicial;
 using Comum.HoldemHand;
+using Comum.Interfaces.AnaliseProbabilidade;
+using Comum.Classes.Poker.AnaliseProbabilidade;
+using MaoTH;
+using MaoTH.Probabilidade;
 
 namespace PkTeste
 {
@@ -56,11 +60,63 @@ namespace PkTeste
             Program.SalvaArquivo(content);
         }
 
-        static void PreencheCallPreFlop()
+        static void GeraSimulacoesVariaves()
         {
-            SimulacaoCallPreFlopPorMaoPossivel simulacao = new SimulacaoCallPreFlopPorMaoPossivel(5000);
+            IAcaoProbabilidade acaoProbabilidade;
 
-            simulacao.GeraListaCallPreFlopLimiteProbabilidade();
+            float[] rangeValoresMinimosCallFlop = new float[] { 37f, 40f, 42f, 44f, 46f, 48f, 50f };
+            float[] rangeValoresMinimosRaisePreTurn = new float[] { 37f, 40f, 42f, 44f, 46f, 48f, 50f };
+            float[] rangeValoresMinimosRaisePreRiver = new float[] { 37f, 40f, 42f, 44f, 46f, 48f, 50f };
+
+            foreach(float minCallFop in rangeValoresMinimosCallFlop)
+            {
+                Console.WriteLine("Item: " + minCallFop);
+
+                foreach(float minRaisePreTurn in rangeValoresMinimosCallFlop)
+                {
+                    Console.WriteLine("Item: " + minCallFop + " " + minRaisePreTurn);
+
+                    foreach(float minRaisePreRiver in rangeValoresMinimosCallFlop)
+                    {
+                        acaoProbabilidade = new AcaoProbabilidade()
+                        {
+                            probabilidadeMinicaSeeFlop = minCallFop,
+                            probabilidadeMinimaRaisePreTurn = minRaisePreTurn,
+                            probabilidadeMinimaRaisePreRiver = minRaisePreRiver
+                        };
+
+
+                        if (AcaoProbabilidadeContexto.ExisteItem(acaoProbabilidade)) continue;
+
+                        Console.WriteLine("Item: " + minCallFop + " " + minRaisePreTurn + " " + minRaisePreRiver);
+
+                        Program.SimulaJogadorProbabilistico(acaoProbabilidade);
+
+                        // Fazer aqui para gerar as paradas.
+                    }
+
+                }
+            }
+        }
+
+        static void SimulaJogadorProbabilistico(IAcaoProbabilidade acaoProbabilidade)
+        {
+            
+            GeraSimulacaoJogosResumo geraSimulacao = new GeraSimulacaoJogosResumo(1200);
+            
+            for (int i = 0; i < 2; i++)
+            {
+
+                IJogador jogador = new JogadorProbabilistico(
+                    Program.configPadrao,
+                    acaoProbabilidade,
+                    new RecuperaProbabilidade(),
+                    10000
+                );
+
+                ISimulacaoJogosResumo s = geraSimulacao.SimulaJogos(jogador, acaoProbabilidade);
+                geraSimulacao.PersisteSimulacao(s); 
+            }
         }
 
         static void TestHandOdds()
@@ -88,7 +144,9 @@ namespace PkTeste
         {
             try
             {
-                Program.PreencheCallPreFlop();
+                Program.GeraSimulacoesVariaves();
+
+                //Program.PreencheCallPreFlop();
                 //Program.PreencheCallPreFlop();
 
                 //ProbabilidadeApenasDuasCartasContext.AtualizaPorNumerosOffOuSuitedQtdJogosSimulados(list);
