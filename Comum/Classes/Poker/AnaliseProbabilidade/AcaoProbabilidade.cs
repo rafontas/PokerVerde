@@ -12,5 +12,14 @@ namespace Comum.Classes.Poker.AnaliseProbabilidade
         public float probabilidadeMinimaRaisePreTurn { get; set; }
         public float probabilidadeMinimaRaisePreRiver { get; set; }
 
+        public bool Equals(IAcaoProbabilidade other)
+        {
+            if (this.probabilidadeMinicaSeeFlop == other.probabilidadeMinicaSeeFlop &&
+                this.probabilidadeMinimaRaisePreRiver == other.probabilidadeMinimaRaisePreRiver &&
+                this.probabilidadeMinimaRaisePreTurn == other.probabilidadeMinimaRaisePreTurn)
+                return true;
+
+            return false;
+        }
     }
 }

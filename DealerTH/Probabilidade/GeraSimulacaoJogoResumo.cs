@@ -1,4 +1,5 @@
-﻿using Comum.Classes;
+﻿using Comum;
+using Comum.Classes;
 using Comum.Classes.Poker;
 using Comum.Classes.Poker.AnaliseProbabilidade;
 using Comum.Interfaces;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace MaoTH.Probabilidade
 {
@@ -18,6 +20,11 @@ namespace MaoTH.Probabilidade
         public uint QuantidadeJogosSimuladosPretendidos { get; private set; } = 100000;
         public uint StackInicial { get; private set; } = 10000;
         public IAcaoProbabilidade AcaoProbabilidade { get; set; }
+
+        public static string ResumoMaoJogador { get; set; }
+        public bool ModoVerboso { get; set; } = false;
+
+        private string UltimaMensagemImpressa { get; set; } = string.Empty;
 
         public IConfiguracaoPoker Config { get; set; } = ConfiguracaoTHBonus.getConfiguracaoPadrao();
 
@@ -78,15 +85,48 @@ namespace MaoTH.Probabilidade
             return simulacao;
         }
 
+        private void PrintaProgressoConsole(string entrada)
+        {
+            if ((Console.CursorLeft - this.UltimaMensagemImpressa.Length) > 0)
+                Console.CursorLeft = (Console.CursorLeft - this.UltimaMensagemImpressa.Length);
+
+            Console.Write(entrada);
+            this.UltimaMensagemImpressa = entrada;
+        }
+
         private ISimulacaoJogosResumo GeraUmaSimulacao(ISimulacaoJogosResumo simulacao, ICroupier croupier, IJogador jogador)
         {
+            string impressaoModoVerboso = string.Empty;
+            int quantTestesSeguidos = 0;
+
             for (int i = 0; i < this.QuantidadeJogosSimuladosPretendidos; i++)
             {
+                Uteis.ImprimeAgora = string.Empty;
+
                 if (!croupier.HaParticipantesParaJogar()) break;
+
+                if (this.ModoVerboso && (i % 50) == 0)
+                {
+                    if (quantTestesSeguidos-- <= 0)
+                    {
+                        Uteis.ModoVerboso = false;
+                    }
+                    else
+                    {
+                        //this.PrintaProgressoConsole(string.Format("{0}/{1}", i, this.QuantidadeJogosSimuladosPretendidos));
+                        Uteis.ModoVerboso = true;
+                        quantTestesSeguidos = 2;
+                    }
+                }
 
                 croupier.ExecutarNovaPartidaCompleta();
                 simulacao.QuantidadeJogosSimulados++;
                 IPartida p = jogador.Historico.Last();
+
+                if (Uteis.ModoVerboso)
+                {
+                    Console.WriteLine(Uteis.ImprimeAgora + " " + p.Jogador.Stack.ToString("0,00"));
+                }
 
                 if (p.JogadorGanhador == Enuns.VencedorPartida.Jogador)
                 {

@@ -15,6 +15,9 @@ using Comum.Interfaces.AnaliseProbabilidade;
 using Comum.Classes.Poker.AnaliseProbabilidade;
 using MaoTH;
 using MaoTH.Probabilidade;
+using System.Text;
+using System.Diagnostics;
+using System.Threading;
 
 namespace PkTeste
 {
@@ -60,22 +63,52 @@ namespace PkTeste
             Program.SalvaArquivo(content);
         }
 
+        private static int UltimaContagemMaosProbCache { get; set; } = 0;
+        private static TimeSpan UltimaExecTempo { get; set; }
+
+        static void SalvaSimulacao(string dadosSimulacao)
+        {
+            string nomeArquivo = "GeraSimulacao.txt", stringDiferencaPersistidos = string.Empty;
+            int itensPersistidos = MaoProbabilidadeContexto.GetQuantidadeItensPersistidos();
+            int diferencaPersistidos = (Program.UltimaContagemMaosProbCache == 0 ? 0 : itensPersistidos - Program.UltimaContagemMaosProbCache);
+
+            stringDiferencaPersistidos = (diferencaPersistidos == 0) ? " _.___" : ("+" + diferencaPersistidos.ToString("0,00"));
+
+            StringBuilder stringBuilder = new StringBuilder(dadosSimulacao);
+
+            stringBuilder.AppendFormat(" - Itens Persistidos: {0} ({1}){2}", 
+                itensPersistidos.ToString("0,00"),
+                stringDiferencaPersistidos,
+                RecuperarProbabilidade.ResumoCache
+            );
+
+            Program.UltimaContagemMaosProbCache = itensPersistidos;
+            File.AppendAllText(nomeArquivo, stringBuilder.ToString());
+            //Console.WriteLine(stringBuilder.ToString());
+            //Console.Beep();
+        }
+
         static void GeraSimulacoesVariaves()
         {
             IAcaoProbabilidade acaoProbabilidade;
+            string diferencaTempo = string.Empty;
+
+            Console.WriteLine("Iniciou...");
 
             float[] rangeValoresMinimosCallFlop = new float[] { 37f, 40f, 42f, 44f, 46f, 48f, 50f };
             float[] rangeValoresMinimosRaisePreTurn = new float[] { 37f, 40f, 42f, 44f, 46f, 48f, 50f };
             float[] rangeValoresMinimosRaisePreRiver = new float[] { 37f, 40f, 42f, 44f, 46f, 48f, 50f };
+            Stopwatch sw = new Stopwatch();
 
-            foreach(float minCallFop in rangeValoresMinimosCallFlop)
+            uint qtdJogosPorSimulacao = 1200, qtdSimulacoesPorProbabilidade = 2, stackInicial = 10000;
+            int progresso = 0, numeroDeIteracoes = rangeValoresMinimosCallFlop.Count() * rangeValoresMinimosRaisePreTurn.Count() * rangeValoresMinimosRaisePreRiver.Count();
+
+            StringBuilder strBuilder = new StringBuilder();
+
+            foreach (float minCallFop in rangeValoresMinimosCallFlop)
             {
-                Console.WriteLine("Item: " + minCallFop);
-
                 foreach(float minRaisePreTurn in rangeValoresMinimosCallFlop)
                 {
-                    Console.WriteLine("Item: " + minCallFop + " " + minRaisePreTurn);
-
                     foreach(float minRaisePreRiver in rangeValoresMinimosCallFlop)
                     {
                         acaoProbabilidade = new AcaoProbabilidade()
@@ -85,33 +118,83 @@ namespace PkTeste
                             probabilidadeMinimaRaisePreRiver = minRaisePreRiver
                         };
 
-
+                        progresso++;
                         if (AcaoProbabilidadeContexto.ExisteItem(acaoProbabilidade)) continue;
 
-                        Console.WriteLine("Item: " + minCallFop + " " + minRaisePreTurn + " " + minRaisePreRiver);
+                        strBuilder = new StringBuilder();
 
-                        Program.SimulaJogadorProbabilistico(acaoProbabilidade);
+                        strBuilder.AppendFormat(Environment.NewLine + "Prog.: {0}/{1} - Fazendo: {2}, {3}, {4} - Run/QtdJogos {5}/{6} ",
+                            progresso,
+                            numeroDeIteracoes,
+                            minCallFop,
+                            minRaisePreTurn,
+                            minRaisePreRiver,
+                            qtdSimulacoesPorProbabilidade,
+                            qtdJogosPorSimulacao
+                        );
+                        
+                        Console.Write(strBuilder.ToString());
+                        
+                        sw.Reset();
+                        sw.Start();
+                        Program.SimulaJogadorProbabilistico(acaoProbabilidade, qtdJogosPorSimulacao, qtdSimulacoesPorProbabilidade, stackInicial);
+                        sw.Stop();
+                        TimeSpan ts = sw.Elapsed;
 
-                        // Fazer aqui para gerar as paradas.
+                        strBuilder.AppendFormat("- Tempo: {0:D2}:{1:D2}", 
+                            ts.Minutes, ts.Seconds
+                        );
+                        
+                        if (diferencaTempo != string.Empty)
+                        {
+                            diferencaTempo = ", ";
+                            TimeSpan diff = Program.UltimaExecTempo.Subtract(ts);
+
+                            if (Program.UltimaExecTempo > ts)
+                            {
+                                diferencaTempo += "-";
+                            }
+                            else if (Program.UltimaExecTempo < ts)
+                            {
+                                diff = diff.Negate();
+                                diferencaTempo += "+";
+                            }
+                            else
+                            {
+                                diferencaTempo += " ";
+                            }
+
+                            diferencaTempo += string.Format("({0:D2}:{1:D2})", diff.Minutes, diff.Seconds);
+                        }
+                        else
+                        {
+                            diferencaTempo = ",  (__:__)";
+                        }
+
+                        strBuilder.Append(diferencaTempo);
+
+                        Program.UltimaExecTempo = sw.Elapsed;
+                        Console.Write(strBuilder.ToString());
+                        SalvaSimulacao(strBuilder.ToString());
+                        MaoProbabilidadeContexto.PersisteItensRestantes();
                     }
-
                 }
             }
         }
 
-        static void SimulaJogadorProbabilistico(IAcaoProbabilidade acaoProbabilidade)
+        static void SimulaJogadorProbabilistico(IAcaoProbabilidade acaoProbabilidade, uint qtdJogosPorSimulacao, uint qtdSimulacoesPorProbabilidade, uint stackInicial)
         {
             
-            GeraSimulacaoJogosResumo geraSimulacao = new GeraSimulacaoJogosResumo(1200);
+            GeraSimulacaoJogosResumo geraSimulacao = new GeraSimulacaoJogosResumo(qtdJogosPorSimulacao);
             
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < qtdSimulacoesPorProbabilidade; i++)
             {
 
                 IJogador jogador = new JogadorProbabilistico(
                     Program.configPadrao,
                     acaoProbabilidade,
-                    new RecuperaProbabilidade(),
-                    10000
+                    new RecuperarProbabilidade(),
+                    stackInicial
                 );
 
                 ISimulacaoJogosResumo s = geraSimulacao.SimulaJogos(jogador, acaoProbabilidade);
@@ -146,6 +229,11 @@ namespace PkTeste
             {
                 Program.GeraSimulacoesVariaves();
 
+                Console.Beep();
+                Thread.Sleep(1000);
+                Console.Beep();
+                Thread.Sleep(1000);
+                Console.Beep();
                 //Program.PreencheCallPreFlop();
                 //Program.PreencheCallPreFlop();
 

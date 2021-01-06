@@ -12,6 +12,18 @@ namespace JogadorTH.Inteligencia
 
         public IJogadorStack JogadorStack { get; set; }
         
+        public string GetMinhaMao()
+        {
+            string minhaMao = string.Empty + "[";
+
+            minhaMao += this.JogadorStack.Mao[0].ToString() + " ";
+            minhaMao += this.JogadorStack.Mao[1].ToString();
+
+            minhaMao += "]";
+
+            return minhaMao;
+        }
+
         public ICorrida Corrida { get; set; }
 
         public InteligenciaBase() {}
@@ -33,5 +45,7 @@ namespace JogadorTH.Inteligencia
         public abstract AcaoJogador FimDeJogo();
 
         public abstract AcaoJogador Turn(Carta[] cartasMesa, uint valor);
+
+        public string JustificativaAcao(TipoRodada tipoRodada) => string.Empty;
     }
 }

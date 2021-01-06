@@ -8,6 +8,9 @@ namespace Comum
 {
     public static class Uteis
     {
+        public static bool ModoVerboso { get; set; } = false;
+        public static string ImprimeAgora { get; set; } = string.Empty;
+
         public static string GetFirstDisplayNameEnum<T>(T value)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());

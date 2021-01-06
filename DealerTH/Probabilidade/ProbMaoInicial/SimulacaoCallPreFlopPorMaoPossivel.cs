@@ -82,7 +82,7 @@ namespace MaoTH.Probabilidade.ProbMaoInicial
             IList<IMaoBasica> listaMao = MaoBasica.GetTodasMaosPossiveis();
             IList<ISimulacaoCallPreFlop> listaSimulacao = new List<ISimulacaoCallPreFlop>();
             IJogador banca = new Banca(this.Config);
-            IRetornaProbabilidade retornaProbabilidade = new RecuperaProbabilidade();
+            IRetornaProbabilidade retornaProbabilidade = new RecuperarProbabilidade();
             Comum.Mesa m = new Comum.Mesa(this.Config);
             IList<IMaoBasica> novaMao = new List<IMaoBasica>();
 

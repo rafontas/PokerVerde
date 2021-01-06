@@ -21,5 +21,6 @@ namespace Comum.Interfaces
         AcaoJogador River(Carta[] cartasMesa);
         AcaoJogador FimDeJogo();
         AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa);
+        string JustificativaAcao(Enuns.TipoRodada tipoRodada);
     }
 }

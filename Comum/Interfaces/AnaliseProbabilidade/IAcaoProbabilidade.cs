@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Comum.Interfaces.AnaliseProbabilidade
 {
-    public interface IAcaoProbabilidade
+    public interface IAcaoProbabilidade : IEquatable<IAcaoProbabilidade>
     {
         int id { get; set; }
         float probabilidadeMinicaSeeFlop { get; set; }

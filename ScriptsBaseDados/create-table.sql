@@ -123,3 +123,11 @@ CREATE TABLE probabilidade.acao_probabilidade (
 
 
 alter table probabilidade.tb_simulacao_jogos_resumo add constraint fk_acao_probabilidade foreign key (id_acao_probabilidade) references  probabilidade.acao_probabilidade(id);
+
+
+CREATE TABLE probabilidade.tb_probabilidade_mao_vencer (
+	id serial NOT NULL,
+    ds_jogo_mao varchar(200) NOT NULL,
+	val_prob_vencer numeric NOT NULL,
+	CONSTRAINT tb_probabilidade_mao_vencer_pkey PRIMARY KEY (id)
+);

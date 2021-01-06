@@ -14,32 +14,51 @@ namespace Testes
         public void Teste1()
         {
             IList<Carta> MaoP = new List<Carta>() {
-                new Carta(12, Enuns.Naipe.Copas),
-                new Carta(13, Enuns.Naipe.Copas),
+                new Carta(2, Enuns.Naipe.Ouros),
+                new Carta(2, Enuns.Naipe.Copas)
             };
 
             Carta[] maoPrimaria = new Carta[]
             {
-                new Carta(12, Enuns.Naipe.Copas),
-                new Carta(13, Enuns.Naipe.Copas)
+                new Carta(2, Enuns.Naipe.Ouros),
+                new Carta(2, Enuns.Naipe.Copas)
             };
 
             IList<Carta> MaoS = new List<Carta>() {
-                new Carta(9, Enuns.Naipe.Ouros),
-                new Carta(10, Enuns.Naipe.Copas),
+                new Carta(2, Enuns.Naipe.Ouros),
+                new Carta(2, Enuns.Naipe.Copas),
             };
 
-            uint numeroDeJogos = 1000000;
+            IList<Carta> Mesa = new List<Carta>() {
+                new Carta(4, Enuns.Naipe.Paus),
+                new Carta(5, Enuns.Naipe.Espadas),
+                new Carta(11, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Ouros)
+            };
+
+            Carta[] mesa = new Carta[]
+            {
+                new Carta(4, Enuns.Naipe.Paus),
+                new Carta(5, Enuns.Naipe.Espadas),
+                new Carta(11, Enuns.Naipe.Copas),
+                new Carta(11, Enuns.Naipe.Ouros)
+            };
+
+
+            uint numeroDeJogos = 120000;
+
             float prob = 0.0f;
+            float prob_2 = 0.0f;
 
             var sw = Stopwatch.StartNew();
-                AvaliaProbabilidadeMao teste = new AvaliaProbabilidadeMao(MaoP, null, null, numeroDeJogos);
+                AvaliaProbabilidadeMao teste = new AvaliaProbabilidadeMao(MaoP, null, Mesa, numeroDeJogos);
                 teste.Avalia();
+                prob_2 = teste.Probabilidade;
                 long elapsedMilliseconds = sw.ElapsedMilliseconds;
             sw.Stop();
 
             sw = Stopwatch.StartNew();
-                AvaliaProbabilidadeMao.GetRecalculaVitoriaParalelo(maoPrimaria, null, null, numeroDeJogos, 5);
+                prob = AvaliaProbabilidadeMao.GetRecalculaVitoriaParalelo(maoPrimaria, mesa, null, numeroDeJogos, 5);
                 long elapsedMilliseconds_2 = sw.ElapsedMilliseconds;
             sw.Stop();
 

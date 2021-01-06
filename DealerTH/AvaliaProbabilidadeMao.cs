@@ -41,8 +41,9 @@ namespace DealerTH.Probabilidade
         public uint Vitorias { get; private set; }
         public uint Derrotas { get; private set; }
         public uint Empates { get; private set; }
+        private uint NumeroRodadas { get; set; }
+        public float Probabilidade { get; set; } 
 
-        private uint NumeroRodadas { get; set; } 
 
         private DeckA Deck { get; set; }
 
@@ -125,6 +126,8 @@ namespace DealerTH.Probabilidade
                 else if (resultado == -1) this.Derrotas++;
                 else this.Empates++;
             }
+
+            this.Probabilidade =  ((float)Vitorias / (float)(this.NumeroRodadas)) * 100;
         }
 
         public float RetornaProbabilidade(int numeroRodadas, int vitorias) {
@@ -184,7 +187,7 @@ namespace DealerTH.Probabilidade
         /// <param name="maoAdversaria">Cartas da mão adversária. Pode ser 0, 1 ou 2.</param>
         /// <param name="numeroRodadas">Número rodadas simuladas para convergência de resultados. Com 150k já convergem. </param>
         /// <returns>Probabilidade de ganhar. Ex: 50.10</returns>
-        public static float GetRecalculaVitoriaParalelo(Carta[] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000, int numeroThreads = 7)
+        public static float GetRecalculaVitoriaParalelo(Carta[] maoAvaliada, Carta[] mesa, Carta[] maoAdversaria, uint numeroRodadas = 100000, int numeroThreads = 5)
         {
             int numeroDeThreads = numeroThreads;
             bool haThreadExecutando = false;
@@ -205,7 +208,7 @@ namespace DealerTH.Probabilidade
 
             while (haThreadExecutando)
             {
-                Thread.Sleep(300);
+                Thread.Sleep(12);
                 haThreadExecutando = false;
 
                 for (int i = 0; i < numeroDeThreads; i++)
@@ -221,7 +224,7 @@ namespace DealerTH.Probabilidade
                 numFinalEmpates += avaliaArray[i].Empates;
             }
 
-            float probabilidadeFinal = ((numFinalVitorias * 100) / numeroRodadas);
+            float probabilidadeFinal = (((float)numFinalVitorias * 100) / (float)numeroRodadas);
 
             return probabilidadeFinal;
         }

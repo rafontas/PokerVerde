@@ -10,6 +10,8 @@ namespace PokerDAO.Contextos
 {
     public class AcaoProbabilidadeContexto
     {
+        public static IList<IAcaoProbabilidade> AcoesJaRealizadas = new List<IAcaoProbabilidade>();
+
         public static void Persiste(IList<IAcaoProbabilidade> acaoProbabilidade)
         {
             DBConnect.AbreConexaoSeNaoEstiverAberta();
@@ -72,6 +74,15 @@ namespace PokerDAO.Contextos
 
         public static bool ExisteItem(IAcaoProbabilidade acao)
         {
+
+            if (AcaoProbabilidadeContexto.AcoesJaRealizadas.Count == 0)
+                AcaoProbabilidadeContexto.GetAllItems();
+
+            return AcaoProbabilidadeContexto.AcoesJaRealizadas.Contains(acao);
+        }
+
+        public static bool ExisteItemUnico(IAcaoProbabilidade acao)
+        {
             StringBuilder strBuilder = new StringBuilder()
                 .AppendFormat("SELECT count(*) FROM probabilidade.acao_probabilidade WHERE " +
                             "val_call_pre_flop = {0}" + Environment.NewLine +
@@ -126,6 +137,28 @@ namespace PokerDAO.Contextos
             {
                 if (dataReader.Read())
                     acaoProbailidade = AcaoProbabilidadeContexto.GetItem(dataReader);
+            }
+
+            DBConnect.FecharConexao();
+
+            return acaoProbailidade;
+
+        }
+
+        public static IAcaoProbabilidade GetAllItems()
+        {
+            DBConnect.AbreConexaoSeNaoEstiverAberta();
+
+            IAcaoProbabilidade acaoProbailidade = null;
+            StringBuilder strBuilder = new StringBuilder("SELECT * FROM probabilidade.acao_probabilidade");
+
+            IDbCommand command = DBConnect.Connection.CreateCommand();
+            command.CommandText = strBuilder.ToString();
+
+            using (IDataReader dataReader = command.ExecuteReader())
+            {
+                while (dataReader.Read())
+                    AcaoProbabilidadeContexto.AcoesJaRealizadas.Add(AcaoProbabilidadeContexto.GetItem(dataReader));
             }
 
             DBConnect.FecharConexao();

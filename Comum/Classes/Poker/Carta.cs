@@ -1,4 +1,5 @@
 ﻿using Comum;
+using Comum.Excecoes;
 using Comum.Interfaces;
 using Comum.Interfaces.PokerBase;
 using Enuns;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Modelo
 {
-    public class Carta : IEqualityComparer<Carta>, IToJson, IToFastCard
+    public class Carta : IEqualityComparer<Carta>, IToJson, IToFastCard, IComparable<Carta>, IComparer<Carta>
     {
 
         [Display(Name = "Numero")]
@@ -26,39 +27,35 @@ namespace Modelo
             Numero = numero;
             Naipe = naipe;
         }
-
-        public int CompareTo(Carta other)
+        
+        public static string NumberToCardNumber(int numero) 
         {
-            if (Numero < other.Numero) return -1;
-            else if (Numero == other.Numero) return 0;
-
-            return 1;
+            if (numero >= 10)
+            {
+                switch (numero)
+                {
+                    case 10:
+                        return "T"; break;
+                    case 11:
+                        return "J"; break;
+                    case 12:
+                        return "Q"; break;
+                    case 13:
+                        return "K"; break;
+                    case 14:
+                    case 1:
+                        return "A"; break;
+                    default:
+                        throw new Exception("Numero não identificado na conversão;");
+                }
+            }
+            
+            return numero.ToString();
         }
 
         public override string ToString()
         {
-            string carta = "";
-            if (this.Numero > 10) 
-            {
-                switch(this.Numero)
-                {
-                    case 11: 
-                        carta = "J"; break;
-                    case 12: 
-                        carta = "Q"; break;
-                    case 13: 
-                        carta = "K"; break;
-                    case 14:
-                    case 1:
-                        carta = "A"; break;
-                    default: 
-                        throw new Exception("Numero não identificado na conversão;");
-                }
-            }
-            else
-            {
-                carta = this.Numero.ToString();
-            }
+            string carta = Carta.NumberToCardNumber((int)this.Numero);
                  
             carta += Uteis.GetFirstDisplayNameEnum(Naipe);
             return carta;
@@ -219,5 +216,46 @@ namespace Modelo
 
             return card;
         }
+
+        /// <summary>
+        /// Compara duas cartas e retorna a maior.
+        /// </summary>
+        /// <remarks>
+        ///     A = 1, T = 10, J = 11, Q = 12, K = 13.
+        ///     Naipes são na ordem: Paus > Esapdas > Ouros > Copas.
+        ///     
+        ///     Se carta x > y retorna 1;
+        ///     Se carta x < y retorna -1;
+        /// </remarks>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int CompareTo(Carta x, Carta y) => x.CompareTo(y);
+
+        /// <summary>
+        /// Compara duas cartas e retorna a maior.
+        /// </summary>
+        /// <remarks>
+        ///     A = 1, T = 10, J = 11, Q = 12, K = 13.
+        ///     Naipes são na ordem: Paus > Esapdas > Ouros > Copas.
+        ///     
+        ///     Se carta x > y retorna 1;
+        ///     Se carta x < y retorna -1;
+        /// </remarks>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int CompareTo(Carta y)
+        {
+            if (this.Numero > y.Numero) return 1;
+            if (this.Numero < y.Numero) return -1;
+
+            if (this.Naipe > y.Naipe) return 1;
+            if (this.Naipe < y.Naipe) return -1;
+
+            throw new CartaException("Comparando cartas de mesmo número e naipe.");
+        }
+
+        public int Compare(Carta x, Carta y) => x.CompareTo(y);
     }
 }

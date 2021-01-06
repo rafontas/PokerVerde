@@ -1,4 +1,5 @@
-﻿using Comum.Interfaces.AnaliseProbabilidade;
+﻿using Comum;
+using Comum.Interfaces.AnaliseProbabilidade;
 using Enuns;
 using Modelo;
 using System;
@@ -11,7 +12,15 @@ namespace JogadorTH.Inteligencia
         public override string IdMente { get => this.idMente; }
         private int versaoIdMente { get; set; }
         public override int VersaoIdMente { get => this.versaoIdMente; }
-        
+
+        public static bool ModoVerdoso { get; set; } = true;
+        private AcaoJogador acaoJogadorAgora { get; set; }
+        private float minhaProbAgora { get; set; }
+        private TipoRodada rodadaAgora { get; set; }
+        private string infoRadadaAgora { get; set; } = string.Empty;
+        private string infoProbabilidade { get; set; } = string.Empty;
+        private string infoAgora { get; set; } = string.Empty;
+
         public IRetornaProbabilidade RetornaProbabilidade { get; set; }
 
         internal IAcaoProbabilidade AcaoProbabilidade { get; set; }
@@ -20,6 +29,41 @@ namespace JogadorTH.Inteligencia
         {
             this.RetornaProbabilidade = RetornaProbabilidade;
             this.AcaoProbabilidade = AcaoProbabilidade;
+        }
+
+        public void ImprimeDados()
+        {
+            if (!Uteis.ModoVerboso) return;
+
+            if (this.rodadaAgora == TipoRodada.PreJogo)
+            {
+                this.infoProbabilidade = string.Empty;
+                this.infoRadadaAgora = " " + this.JogadorStack.Stack.ToString("0,00") + " - ";
+            }
+            else if (this.rodadaAgora == TipoRodada.PreFlop)
+            {
+                this.infoProbabilidade += string.Format(" PF {0} {1}", (((int)minhaProbAgora).ToString()), this.acaoJogadorAgora.Acao.ToString());
+                this.infoRadadaAgora += this.GetMinhaMao(); 
+            }
+            else if (this.rodadaAgora == TipoRodada.Flop)
+            {
+                this.infoProbabilidade += string.Format(", F {0} {1}", (((int)minhaProbAgora).ToString()), this.acaoJogadorAgora.Acao.ToString());
+                this.infoRadadaAgora += this.infoAgora; 
+            }
+            else if (this.rodadaAgora == TipoRodada.Turn)
+            {
+                this.infoProbabilidade += string.Format(", T {0} {1}", (((int)minhaProbAgora).ToString()), this.acaoJogadorAgora.Acao.ToString());
+                this.infoRadadaAgora += this.infoAgora; 
+            }
+            else if (this.rodadaAgora == TipoRodada.River)
+            {
+                //this.infoProbabilidade += string.Format(", R {0} {1}", (minhaProbAgora.ToString("00,00")), this.acaoJogadorAgora.Acao.ToString());
+                this.infoRadadaAgora += this.infoAgora;
+
+                Uteis.ImprimeAgora = this.infoRadadaAgora + Uteis.ImprimeAgora;
+                Uteis.ImprimeAgora += this.infoProbabilidade;
+                //Console.Write(this.infoRadadaAgora + this.infoProbabilidade);
+            }
         }
 
         public override AcaoJogador ExecutaAcao(TipoRodada tipoRodada, uint valor, Carta[] cartasMesa)
@@ -39,7 +83,9 @@ namespace JogadorTH.Inteligencia
         {
             AcoesDecisaoJogador acao;
             bool HaJogosParaJogar = this.Corrida?.HaPartidaParaJogar() ?? true;
-            
+            this.infoAgora = string.Empty;
+            this.rodadaAgora = TipoRodada.PreJogo;
+                 
             if (this.PossoPagarValor(this.Config.Ant + this.Config.Flop) && HaJogosParaJogar)
             {
                 acao = AcoesDecisaoJogador.Play;
@@ -48,6 +94,8 @@ namespace JogadorTH.Inteligencia
             {
                 acao = AcoesDecisaoJogador.Stop;
             }
+
+            this.ImprimeDados();
 
             return new AcaoJogador(acao, 0, this);
         }
@@ -66,14 +114,22 @@ namespace JogadorTH.Inteligencia
                 acao = new AcaoJogador(AcoesDecisaoJogador.Fold, 0, this);
             }
 
+            this.infoAgora = string.Empty;
+            this.acaoJogadorAgora = acao;
+            this.minhaProbAgora = minhaProbAgora;
+            this.rodadaAgora = TipoRodada.PreFlop;
+
+            this.ImprimeDados();
+
             return acao;
         }
 
         public override AcaoJogador Flop(Carta[] cartasMesa, uint valor)
         {
             AcaoJogador acao;
+            float minhaProbAgora = this.getMinhaProbalidadeAgora(this.JogadorStack.Mao, cartasMesa);
 
-            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao, cartasMesa) >= this.AcaoProbabilidade.probabilidadeMinimaRaisePreTurn) && this.PossoPagarValor(this.Config.Turn))
+            if ((minhaProbAgora >= this.AcaoProbabilidade.probabilidadeMinimaRaisePreTurn) && this.PossoPagarValor(this.Config.Turn))
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.Turn, this);
             }
@@ -81,6 +137,12 @@ namespace JogadorTH.Inteligencia
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
             }
+            this.infoAgora = "[" + cartasMesa[0].ToString() + " " + cartasMesa[1].ToString() + " " + cartasMesa[2].ToString();
+            this.acaoJogadorAgora = acao;
+            this.minhaProbAgora = minhaProbAgora;
+            this.rodadaAgora = TipoRodada.Flop;
+
+            this.ImprimeDados();
 
             return acao;
         }
@@ -88,8 +150,9 @@ namespace JogadorTH.Inteligencia
         public override AcaoJogador Turn(Carta[] cartasMesa, uint valor)
         {
             AcaoJogador acao;
+            float minhaProbAgora = this.getMinhaProbalidadeAgora(this.JogadorStack.Mao, cartasMesa);
 
-            if ((this.getMinhaProbalidadeAgora(this.JogadorStack.Mao, cartasMesa) >= this.AcaoProbabilidade.probabilidadeMinimaRaisePreRiver) && this.PossoPagarValor(this.Config.River))
+            if ((minhaProbAgora >= this.AcaoProbabilidade.probabilidadeMinimaRaisePreRiver) && this.PossoPagarValor(this.Config.River))
             {
                 acao = new AcaoJogador(AcoesDecisaoJogador.Raise, this.Config.River, this);
             }
@@ -98,10 +161,27 @@ namespace JogadorTH.Inteligencia
                 acao = new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
             }
 
+            this.infoAgora = " " + cartasMesa[3].ToString();
+            this.acaoJogadorAgora = acao;
+            this.minhaProbAgora = minhaProbAgora;
+            this.rodadaAgora = TipoRodada.Turn;
+
+            this.ImprimeDados();
+
             return acao;
         }
 
-        public override AcaoJogador River(Carta[] cartasMesa) => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+        public override AcaoJogador River(Carta[] cartasMesa)
+        {
+            AcaoJogador acao = new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
+            
+            this.infoAgora = " " + cartasMesa[4].ToString() + "]";
+            this.rodadaAgora = TipoRodada.River;
+
+            this.ImprimeDados();
+
+            return acao;
+        }
 
         public override AcaoJogador FimDeJogo() => new AcaoJogador(AcoesDecisaoJogador.Check, 0, this);
 

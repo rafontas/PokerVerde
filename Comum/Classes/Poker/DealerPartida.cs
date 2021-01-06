@@ -15,6 +15,7 @@ namespace Comum.Classes
         private IJogador banca { get; set; }
 
         public Mesa Mesa { get; }
+        private static bool ModoVerboso { get; set; } = true;
 
         public Carta[] MaoMandatoriaBanca { get; private set; } = null;
         public Carta[] MaoMandatoriaJogador { get; private set; } = null;
@@ -143,7 +144,6 @@ namespace Comum.Classes
         public void EncerrarPartidaJogador(IJogador j)
         {
             IPartida partidaAtual = this.Mesa.PartidasAtuais[j];
-            this.VerificarGanhadorPartida(partidaAtual);
             j.AddPartidaHistorico(this.Mesa.PartidasAtuais[j]);
             this.Mesa.PartidasAtuais.Remove(j);
         }
@@ -170,7 +170,10 @@ namespace Comum.Classes
 
         public void RevelarRiver() {
             foreach (var partida in this.Mesa.PartidasAtuais)
+            {
                 partida.Value.RevelarRiver();
+                partida.Key.River(partida.Value.CartasMesa);
+            }
         }
 
         public void PerguntarPagarFlop()
@@ -196,6 +199,7 @@ namespace Comum.Classes
 
                     case AcoesDecisaoJogador.Fold:
                         proximaRodada = new RodadaTHB(TipoRodada.FimDeJogo, partida.PoteAgora, partida.CartasMesa);
+                        partida.JogadorGanhador = VencedorPartida.Banca;
                         break;
 
                     default: 
@@ -381,14 +385,25 @@ namespace Comum.Classes
             cartasBanca = p.Banca.Cartas[0].ToFastCard() + " " + p.Banca.Cartas[1].ToFastCard();
             cartasJogador = p.Jogador.Cartas[0].ToFastCard() + " " + p.Jogador.Cartas[1].ToFastCard();
 
-
             Hand jogador = new Hand(cartasJogador, mesa);
             Hand banca = new Hand(cartasBanca, mesa);
+            
+            if (Uteis.ModoVerboso) {
+                string conteudo = string.Format(" - B [{0} {1}], ", p.Banca.Cartas[0].ToString(), p.Banca.Cartas[1].ToString());
+                conteudo += string.Format("J. {0,0:G4}", jogador.HandValue);
+                conteudo += (jogador > banca ? " > " : (jogador < banca ? " < " : " = "));
+                conteudo += string.Format("{0,0:G4} .B", banca.HandValue);
+                Uteis.ImprimeAgora += conteudo;
+                //Console.Write(conteudo);
+            }
 
-            return (jogador > banca ? 1 : // jogador vencedor
-                        (banca > jogador ?  
-                            -1 : // banca vencedora
-                            0)); // empate
+            int resultado;
+
+            if (jogador > banca) resultado = 1;
+            else if (banca > jogador) resultado = -1;
+            else resultado = 0;
+
+            return resultado;
         }
 
         /// <summary>
@@ -401,15 +416,18 @@ namespace Comum.Classes
             {
                 case VencedorPartida.Banca:
                     p.Banca.ReceberValor(p.PoteAgora);
+                    if (Uteis.ModoVerboso) Uteis.ImprimeAgora += (string.Format(" |\t B → -{0}", p.ValorInvestidoJogador));
                     break;
 
                 case VencedorPartida.Empate:
                     p.Banca.ReceberValor(p.ValorInvestidoBanca);
                     p.Jogador.ReceberValor(p.ValorInvestidoJogador);
+                    if (Uteis.ModoVerboso) Uteis.ImprimeAgora += (string.Format(" |\t D (J, B) → +{0} , -{1}", p.ValorInvestidoJogador, p.ValorInvestidoBanca));
                     break;
 
                 case VencedorPartida.Jogador:
                     p.Jogador.ReceberValor(p.PoteAgora);
+                    if (Uteis.ModoVerboso) Uteis.ImprimeAgora += (string.Format(" |\t J → +{0}", p.ValorInvestidoBanca));
                     break;
 
                 default:
